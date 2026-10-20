@@ -1,0 +1,98 @@
+[
+  {
+    "id": "mat-porcentagem",
+    "area": "mathematics",
+    "topic": "Porcentagem",
+    "title": "Um desconto nem sempre é o que parece.",
+    "support": "Uma loja anuncia uma mochila por R$ 200,00. Durante uma promoção, aplica um desconto de 20% sobre o preço original. Para clientes cadastrados, oferece mais 10% de desconto sobre o valor já reduzido.",
+    "prompt": "Uma estudante cadastrada compra a mochila nessa promoção. Qual é o valor final pago por ela?",
+    "alternatives": [
+      "R$ 140,00",
+      "R$ 144,00",
+      "R$ 150,00",
+      "R$ 160,00",
+      "R$ 170,00"
+    ],
+    "correctIndex": 1,
+    "explanation": "Os descontos são sucessivos: 200 × 0,80 = 160. Depois, 160 × 0,90 = R$ 144,00. Somar os percentuais levaria a um desconto incorreto de 30%."
+  },
+  {
+    "id": "nat-energia",
+    "area": "nature",
+    "topic": "Energia elétrica",
+    "title": "Pequenos hábitos. Consumo real.",
+    "support": "Uma família utiliza um chuveiro elétrico de potência constante de 5.500 W. Somando todos os moradores, o chuveiro permanece ligado por 40 minutos por dia. Considere um mês de 30 dias e o custo de R$ 0,80 por kWh, sem taxas adicionais.",
+    "prompt": "Qual é o custo mensal de energia elétrica associado apenas ao uso desse chuveiro?",
+    "alternatives": [
+      "R$ 44,00",
+      "R$ 66,00",
+      "R$ 80,00",
+      "R$ 88,00",
+      "R$ 132,00"
+    ],
+    "correctIndex": 3,
+    "explanation": "A potência é 5,5 kW e o tempo diário é 40/60 h. Em 30 dias, o consumo é 5,5 × (2/3) × 30 = 110 kWh. O custo é 110 × 0,80 = R$ 88,00."
+  },
+  {
+    "id": "hum-cidade",
+    "area": "humanities",
+    "topic": "Urbanização",
+    "title": "A cidade também conta uma história.",
+    "support": "Após a instalação de uma linha de metrô e a recuperação de espaços públicos, um bairro passou a atrair novos empreendimentos. O preço dos imóveis e dos aluguéis aumentou. Parte dos moradores de baixa renda, sem condições de arcar com os novos custos, mudou-se para regiões mais distantes.",
+    "prompt": "O processo socioespacial descrito é caracterizado como:",
+    "alternatives": [
+      "Conurbação entre municípios vizinhos.",
+      "Descentralização da atividade industrial.",
+      "Gentrificação e substituição do perfil socioeconômico local.",
+      "Êxodo rural e expansão da fronteira agrícola.",
+      "Redução da segregação socioespacial."
+    ],
+    "correctIndex": 2,
+    "explanation": "A valorização imobiliária acompanhada da saída de moradores de menor renda caracteriza a gentrificação. A melhoria urbana, nesse caso, ocorre junto à substituição do perfil socioeconômico da população local."
+  },
+  {
+    "id": "ling-campanha",
+    "area": "languages",
+    "topic": "Funções da linguagem",
+    "title": "Quando as palavras pedem uma atitude.",
+    "support": "Em uma campanha de incentivo à leitura, um cartaz apresenta o texto: “Abra um livro. Descubra outras vidas. Faça da leitura um encontro diário.” A imagem de um livro aberto acompanha a mensagem.",
+    "prompt": "Considerando o objetivo comunicativo da campanha, a função da linguagem predominante é a:",
+    "alternatives": [
+      "Referencial, por apresentar dados objetivos sobre livros.",
+      "Metalinguística, por explicar o significado de leitura.",
+      "Fática, por verificar o funcionamento do canal.",
+      "Emotiva, por expressar sentimentos individuais do autor.",
+      "Conativa, por buscar influenciar a conduta do leitor."
+    ],
+    "correctIndex": 4,
+    "explanation": "Os verbos no imperativo (“abra”, “descubra” e “faça”) dirigem-se ao leitor e procuram levá-lo a agir. Essa orientação ao destinatário caracteriza a função conativa ou apelativa."
+  },
+  {
+    "id": "mat-escala",
+    "area": "mathematics",
+    "topic": "Escalas e proporções",
+    "title": "Uma distância pequena no papel.",
+    "support": "Um mapa utiliza a escala 1:50.000. Nele, o trajeto em linha reta entre uma escola e uma biblioteca mede 6 cm. A escala indica que cada centímetro no mapa corresponde a 50.000 cm na realidade.",
+    "prompt": "Qual é a distância real, em quilômetros, entre a escola e a biblioteca?",
+    "alternatives": ["0,3 km", "3 km", "30 km", "300 km", "3.000 km"],
+    "correctIndex": 1,
+    "explanation": "Multiplicando pela escala: 6 × 50.000 = 300.000 cm. Como 100.000 cm equivalem a 1 km, a distância real é 3 km."
+  },
+  {
+    "id": "nat-ecologia",
+    "area": "nature",
+    "topic": "Cadeias alimentares",
+    "title": "O que acontece quando o equilíbrio muda?",
+    "support": "Em um ambiente simplificado, capim serve de alimento para gafanhotos, que são consumidos por sapos. Os sapos, por sua vez, são presas de serpentes. Uma doença provoca uma queda acentuada na população de sapos. Considere apenas as interações descritas e o efeito inicial dessa redução.",
+    "prompt": "Qual alteração é esperada inicialmente nessa cadeia alimentar?",
+    "alternatives": [
+      "Aumento dos gafanhotos e maior consumo de capim.",
+      "Redução dos gafanhotos e aumento do capim.",
+      "Aumento das serpentes pela maior oferta de sapos.",
+      "Aumento simultâneo de todas as populações.",
+      "Ausência de efeitos sobre as outras populações."
+    ],
+    "correctIndex": 0,
+    "explanation": "Com menos sapos, diminui a predação dos gafanhotos. Sua população tende a aumentar inicialmente, elevando o consumo de capim. As serpentes também passam a ter menos alimento disponível."
+  }
+]

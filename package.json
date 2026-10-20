@@ -2,11 +2,13 @@
   "name": "quem_estuda_assim",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --experimental-strip-types --test src/lib/math/generator.test.ts src/lib/multiplayer/store.test.ts"
   },
   "dependencies": {
     "lucide-react": "^1.60.0",
@@ -21,6 +23,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.151.3"
   }
 }
