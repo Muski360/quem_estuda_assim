@@ -20,7 +20,7 @@ import {
 import { AREAS, questions } from "@/lib/questions";
 import type { Area, Question } from "@/lib/questions";
 import { QuestionCard } from "./question-card";
-import { advanceMomentum, INITIAL_MOMENTUM } from "@/lib/momentum";
+import { advanceMomentum, getXpMultiplier, INITIAL_MOMENTUM } from "@/lib/momentum";
 import { AnswerCelebration, MomentumStrip, SoundToggle, useStudySound } from "@/components/study-feedback";
 
 type FeedSettings = { area: Area | "all"; timed: boolean; minutes: number };
@@ -145,6 +145,7 @@ export function ScrollFeed() {
               Sem pressa. Leia, pense e responda quando estiver pronto.
             </p>
           )}
+          {settings.timed && <p className="feed-time-note">{getXpMultiplier(settings.minutes*60,180)}× XP · referência: 3 minutos por questão.</p>}
           <div className="feed-howto">
             <span className="eyebrow">UM SCROLL, UMA DESCOBERTA</span>
             <p>
@@ -188,6 +189,7 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
   const [active, setActive] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [expired, setExpired] = useState<Record<number, boolean>>({});
+  const [skipped, setSkipped] = useState<Record<number, boolean>>({});
   const [paused, setPaused] = useState(false);
   const [remaining, setRemaining] = useState(settings.minutes * 60);
   const [momentum, setMomentum] = useState(INITIAL_MOMENTUM);
@@ -199,6 +201,7 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
   const activeRef = useRef(0);
   const answersRef = useRef<Record<number, number>>({});
   const expiredRef = useRef<Record<number, boolean>>({});
+  const skippedRef = useRef<Record<number, boolean>>({});
   const deadlines = useRef<Record<number, number>>({});
   const pausedAt = useRef(0);
   const duration = settings.minutes * 60;
@@ -277,7 +280,7 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
     if (!settings.timed || paused) return;
     const timer = window.setInterval(() => {
       const index = activeRef.current;
-      if (answersRef.current[index] !== undefined || expiredRef.current[index])
+      if (answersRef.current[index] !== undefined || expiredRef.current[index] || skippedRef.current[index])
         return;
       const deadline = deadlines.current[index];
       if (!deadline) return;
@@ -286,7 +289,7 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
       if (seconds === 0) {
         expiredRef.current = { ...expiredRef.current, [index]: true };
         setExpired(expiredRef.current);
-        setMomentum((previous) => advanceMomentum(previous, false));
+        setMomentum((previous) => advanceMomentum(previous, false, 0));
         play("incorrect");
         goTo(index + 1);
       }
@@ -299,6 +302,7 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
       if (
         answersRef.current[index] !== undefined ||
         expiredRef.current[index] ||
+        skippedRef.current[index] ||
         paused
       )
         return;
@@ -308,7 +312,7 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
       ) {
         expiredRef.current = { ...expiredRef.current, [index]: true };
         setExpired(expiredRef.current);
-        setMomentum((previous) => advanceMomentum(previous, false));
+        setMomentum((previous) => advanceMomentum(previous, false, 0));
         play("incorrect");
         goTo(index + 1);
         return;
@@ -316,12 +320,24 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
       answersRef.current = { ...answersRef.current, [index]: value };
       setAnswers(answersRef.current);
       const correct = items[index].correctIndex === value;
-      setMomentum((previous) => advanceMomentum(previous, correct));
+      const multiplier=settings.timed ? getXpMultiplier(duration,180) : 1;
+      setMomentum((previous) => advanceMomentum(previous, correct, Math.round((previous.streak >= 2 ? 15 : 10)*multiplier)));
       if (correct) setRewardIndex(index);
       play(correct ? (momentum.streak >= 2 ? "combo" : "correct") : "incorrect");
     },
-    [paused, settings.timed, goTo, items, momentum.streak, play],
+    [paused, settings.timed, duration, goTo, items, momentum.streak, play],
   );
+
+  function skip(index: number) {
+    if (paused || answersRef.current[index] !== undefined || expiredRef.current[index] || skippedRef.current[index]) return;
+    skippedRef.current={...skippedRef.current,[index]:true};
+    setSkipped(skippedRef.current);
+    setRewardIndex(null);
+    setMomentum((previous)=>advanceMomentum(previous,false,0));
+    play("next");
+    viewport.current?.focus({preventScroll:true});
+    goTo(index+1);
+  }
 
   function togglePause() {
     if (!paused) pausedAt.current = Date.now();
@@ -338,7 +354,7 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
   ).length;
   const answered = Object.keys(answers).length;
   const completed = answered + Object.keys(expired).length;
-  const hasAnswer = answers[active] !== undefined || expired[active];
+  const hasAnswer = answers[active] !== undefined || expired[active] || skipped[active];
 
   return (
     <div
@@ -440,8 +456,10 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
               cycle={Math.floor(index / base.length)}
               selected={answers[index]}
               expired={!!expired[index]}
+              skipped={!!skipped[index]}
               active={active === index}
               onAnswer={(value) => answer(index, value)}
+              onSkip={() => skip(index)}
               onNext={() => {
                 viewport.current?.focus({ preventScroll: true });
                 goTo(index + 1);

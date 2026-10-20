@@ -69,6 +69,8 @@ export async function createRoom(
 type ExistingCommand =
   Exclude<RoomCommand, { action: "create" }> | { action: "read"; code: string };
 
+const transition = (room: Room) => JSON.stringify([room.status, room.players.map((player) => [player.equation?.id, player.nextAt, player.score])]);
+
 export async function runRoomCommand(command: ExistingCommand, token: string) {
   const db = database();
   const code = command.code.toUpperCase();
@@ -88,7 +90,7 @@ export async function runRoomCommand(command: ExistingCommand, token: string) {
     if (!data) throw new RoomError("Sala não encontrada ou expirada.", 404);
     const previous = data.state as Room;
     const before = JSON.stringify(previous);
-    const beforeTransition = `${previous.status}:${previous.round}:${previous.nextAt}`;
+    const beforeTransition = transition(previous);
     const engine = createRoomEngine(previous);
     let result:
       | RoomSession
@@ -116,6 +118,9 @@ export async function runRoomCommand(command: ExistingCommand, token: string) {
             command.answer,
           );
           break;
+        case "skip":
+          result = {room: engine.skipRoom(code, token, command.equationId)};
+          break;
         case "leave":
           engine.leaveRoom(code, token);
           result = { ok: true };
@@ -128,7 +133,7 @@ export async function runRoomCommand(command: ExistingCommand, token: string) {
     if (JSON.stringify(state) !== before) {
       const transitioned =
         state &&
-        `${state.status}:${state.round}:${state.nextAt}` !== beforeTransition;
+        transition(state) !== beforeTransition;
       const { data: saved, error: saveError } = await db.rpc("qe_commit_room", {
         p_code: code,
         p_version: data.version,

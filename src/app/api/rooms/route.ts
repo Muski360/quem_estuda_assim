@@ -66,10 +66,16 @@ export async function POST(request: Request) {
             token(request),
           ),
         );
+      case "skip":
+        if (typeof data.equationId !== "string" || data.equationId.length > 100)
+          throw new RoomError("Questão inválida.");
+        return json(await runRoomCommand({action:"skip",code:data.code,equationId:data.equationId},token(request)));
       case "answer":
         if (
           typeof data.equationId !== "string" ||
-          typeof data.answer !== "number"
+          data.equationId.length > 100 ||
+          typeof data.answer !== "number" ||
+          !Number.isFinite(data.answer)
         )
           throw new RoomError("Resposta inválida.");
         return json(

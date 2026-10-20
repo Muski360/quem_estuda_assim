@@ -10,21 +10,25 @@ export function QuestionCard({
   cycle,
   selected,
   expired,
+  skipped,
   active,
   onAnswer,
   onNext,
+  onSkip,
 }: {
   question: Question;
   index: number;
   cycle: number;
   selected?: number;
   expired: boolean;
+  skipped: boolean;
   active: boolean;
   onAnswer: (answer: number) => void;
   onNext: () => void;
+  onSkip: () => void;
 }) {
   const answered = selected !== undefined;
-  const locked = answered || expired;
+  const locked = answered || expired || skipped;
   const area = AREAS[question.area];
   return (
     <article
@@ -89,7 +93,8 @@ export function QuestionCard({
             <span>
               <Lightbulb size={17} aria-hidden="true" />
               <strong>
-                {expired
+                {skipped ? "Questão pulada · sem XP."
+                  : expired
                   ? "O tempo passou. O aprendizado fica."
                   : selected === question.correctIndex
                     ? "É isso. Mais um acerto!"
@@ -114,7 +119,7 @@ export function QuestionCard({
             Próximo desafio <ArrowDown size={16} aria-hidden="true" />
           </button>
         ) : (
-          <span className="question-bottom-mark" aria-hidden="true">q.</span>
+          <button className="reel-next" onClick={onSkip}>Pular Questão <ArrowDown size={16} aria-hidden="true" /></button>
         )}
       </div>
     </article>

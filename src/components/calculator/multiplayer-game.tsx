@@ -15,14 +15,16 @@ import {
   UsersRound,
   X,
 } from "lucide-react";
-import { DIFFICULTIES, MODES, parseAnswer } from "@/lib/math/generator";
+import { DIFFICULTIES, formatAnswer, getQuestionSeconds, getSelectedModes, MODES, parseAnswer } from "@/lib/math/generator";
 import type { GameSettings } from "@/lib/math/generator";
 import type {
   RoomCommand,
   RoomSession,
   RoomSnapshot,
 } from "@/lib/multiplayer/types";
-import { AnswerCelebration, SoundToggle, useStudySound } from "@/components/study-feedback";
+import { AnswerCelebration, SoundToggle, XpCountdown, useStudySound } from "@/components/study-feedback";
+import { roundXp } from "@/lib/momentum";
+import { GeometryViewer } from "./geometry-viewer";
 
 async function command<T>(body: RoomCommand, token?: string): Promise<T> {
   const response = await fetch("/api/rooms", {
@@ -78,13 +80,13 @@ export function MultiplayerGame({
     latestRoom.current = next;
     if (next.status === "finished" && previous?.status !== "finished") play("complete");
     else if (next.reveal && (!previous?.reveal || next.equation?.id !== previous.equation?.id))
-      play(next.winnerId === session?.playerId ? "correct" : next.winnerId ? "next" : "incorrect");
+      play(next.reveal.correct ? "correct" : "incorrect");
     else if (next.status === "playing" && next.equation?.id !== previous?.equation?.id) play("next");
     offset.current = next.serverTime - Date.now();
     setRoom((previous) =>
       !previous || next.revision >= previous.revision ? next : previous,
     );
-  }, [play, session?.playerId]);
+  }, [play]);
 
   useEffect(() => {
     nameInput.current?.focus();
@@ -229,7 +231,7 @@ export function MultiplayerGame({
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
-    if (!session || !room?.equation || busy || room.reveal) return;
+    if (!session || !room?.equation || busy || room.reveal || room.cooldownUntil > now) return;
     const value = parseAnswer(answer);
     if (value === null) {
       setError("Digite um número válido.");
@@ -252,7 +254,7 @@ export function MultiplayerGame({
         play("incorrect");
         setWrongAnswer({
           id: room.equation.id,
-          message: "Ainda não. Tente de novo, a rodada continua.",
+          message: "Ainda não. Você continua nesta questão; a corrida segue.",
         });
       }
       setDraft(null);
@@ -260,10 +262,26 @@ export function MultiplayerGame({
       setError(
         error instanceof Error ? error.message : "Não foi possível enviar.",
       );
+      refresh.current();
     } finally {
       setBusy(false);
       input.current?.focus();
     }
+  }
+
+  async function skip() {
+    if (!session || !room?.equation || busy || room.reveal) return;
+    setBusy(true);
+    setError("");
+    try {
+      const result = await command<{room:RoomSnapshot}>({action:"skip",code:room.code,equationId:room.equation.id},session.token);
+      updateRoom(result.room);
+      setDraft(null);
+      setWrongAnswer(null);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Não foi possível pular.");
+      refresh.current();
+    } finally { setBusy(false); }
   }
 
   async function leave() {
@@ -320,7 +338,7 @@ export function MultiplayerGame({
           <p>
             {joining
               ? "Pegue o código com quem criou a sala e entre no jogo."
-              : "Chame os amigos. Quem acertar primeiro leva o ponto."}
+              : "Cada acerto avança sua pista. Chegue à meta antes dos amigos."}
           </p>
           <form className="room-form" onSubmit={enter}>
             <label htmlFor="player-name">Como podemos chamar você?</label>
@@ -385,7 +403,7 @@ export function MultiplayerGame({
         <div className="arena-bottom">
           <span>Até 8 pessoas</span>
           <span>
-            {settings.rounds} rodadas ·{" "}
+            Meta: {settings.rounds} acertos ·{" "}
             {DIFFICULTIES[settings.difficulty].label}
           </span>
         </div>
@@ -393,23 +411,24 @@ export function MultiplayerGame({
     );
 
   const players = [...room.players].sort((a, b) => b.score - a.score);
-  const winners = players.filter(
-    (player) => player.score === players[0]?.score,
-  );
-  const remaining = Math.max(0, Math.ceil((room.endsAt - now) / 1000));
+  const duration = getQuestionSeconds(room.settings);
+  const remaining = Math.min(duration,Math.max(0,(room.endsAt-now)/1000));
+  const cooldown = Math.max(0, Math.ceil((room.cooldownUntil-now)/1000));
   const winner = room.players.find((player) => player.id === room.winnerId);
+  const modes = getSelectedModes(room.settings.mode);
+  const currentMode = room.equation?.mode ?? modes[0];
   const feedback = room.reveal
-    ? winner
-      ? `${winner.name} acertou primeiro! +1 ponto.`
-      : "Tempo encerrado para esta rodada."
+    ? room.reveal.correct
+      ? `Você avançou! +1 acerto · +${room.reveal.xp} XP.`
+      : `Tempo encerrado. Resposta: ${formatAnswer(room.reveal.answer,room.reveal.factor)}.`
     : wrongAnswer && wrongAnswer.id === room.equation?.id
       ? wrongAnswer.message
-      : "O primeiro acerto leva o ponto.";
+      : "Acerte para avançar. Pular não dá ponto nem XP.";
 
   return (
-    <div className="arena multiplayer-arena" data-feedback={room.reveal && room.winnerId === session.playerId ? "correct" : undefined}>
-      {room.reveal && room.winnerId === session.playerId && (
-        <AnswerCelebration key={room.equation?.id} label="+1 PONTO" detail="Você chegou primeiro" />
+    <div className="arena multiplayer-arena" data-feedback={room.reveal?.correct ? "correct" : undefined}>
+      {room.reveal?.correct && (
+        <AnswerCelebration key={room.equation?.id} label={`+${room.reveal.xp} XP`} detail="Mais um passo na sua pista" />
       )}
       <div className="arena-top">
         <button
@@ -463,10 +482,11 @@ export function MultiplayerGame({
             ))}
           </div>
           <p className="room-summary">
-            {MODES[room.settings.mode].label} ·{" "}
+            {modes.map((mode) => MODES[mode].label).join(" + ")} ·{" "}
             {DIFFICULTIES[room.settings.difficulty].label} ·{" "}
-            {room.settings.rounds} rodadas
+            Meta: {room.settings.rounds} acertos · {duration}s por questão
           </p>
+          <p className="race-rules">Cada um resolve suas questões. Erros não avançam a pista. Três erros em menos de 5 segundos bloqueiam novas respostas por 5 segundos.</p>
           {isHost ? (
             <button
               className="button button-light"
@@ -491,9 +511,7 @@ export function MultiplayerGame({
           <Trophy size={34} aria-hidden="true" />
           <p className="eyebrow">PARTIDA CONCLUÍDA</p>
           <h3>
-            {winners.length > 1
-              ? "Deu empate."
-              : `${winners[0]?.name} levou essa.`}
+            {winner ? `${winner.name} levou essa.` : "Partida encerrada."}
           </h3>
           <p>O melhor resultado é continuar praticando.</p>
           <div className="leaderboard">
@@ -504,7 +522,7 @@ export function MultiplayerGame({
                   {player.name}
                   {player.id === session.playerId ? " (você)" : ""}
                 </strong>
-                <b>{player.score} pts</b>
+                <b>{player.score} pts <small>{player.xp} XP</small></b>
               </div>
             ))}
           </div>
@@ -523,39 +541,48 @@ export function MultiplayerGame({
           </p>
         </div>
       ) : (
-        <div className="game-content">
+        <div className={`game-content${room.equation?.geometry ? " has-geometry" : ""}`}>
+          <div className="race-tracks" aria-label="Progresso dos jogadores">
+            {players.map((player) => <div key={player.id} className={player.id === session.playerId ? "is-you" : ""}>
+              <span>{player.name}{player.id === session.playerId ? " · você" : ""}<b>{player.score}/{room.settings.rounds}</b></span>
+              <progress value={player.score} max={room.settings.rounds} aria-label={`Pista de ${player.name}: ${player.score} de ${room.settings.rounds} acertos`} />
+            </div>)}
+          </div>
           <div className="round-heading">
             <span>
-              RODADA {room.round} <span>/ {room.settings.rounds}</span>
+              SUA QUESTÃO {room.round}
             </span>
             <span className={remaining < 5 ? "timer urgent" : "timer"}>
               <Clock3 size={15} aria-hidden="true" />
-              {Math.min(
-                remaining,
-                DIFFICULTIES[room.settings.difficulty].seconds,
-              )}
+              {Math.ceil(remaining)}
               s
             </span>
           </div>
           <div className={`countdown-track${remaining < 5 ? " urgent" : ""}`} aria-hidden="true">
-            <span style={{ transform: `scaleX(${Math.min(1, remaining / DIFFICULTIES[room.settings.difficulty].seconds)})` }} />
+            <span style={{ transform: `scaleX(${remaining / duration})` }} />
           </div>
+          <XpCountdown
+            available={room.reveal ? room.reveal.xp : roundXp(duration-remaining,room.settings)}
+            maximum={roundXp(0,room.settings)}
+            active={!room.reveal}
+          />
           <p className="equation-hint">{room.equation?.hint}</p>
+          {room.equation?.geometry && <GeometryViewer key={`figure-${room.equation.id}`} figure={room.equation.geometry} />}
           <h3
             key={room.equation?.id}
-            className={`live-equation equation-enter${room.settings.mode === "geometry" ? " geometry-equation" : ""}`}
+            className={`live-equation equation-enter${currentMode === "geometry" ? " geometry-equation" : ""}`}
           >
             {room.equation?.expression}
           </h3>
           <form onSubmit={submit} className="answer-form">
             <label htmlFor="multiplayer-answer" className="sr-only">
-              Sua resposta
+              {room.equation?.factor ? `Coeficiente de ${room.equation.factor}` : "Sua resposta"}
             </label>
             <button
               type="button"
               className="answer-sign"
               aria-label="Alternar sinal da resposta"
-              disabled={!!room.reveal || busy || !!connection}
+              disabled={!!room.reveal || busy || !!connection || cooldown > 0}
               onClick={() => {
                 if (!room.equation) return;
                 setDraft({
@@ -569,29 +596,32 @@ export function MultiplayerGame({
             >
               <span aria-hidden="true">±</span>
             </button>
+            {room.equation?.factor && <span className="answer-factor" aria-hidden="true">{room.equation.factor} ×</span>}
             <input
               ref={input}
               key={room.equation?.id}
               id="multiplayer-answer"
               inputMode="decimal"
               autoComplete="off"
-              placeholder="Sua resposta"
+              placeholder={room.equation?.factor ? "Coeficiente" : "Sua resposta"}
               value={answer}
               onChange={(event) =>
                 setDraft({ id: room.equation!.id, value: event.target.value })
               }
-              disabled={!!room.reveal || busy || !!connection}
+              disabled={!!room.reveal || busy || !!connection || cooldown > 0}
             />
             <button
               type="submit"
-              disabled={!!room.reveal || busy || !!connection}
+              disabled={!!room.reveal || busy || !!connection || cooldown > 0}
               aria-label="Enviar resposta"
             >
               <ArrowRight size={22} />
             </button>
           </form>
+          <button type="button" className="skip-question" onClick={skip} disabled={!!room.reveal || busy || !!connection}>Pular Questão <ArrowRight size={15} aria-hidden="true" /></button>
+          {cooldown > 0 && <p className="cooldown-message" role="status">Três erros rápidos. Respostas liberadas em {cooldown}s. Pular mantém o bloqueio.</p>}
           <p
-            className={`answer-feedback${room.reveal ? (winner ? " correct" : " incorrect") : ""}`}
+            className={`answer-feedback${room.reveal ? (room.reveal.correct ? " correct" : " incorrect") : ""}`}
             role="status"
           >
             {error || feedback}
@@ -603,7 +633,7 @@ export function MultiplayerGame({
             {players.map((player) => (
               <span key={player.id} className={room.winnerId === player.id ? "round-winner" : ""}>
                 {player.name}
-                <b key={player.score}>{player.score}</b>
+                <b key={player.score}>{player.score} <small>{player.xp} XP</small></b>
               </span>
             ))}
           </div>
@@ -613,7 +643,7 @@ export function MultiplayerGame({
         <span>
           <span className="status-dot" /> {room.players.length} na sala
         </span>
-        <span>{MODES[room.settings.mode].label}</span>
+        <span>{modes.length > 1 ? `${modes.length} conteúdos` : MODES[modes[0]].label}</span>
       </div>
     </div>
   );

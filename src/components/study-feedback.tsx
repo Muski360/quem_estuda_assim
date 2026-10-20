@@ -12,14 +12,16 @@ import type { CSSProperties, ReactNode } from "react";
 import { Check, Flame, Volume2, VolumeX, Zap } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { Momentum } from "@/lib/momentum";
+import { MAX_ROUND_XP } from "@/lib/momentum";
 
-type Cue = "correct" | "combo" | "incorrect" | "next" | "complete";
+type Cue = "correct" | "combo" | "incorrect" | "next" | "complete" | "tick";
 const NOTES: Record<Cue, number[]> = {
   correct: [659, 880, 1109],
   combo: [659, 880, 1109, 1319],
   incorrect: [220, 165],
   next: [440, 554],
   complete: [523, 659, 784, 1047],
+  tick: [440],
 };
 
 const SoundContext = createContext<{
@@ -55,8 +57,8 @@ export function StudyFeedbackProvider({ children }: { children: ReactNode }) {
       const time = start + index * (cue === "next" ? 0.04 : 0.075);
       oscillator.frequency.value = frequency;
       envelope.gain.setValueAtTime(0, time);
-      envelope.gain.linearRampToValueAtTime(1, time + 0.008);
-      envelope.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
+      envelope.gain.linearRampToValueAtTime(cue === "tick" ? 0.35 : 1, time + 0.008);
+      envelope.gain.exponentialRampToValueAtTime(0.001, time + (cue === "tick" ? 0.06 : 0.16));
       oscillator.connect(envelope);
       envelope.connect(engine.gain);
       sources.current.add(oscillator);
@@ -66,7 +68,7 @@ export function StudyFeedbackProvider({ children }: { children: ReactNode }) {
         envelope.disconnect();
       };
       oscillator.start(time);
-      oscillator.stop(time + 0.18);
+      oscillator.stop(time + (cue === "tick" ? 0.08 : 0.18));
     });
   }, []);
 
@@ -156,10 +158,39 @@ export function MomentumStrip({ momentum }: { momentum: Momentum }) {
           ))}
         </span>
       </span>
-      <span className="momentum-xp" title="XP da sessão: 10 por acerto; 15 a partir de 3 acertos seguidos.">
+      <span className="momentum-xp" title="XP acumulado nesta sessão.">
         <Zap size={13} aria-hidden="true" />
         <strong key={momentum.xp}>{momentum.xp}</strong> XP <span>na sessão</span>
       </span>
+    </div>
+  );
+}
+
+export function XpCountdown({ available, active, maximum = MAX_ROUND_XP }: { available: number; active: boolean; maximum?: number }) {
+  const { play } = useStudySound();
+  useEffect(() => {
+    if (active && available > 0 && available <= 5) play("tick");
+  }, [available, active, play]);
+
+  const ratio = available / maximum;
+  const energy = ratio >= .7 ? "high" : ratio >= .35 ? "medium" : "low";
+  return (
+    <div className="xp-race" data-energy={energy} data-active={active}>
+      <div className="xp-race-heading">
+        <span><Zap size={14} aria-hidden="true" />{active ? "XP VALENDO AGORA" : "XP DESTA RODADA"}</span>
+        <span>{active ? `Até ${maximum} XP · cai a cada segundo` : "Rodada encerrada"}</span>
+      </div>
+      <div className="xp-race-score">
+        <strong key={available} aria-label={`${available} XP ${active ? "disponíveis" : "conquistados"}`}>
+          {String(available).padStart(2, "0")}<small>XP</small>
+        </strong>
+        <span>{!active ? "RODADA ENCERRADA" : ratio >= .7 ? "PENSE RÁPIDO" : available > 0 ? "CADA SEGUNDO CONTA" : "VALE O APRENDIZADO"}</span>
+      </div>
+      <div className="xp-energy" aria-hidden="true">
+        {Array.from({ length: MAX_ROUND_XP }, (_, index) => (
+          <i key={index} className={index / MAX_ROUND_XP < ratio ? "charged" : ""} />
+        ))}
+      </div>
     </div>
   );
 }

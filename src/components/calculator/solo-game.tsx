@@ -13,14 +13,18 @@ import {
 } from "lucide-react";
 import {
   DIFFICULTIES,
-  generateEquation,
+  generateRound,
+  getQuestionSeconds,
+  formatAnswer,
+  getSelectedModes,
   isCorrectAnswer,
   MODES,
   parseAnswer,
 } from "@/lib/math/generator";
 import type { Equation, GameSettings } from "@/lib/math/generator";
-import { advanceMomentum, INITIAL_MOMENTUM } from "@/lib/momentum";
-import { AnswerCelebration, MomentumStrip, SoundToggle, useStudySound } from "@/components/study-feedback";
+import { advanceMomentum, INITIAL_MOMENTUM, roundXp } from "@/lib/momentum";
+import { AnswerCelebration, MomentumStrip, SoundToggle, XpCountdown, useStudySound } from "@/components/study-feedback";
+import { GeometryViewer } from "./geometry-viewer";
 
 type Attempt = { correct: boolean; seconds: number };
 type Round = { equation: Equation; startedAt: number; deadline: number };
@@ -32,11 +36,11 @@ export function SoloGame({
   settings: GameSettings;
   onExit: () => void;
 }) {
-  const duration = DIFFICULTIES[settings.difficulty].seconds;
+  const duration = getQuestionSeconds(settings);
   const [round, setRound] = useState<Round>(() => {
     const now = Date.now();
     return {
-      equation: generateEquation(settings.mode, settings.difficulty),
+      equation: generateRound(settings, 0),
       startedAt: now,
       deadline: now + duration * 1000,
     };
@@ -49,7 +53,7 @@ export function SoloGame({
   } | null>(null);
   const [error, setError] = useState("");
   const [remaining, setRemaining] = useState(
-    DIFFICULTIES[settings.difficulty].seconds as number,
+    duration,
   );
   const [paused, setPaused] = useState(false);
   const pauseStarted = useRef(0);
@@ -58,8 +62,9 @@ export function SoloGame({
   const { play } = useStudySound();
   const finished = attempts.length >= settings.rounds && feedback === null;
   const score = attempts.filter((attempt) => attempt.correct).length;
+  const currentMode = round.equation.mode ?? getSelectedModes(settings.mode)[0];
   const momentum = attempts.reduce(
-    (previous, attempt) => advanceMomentum(previous, attempt.correct),
+    (previous, attempt) => advanceMomentum(previous, attempt.correct, roundXp(attempt.seconds,settings)),
     INITIAL_MOMENTUM,
   );
 
@@ -77,7 +82,7 @@ export function SoloGame({
         ]);
         setFeedback({
           correct: false,
-          message: `Tempo encerrado. A resposta era ${round.equation.answer}.`,
+          message: `Tempo encerrado. A resposta era ${formatAnswer(round.equation.answer,round.equation.factor)}.`,
         });
         play("incorrect");
       }
@@ -100,12 +105,12 @@ export function SoloGame({
         setError("");
         setRemaining(duration);
         setRound({
-          equation: generateEquation(settings.mode, settings.difficulty),
+          equation: generateRound(settings, attempts.length),
           startedAt: now,
           deadline: now + duration * 1000,
         });
       }
-    }, 2300);
+    }, feedback.correct ? 650 : 2300);
     return () => window.clearTimeout(timer);
   }, [feedback, attempts.length, settings, duration]);
 
@@ -118,23 +123,26 @@ export function SoloGame({
       return;
     }
     answered.current = true;
-    const timedOut = Date.now() >= round.deadline;
+    const now = Date.now();
+    const timedOut = now >= round.deadline;
+    const seconds = Math.min(duration, Math.max(0, (now - round.startedAt) / 1000));
+    const earnedXp = roundXp(seconds,settings);
     const correct = !timedOut && isCorrectAnswer(value, round.equation.answer);
     play(correct ? (momentum.streak >= 2 ? "combo" : "correct") : "incorrect");
     setAttempts((previous) => [
       ...previous,
       {
         correct,
-        seconds: Math.min(duration, (Date.now() - round.startedAt) / 1000),
+        seconds,
       },
     ]);
     setFeedback({
       correct,
       message: timedOut
-        ? `Tempo encerrado. A resposta era ${round.equation.answer}.`
+        ? `Tempo encerrado. A resposta era ${formatAnswer(round.equation.answer,round.equation.factor)}.`
         : correct
-          ? "É isso. Mais um acerto!"
-          : `Quase lá. A resposta era ${round.equation.answer}.`,
+          ? `+${earnedXp} XP · Acertou em cheio!`
+          : `Quase lá. A resposta era ${formatAnswer(round.equation.answer,round.equation.factor)}.`,
     });
     setError("");
   }
@@ -151,6 +159,22 @@ export function SoloGame({
       });
     }
     setPaused(!paused);
+  }
+
+  function skip() {
+    if (answered.current || paused) return;
+    answered.current = true;
+    const count = attempts.length + 1;
+    setAttempts([...attempts, {correct:false,seconds:Math.min(duration,Math.max(0,(Date.now()-round.startedAt)/1000))}]);
+    setAnswer("");
+    setError("");
+    play("next");
+    if (count < settings.rounds) {
+      const now=Date.now();
+      setRound({equation:generateRound(settings,count),startedAt:now,deadline:now+duration*1000});
+      setRemaining(duration);
+      answered.current=false;
+    }
   }
 
   if (finished) {
@@ -221,7 +245,7 @@ export function SoloGame({
       <div className="arena-top">
         <span>
           <span className="status-dot" />{" "}
-          {MODES[settings.mode].label.toUpperCase()}
+          {MODES[currentMode].label.toUpperCase()}
         </span>
         <div className="arena-actions">
           <SoundToggle />
@@ -262,7 +286,7 @@ export function SoloGame({
           </button>
         </div>
       ) : (
-        <div className="game-content">
+        <div className={`game-content${round.equation.geometry ? " has-geometry" : ""}`}>
           <div className="round-heading">
             <span>
               RODADA{" "}
@@ -277,21 +301,23 @@ export function SoloGame({
           <div className={`countdown-track${remaining < 5 ? " urgent" : ""}`} aria-hidden="true">
             <span style={{ transform: `scaleX(${remaining / duration})` }} />
           </div>
+          <XpCountdown available={feedback ? momentum.lastGain : roundXp(duration - remaining,settings)} maximum={roundXp(0,settings)} active={!feedback} />
           <p className="equation-hint">
             {round?.equation.hint ?? "Preparando seu treino…"}
           </p>
+          {round.equation.geometry && <GeometryViewer key={`figure-${round.equation.id}`} figure={round.equation.geometry} />}
           <h3
             key={round.equation.id}
-            className={`live-equation equation-enter${settings.mode === "geometry" ? " geometry-equation" : ""}`}
+            className={`live-equation equation-enter${currentMode === "geometry" ? " geometry-equation" : ""}`}
           >
             {round?.equation.expression ?? "…"}
-            {settings.mode !== "linear" && settings.mode !== "geometry" && (
+            {currentMode !== "linear" && currentMode !== "geometry" && (
               <span> = ?</span>
             )}
           </h3>
           <form onSubmit={submit} className="answer-form">
             <label className="sr-only" htmlFor="solo-answer">
-              Sua resposta
+              {round.equation.factor ? `Coeficiente de ${round.equation.factor}` : "Sua resposta"}
             </label>
             <button
               type="button"
@@ -307,12 +333,13 @@ export function SoloGame({
             >
               <span aria-hidden="true">±</span>
             </button>
+            {round.equation.factor && <span className="answer-factor" aria-hidden="true">{round.equation.factor} ×</span>}
             <input
               ref={input}
               id="solo-answer"
               inputMode="decimal"
               autoComplete="off"
-              placeholder="Sua resposta"
+              placeholder={round.equation.factor ? "Coeficiente" : "Sua resposta"}
               value={answer}
               onChange={(event) => setAnswer(event.target.value)}
               disabled={!!feedback || !round}
@@ -326,6 +353,7 @@ export function SoloGame({
               <ArrowRight size={22} />
             </button>
           </form>
+          <button type="button" className="skip-question" onClick={skip} disabled={!!feedback}>Pular Questão <ArrowRight size={15} aria-hidden="true" /></button>
           <div
             id="solo-feedback"
             className={`answer-feedback${feedback ? (feedback.correct ? " correct" : " incorrect") : ""}`}
