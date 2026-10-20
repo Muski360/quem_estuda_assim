@@ -20,6 +20,7 @@ import { DEFAULT_SETTINGS, DIFFICULTIES, MODES } from "@/lib/math/generator";
 import type { Difficulty, GameSettings, MathMode } from "@/lib/math/generator";
 import { SoloGame } from "./solo-game";
 import { MultiplayerGame } from "./multiplayer-game";
+import { SoundToggle, useStudySound } from "@/components/study-feedback";
 
 export function Calculator() {
   const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
@@ -28,8 +29,10 @@ export function Calculator() {
   const [playing, setPlaying] = useState(false);
   const [roomOpen, setRoomOpen] = useState(false);
   const locked = playing || roomOpen;
+  const { play } = useStudySound();
 
   function start() {
+    play("next");
     if (multiplayer) setRoomOpen(true);
     else {
       setSession((value) => value + 1);
@@ -211,7 +214,7 @@ export function Calculator() {
                   <span>
                     <span className="status-dot" /> SUA MENTE EM MOVIMENTO
                   </span>
-                  <span className="arena-tag">PRÉVIA DO TREINO</span>
+                  <div className="arena-actions"><span className="arena-tag">PRÉVIA DO TREINO</span><SoundToggle /></div>
                 </div>
                 <div className="preview-content">
                   <span className="orbital-note">um desafio de cada vez</span>

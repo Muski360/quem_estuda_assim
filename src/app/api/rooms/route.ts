@@ -1,12 +1,5 @@
-import {
-  answerRoom,
-  createRoom,
-  joinRoom,
-  leaveRoom,
-  readRoom,
-  RoomError,
-  startRoom,
-} from "@/lib/multiplayer/store";
+import { createRoom, runRoomCommand } from "@/lib/multiplayer/supabase-store";
+import { RoomError } from "@/lib/multiplayer/store";
 import { isGameSettings } from "@/lib/math/generator";
 
 const json = (value: unknown, status = 200) =>
@@ -32,7 +25,7 @@ export async function GET(request: Request) {
     const code = new URL(request.url).searchParams.get("code");
     if (!validCode(code))
       throw new RoomError("Informe um código de sala válido.");
-    return json({ room: readRoom(code, token(request)) });
+    return json(await runRoomCommand({ action: "read", code }, token(request)));
   } catch (error) {
     return failure(error);
   }
@@ -52,7 +45,7 @@ export async function POST(request: Request) {
     if (data.action === "create") {
       if (typeof data.name !== "string" || !isGameSettings(data.settings))
         throw new RoomError("Configuração de partida inválida.");
-      return json(createRoom(data.name, data.settings), 201);
+      return json(await createRoom(data.name, data.settings), 201);
     }
     if (!validCode(data.code))
       throw new RoomError("Informe um código de sala válido.");
@@ -60,9 +53,19 @@ export async function POST(request: Request) {
       case "join":
         if (typeof data.name !== "string")
           throw new RoomError("Informe seu nome.");
-        return json(joinRoom(data.code, data.name));
+        return json(
+          await runRoomCommand(
+            { action: "join", code: data.code, name: data.name },
+            token(request),
+          ),
+        );
       case "start":
-        return json({ room: startRoom(data.code, token(request)) });
+        return json(
+          await runRoomCommand(
+            { action: "start", code: data.code },
+            token(request),
+          ),
+        );
       case "answer":
         if (
           typeof data.equationId !== "string" ||
@@ -70,11 +73,23 @@ export async function POST(request: Request) {
         )
           throw new RoomError("Resposta inválida.");
         return json(
-          answerRoom(data.code, token(request), data.equationId, data.answer),
+          await runRoomCommand(
+            {
+              action: "answer",
+              code: data.code,
+              equationId: data.equationId,
+              answer: data.answer,
+            },
+            token(request),
+          ),
         );
       case "leave":
-        leaveRoom(data.code, token(request));
-        return json({ ok: true });
+        return json(
+          await runRoomCommand(
+            { action: "leave", code: data.code },
+            token(request),
+          ),
+        );
       default:
         throw new RoomError("Ação não reconhecida.");
     }

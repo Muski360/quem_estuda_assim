@@ -4,25 +4,36 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "node --import ./scripts/local-env.mjs node_modules/next/dist/bin/next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node --import ./scripts/local-env.mjs node_modules/next/dist/bin/next start",
+    "login:supabase": "supabase login",
+    "login:cloudflare": "wrangler login",
+    "build:cloudflare": "opennextjs-cloudflare build",
+    "preview:cloudflare": "opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && node scripts/deploy-worker.mjs",
+    "db:push": "node scripts/apply-migrations.mjs",
+    "test:deployment": "node scripts/test-deployment.mjs",
+    "check:secrets": "node scripts/check-worker-secrets.mjs",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test src/lib/math/generator.test.ts src/lib/multiplayer/store.test.ts"
+    "test": "node --experimental-strip-types --test src/lib/math/generator.test.ts src/lib/multiplayer/store.test.ts src/lib/momentum.test.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
     "lucide-react": "^1.60.0",
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.12",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "supabase": "^2.121.0",
     "typescript": "^5",
     "wrangler": "^4.151.3"
   }

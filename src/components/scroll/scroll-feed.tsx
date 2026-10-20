@@ -10,6 +10,8 @@ import {
   ChevronRight,
   Clock3,
   Infinity as InfinityIcon,
+  Maximize2,
+  Minimize2,
   Pause,
   Play,
   RotateCcw,
@@ -18,6 +20,8 @@ import {
 import { AREAS, questions } from "@/lib/questions";
 import type { Area, Question } from "@/lib/questions";
 import { QuestionCard } from "./question-card";
+import { advanceMomentum, INITIAL_MOMENTUM } from "@/lib/momentum";
+import { AnswerCelebration, MomentumStrip, SoundToggle, useStudySound } from "@/components/study-feedback";
 
 type FeedSettings = { area: Area | "all"; timed: boolean; minutes: number };
 
@@ -186,6 +190,11 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
   const [expired, setExpired] = useState<Record<number, boolean>>({});
   const [paused, setPaused] = useState(false);
   const [remaining, setRemaining] = useState(settings.minutes * 60);
+  const [momentum, setMomentum] = useState(INITIAL_MOMENTUM);
+  const [rewardIndex, setRewardIndex] = useState<number | null>(null);
+  const [immersive, setImmersive] = useState(false);
+  const immersiveButton = useRef<HTMLButtonElement>(null);
+  const { play } = useStudySound();
   const viewport = useRef<HTMLDivElement>(null);
   const activeRef = useRef(0);
   const answersRef = useRef<Record<number, number>>({});
@@ -193,6 +202,23 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
   const deadlines = useRef<Record<number, number>>({});
   const pausedAt = useRef(0);
   const duration = settings.minutes * 60;
+
+  useEffect(() => {
+    if (!immersive) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setImmersive(false);
+        immersiveButton.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", escape);
+    };
+  }, [immersive]);
 
   const goTo = useCallback((index: number) => {
     const container = viewport.current;
@@ -218,6 +244,7 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
         for (const entry of entries) {
           if (!entry.isIntersecting || entry.intersectionRatio < 0.55) continue;
           const index = Number((entry.target as HTMLElement).dataset.index);
+          if (activeRef.current !== index) play("next");
           activeRef.current = index;
           setActive(index);
           if (settings.timed && !deadlines.current[index])
@@ -244,7 +271,7 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
       .querySelectorAll("[data-index]")
       .forEach((card) => observer.observe(card));
     return () => observer.disconnect();
-  }, [items.length, settings.timed, duration, base]);
+  }, [items.length, settings.timed, duration, base, play]);
 
   useEffect(() => {
     if (!settings.timed || paused) return;
@@ -259,11 +286,13 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
       if (seconds === 0) {
         expiredRef.current = { ...expiredRef.current, [index]: true };
         setExpired(expiredRef.current);
+        setMomentum((previous) => advanceMomentum(previous, false));
+        play("incorrect");
         goTo(index + 1);
       }
     }, 200);
     return () => window.clearInterval(timer);
-  }, [settings.timed, paused, goTo]);
+  }, [settings.timed, paused, goTo, play]);
 
   const answer = useCallback(
     (index: number, value: number) => {
@@ -279,13 +308,19 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
       ) {
         expiredRef.current = { ...expiredRef.current, [index]: true };
         setExpired(expiredRef.current);
+        setMomentum((previous) => advanceMomentum(previous, false));
+        play("incorrect");
         goTo(index + 1);
         return;
       }
       answersRef.current = { ...answersRef.current, [index]: value };
       setAnswers(answersRef.current);
+      const correct = items[index].correctIndex === value;
+      setMomentum((previous) => advanceMomentum(previous, correct));
+      if (correct) setRewardIndex(index);
+      play(correct ? (momentum.streak >= 2 ? "combo" : "correct") : "incorrect");
     },
-    [paused, settings.timed, goTo],
+    [paused, settings.timed, goTo, items, momentum.streak, play],
   );
 
   function togglePause() {
@@ -302,14 +337,34 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
     ([index, choice]) => items[Number(index)]?.correctIndex === choice,
   ).length;
   const answered = Object.keys(answers).length;
+  const completed = answered + Object.keys(expired).length;
   const hasAnswer = answers[active] !== undefined || expired[active];
 
   return (
-    <div className="feed-column">
+    <div
+      className={`feed-column${immersive ? " is-immersive" : ""}`}
+      role={immersive ? "dialog" : undefined}
+      aria-modal={immersive ? true : undefined}
+      aria-label={immersive ? "Feed em modo imersivo" : undefined}
+      onKeyDown={(event) => {
+        if (!immersive || event.key !== "Tab") return;
+        const controls = [...event.currentTarget.querySelectorAll<HTMLElement>("button:not(:disabled), [tabindex='0']")]
+          .filter((control) => !control.closest("[inert]") && control.getClientRects().length);
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }}
+    >
       <div className="feed-toolbar">
         <div>
           <span className="status-dot" />
-          <span>SEU FEED DE CONHECIMENTO</span>
+          <span>PARA VOCÊ <span className="feed-live-label">/ ENEM</span></span>
         </div>
         <div className="feed-clock">
           {settings.timed ? (
@@ -334,9 +389,35 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
               <span>No seu tempo</span>
             </>
           )}
+          <SoundToggle />
+          <button
+            ref={immersiveButton}
+            className="icon-button"
+            onClick={() => setImmersive(!immersive)}
+            aria-label={immersive ? "Sair do modo imersivo" : "Ativar modo imersivo"}
+            title={immersive ? "Sair do modo imersivo (Esc)" : "Modo imersivo"}
+            aria-pressed={immersive}
+          >
+            {immersive ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
+          </button>
         </div>
       </div>
+      <MomentumStrip momentum={momentum} />
+      <div className={`feed-session-goal${completed >= 5 ? " goal-complete" : ""}`}>
+        <span>{completed >= 5 ? "Meta concluída" : "Meta da sessão"} <strong>{Math.min(5, completed)}/5</strong></span>
+        <div role="progressbar" aria-label="Meta de cinco questões concluídas" aria-valuenow={Math.min(5, completed)} aria-valuemin={0} aria-valuemax={5}>
+          {[0, 1, 2, 3, 4].map((step) => <span key={step} className={completed > step ? "done" : ""} />)}
+        </div>
+        {completed >= 5 && <Check size={14} aria-label="Meta concluída" />}
+      </div>
       <div className="feed-stage">
+        {rewardIndex !== null && (
+          <AnswerCelebration
+            key={rewardIndex}
+            label={momentum.streak >= 3 ? `COMBO ${momentum.streak}` : `+${momentum.lastGain} XP`}
+            detail={momentum.streak >= 3 ? "Você está no ritmo" : "Conhecimento desbloqueado"}
+          />
+        )}
         <div
           ref={viewport}
           inert={paused ? true : undefined}
@@ -359,7 +440,12 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
               cycle={Math.floor(index / base.length)}
               selected={answers[index]}
               expired={!!expired[index]}
+              active={active === index}
               onAnswer={(value) => answer(index, value)}
+              onNext={() => {
+                viewport.current?.focus({ preventScroll: true });
+                goTo(index + 1);
+              }}
             />
           ))}
         </div>

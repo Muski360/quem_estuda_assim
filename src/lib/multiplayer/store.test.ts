@@ -1,13 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import {
-  answerRoom,
-  createRoom,
-  joinRoom,
-  leaveRoom,
-  readRoom,
-  startRoom,
-} from "./store.ts";
+import { createRoomEngine } from "./store.ts";
 import { DEFAULT_SETTINGS } from "../math/generator.ts";
 
 function solve(expression: string) {
@@ -26,6 +19,8 @@ function solve(expression: string) {
 }
 
 test("sala autentica jogadores, protege o gabarito e pontua só o primeiro acerto", () => {
+  const { createRoom, joinRoom, readRoom, startRoom, answerRoom, leaveRoom } =
+    createRoomEngine();
   const host = createRoom("Ana", DEFAULT_SETTINGS);
   const guest = joinRoom(host.room.code, "Bruno");
   assert.throws(() => readRoom(host.room.code, "token-inválido"), /sessão/);
@@ -77,6 +72,8 @@ test("sala autentica jogadores, protege o gabarito e pontua só o primeiro acert
 });
 
 test("rodadas expiram, avançam e rejeitam respostas atrasadas", () => {
+  const { createRoom, joinRoom, readRoom, startRoom, answerRoom, leaveRoom } =
+    createRoomEngine();
   const realNow = Date.now;
   let now = realNow();
   Date.now = () => now;

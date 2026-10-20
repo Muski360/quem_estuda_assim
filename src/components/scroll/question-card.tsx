@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Lightbulb, X } from "lucide-react";
+import { ArrowDown, Check, Lightbulb, X } from "lucide-react";
 import { AREAS } from "@/lib/questions";
 import type { Question } from "@/lib/questions";
 
@@ -10,22 +10,27 @@ export function QuestionCard({
   cycle,
   selected,
   expired,
+  active,
   onAnswer,
+  onNext,
 }: {
   question: Question;
   index: number;
   cycle: number;
   selected?: number;
   expired: boolean;
+  active: boolean;
   onAnswer: (answer: number) => void;
+  onNext: () => void;
 }) {
   const answered = selected !== undefined;
   const locked = answered || expired;
   const area = AREAS[question.area];
   return (
     <article
-      className={`question-card ${area.color}`}
+      className={`question-card ${area.color}${active ? " is-active" : ""}${answered && selected === question.correctIndex ? " reel-correct" : ""}`}
       data-index={index}
+      inert={!active}
       aria-labelledby={`question-title-${index}`}
     >
       <div className="question-meta">
@@ -104,9 +109,13 @@ export function QuestionCard({
             ? "Leia a explicação. Depois, avance."
             : "Role a questão para ler todas as alternativas."}
         </span>
-        <span className="question-bottom-mark" aria-hidden="true">
-          q.
-        </span>
+        {locked ? (
+          <button className="reel-next" onClick={onNext}>
+            Próximo desafio <ArrowDown size={16} aria-hidden="true" />
+          </button>
+        ) : (
+          <span className="question-bottom-mark" aria-hidden="true">q.</span>
+        )}
       </div>
     </article>
   );

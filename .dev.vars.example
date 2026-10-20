@@ -1,0 +1,3 @@
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SECRET_KEY=sb_secret_replace_with_server_key
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_replace_with_public_key

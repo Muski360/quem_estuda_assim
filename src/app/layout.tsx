@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { StudyFeedbackProvider } from "@/components/study-feedback";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,15 +37,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} ${editorial.variable}`}
     >
       <body>
         <a className="skip-link" href="#conteudo">
           Pular para o conteúdo
         </a>
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+        <StudyFeedbackProvider>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </StudyFeedbackProvider>
       </body>
     </html>
   );

@@ -19,6 +19,8 @@ import {
   parseAnswer,
 } from "@/lib/math/generator";
 import type { Equation, GameSettings } from "@/lib/math/generator";
+import { advanceMomentum, INITIAL_MOMENTUM } from "@/lib/momentum";
+import { AnswerCelebration, MomentumStrip, SoundToggle, useStudySound } from "@/components/study-feedback";
 
 type Attempt = { correct: boolean; seconds: number };
 type Round = { equation: Equation; startedAt: number; deadline: number };
@@ -53,8 +55,13 @@ export function SoloGame({
   const pauseStarted = useRef(0);
   const answered = useRef(false);
   const input = useRef<HTMLInputElement>(null);
+  const { play } = useStudySound();
   const finished = attempts.length >= settings.rounds && feedback === null;
   const score = attempts.filter((attempt) => attempt.correct).length;
+  const momentum = attempts.reduce(
+    (previous, attempt) => advanceMomentum(previous, attempt.correct),
+    INITIAL_MOMENTUM,
+  );
 
   useEffect(() => {
     if (!round || paused || feedback || finished) return;
@@ -72,10 +79,15 @@ export function SoloGame({
           correct: false,
           message: `Tempo encerrado. A resposta era ${round.equation.answer}.`,
         });
+        play("incorrect");
       }
     }, 100);
     return () => window.clearInterval(timer);
-  }, [round, paused, feedback, finished, duration]);
+  }, [round, paused, feedback, finished, duration, play]);
+
+  useEffect(() => {
+    if (finished) play("complete");
+  }, [finished, play]);
 
   useEffect(() => {
     if (!feedback) return;
@@ -108,6 +120,7 @@ export function SoloGame({
     answered.current = true;
     const timedOut = Date.now() >= round.deadline;
     const correct = !timedOut && isCorrectAnswer(value, round.equation.answer);
+    play(correct ? (momentum.streak >= 2 ? "combo" : "correct") : "incorrect");
     setAttempts((previous) => [
       ...previous,
       {
@@ -148,7 +161,7 @@ export function SoloGame({
       <div className="arena result-arena">
         <div className="arena-top">
           <span>TREINO CONCLUÍDO</span>
-          <Trophy size={18} aria-hidden="true" />
+          <div className="arena-actions"><Trophy size={18} aria-hidden="true" /><SoundToggle /></div>
         </div>
         <div className="result-content">
           <span className="result-icon">
@@ -163,6 +176,7 @@ export function SoloGame({
               ? "Treino perfeito. Que tal subir a intensidade?"
               : "Seu raciocínio agradece. Continue no seu ritmo."}
           </p>
+          <p className="result-momentum">{momentum.xp} XP nesta sessão · melhor sequência: {momentum.best}</p>
           <div className="result-stats">
             <div>
               <strong>
@@ -196,13 +210,21 @@ export function SoloGame({
   }
 
   return (
-    <div className="arena active-arena">
+    <div className="arena active-arena" data-feedback={feedback ? (feedback.correct ? "correct" : "incorrect") : undefined}>
+      {feedback?.correct && (
+        <AnswerCelebration
+          key={round.equation.id}
+          label={momentum.streak >= 3 ? `COMBO ${momentum.streak}` : `+${momentum.lastGain} XP`}
+          detail={momentum.streak >= 3 ? `+${momentum.lastGain} XP · no ritmo!` : attempts.at(-1)!.seconds <= 3 ? "Raciocínio relâmpago" : "Acertou em cheio"}
+        />
+      )}
       <div className="arena-top">
         <span>
           <span className="status-dot" />{" "}
           {MODES[settings.mode].label.toUpperCase()}
         </span>
         <div className="arena-actions">
+          <SoundToggle />
           <button
             onClick={togglePause}
             disabled={!!feedback}
@@ -215,6 +237,7 @@ export function SoloGame({
           </button>
         </div>
       </div>
+      <MomentumStrip momentum={momentum} />
       <div
         className="game-progress"
         role="progressbar"
@@ -251,11 +274,15 @@ export function SoloGame({
               {Math.ceil(remaining)}s
             </span>
           </div>
+          <div className={`countdown-track${remaining < 5 ? " urgent" : ""}`} aria-hidden="true">
+            <span style={{ transform: `scaleX(${remaining / duration})` }} />
+          </div>
           <p className="equation-hint">
             {round?.equation.hint ?? "Preparando seu treino…"}
           </p>
           <h3
-            className={`live-equation${settings.mode === "geometry" ? " geometry-equation" : ""}`}
+            key={round.equation.id}
+            className={`live-equation equation-enter${settings.mode === "geometry" ? " geometry-equation" : ""}`}
           >
             {round?.equation.expression ?? "…"}
             {settings.mode !== "linear" && settings.mode !== "geometry" && (

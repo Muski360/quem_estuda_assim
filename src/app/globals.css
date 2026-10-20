@@ -2653,7 +2653,360 @@ svg {
     padding-inline: 16px;
   }
 }
+/* Shared response: the same rhythm connects the feed and the arena. */
+.arena-actions {
+  align-items: center;
+  flex-shrink: 0;
+}
+.arena-top > span {
+  min-width: 0;
+}
+.sound-toggle.sound-on {
+  color: #d9edb8;
+  background: #ffffff10;
+}
+.sound-toggle:disabled {
+  opacity: 0.5;
+}
+.momentum-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  color: #bec8b1;
+  border-bottom: 1px solid #ffffff19;
+  font-size: 10px;
+  position: relative;
+  z-index: 1;
+}
+.momentum-streak,
+.momentum-xp,
+.combo-pips {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.momentum-streak > strong,
+.momentum-xp > strong {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 13px;
+  color: #f0f5e5;
+  animation: score-arrive 340ms ease-out;
+}
+.momentum-xp {
+  color: #d7e5bd;
+  font-size: 9px;
+}
+.momentum-xp > span {
+  color: #b0bba2;
+}
+.combo-pips {
+  margin-left: 4px;
+  gap: 3px;
+}
+.combo-pips i {
+  width: 5px;
+  height: 15px;
+  background: #ffffff16;
+  transform: skewX(-15deg);
+  border-radius: 1px;
+  transition: background 180ms;
+}
+.combo-pips .filled {
+  background: #c3d9a1;
+}
+.is-combo .momentum-streak {
+  color: #f8c38e;
+}
+.is-combo .combo-pips .filled {
+  background: #f8c38e;
+}
+.active-arena .game-content {
+  padding-top: 23px;
+}
+.active-arena .equation-hint {
+  margin-top: 30px;
+}
+.countdown-track {
+  width: 100%;
+  height: 3px;
+  margin-top: 14px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #ffffff0d;
+}
+.countdown-track > span {
+  display: block;
+  height: 100%;
+  background: #c0d49c;
+  transform-origin: left;
+  transition: transform 110ms linear;
+}
+.countdown-track.urgent > span {
+  background: #f1b087;
+}
+.equation-enter {
+  animation: equation-arrive 300ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.arena[data-feedback="correct"] {
+  animation: arena-confirm 700ms ease-out;
+}
+.arena[data-feedback="correct"] .answer-form {
+  border-color: #d2e8ac;
+  box-shadow: 0 0 0 4px #c3d9a112;
+}
+.arena[data-feedback="incorrect"] .answer-form {
+  border-color: #d49b79;
+}
+.result-content .result-momentum {
+  color: #d0e2b0;
+  font-size: 11px;
+  margin-top: 16px;
+}
+.live-scores .round-winner {
+  border-color: #b9d399;
+  color: #dcedc4;
+}
+.live-scores b {
+  display: inline-block;
+  animation: score-arrive 340ms ease-out;
+}
+.answer-celebration {
+  position: absolute;
+  z-index: 5;
+  top: 130px;
+  left: 50%;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  text-align: center;
+  pointer-events: none;
+  color: #e1efca;
+  animation: celebration-arrive 1350ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+.celebration-label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 20px;
+  border-radius: 30px;
+  background: #263024;
+  border: 1px solid #c3d9a1;
+  box-shadow: 0 8px 30px #17211230;
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.5px;
+}
+.answer-celebration > small {
+  display: block;
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  margin: 6px auto 0;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #263024;
+  font-size: 10px;
+}
+.celebration-ring,
+.celebration-particle {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  pointer-events: none;
+}
+.celebration-ring {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #c3d9a1;
+  border-radius: 50%;
+  animation: celebration-ring 650ms ease-out both;
+}
+.celebration-particle {
+  width: 5px;
+  height: 10px;
+  border-radius: 1px;
+  background: #c3d9a1;
+  animation: celebration-particle 750ms ease-out both;
+}
+.celebration-particle:nth-of-type(3n) {
+  background: #efbd8c;
+}
+.feed-column > .momentum-strip {
+  background: #292e29;
+  padding: 13px 22px;
+}
+.feed-live-label {
+  color: #acb99b;
+  margin-left: 6px;
+}
+.feed-session-goal {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 22px 15px;
+  color: #c5ceb9;
+  background: #292e29;
+  font-size: 9px;
+}
+.feed-session-goal > span {
+  white-space: nowrap;
+}
+.feed-session-goal strong {
+  color: #e6efda;
+  margin-left: 7px;
+  font-weight: 500;
+}
+.feed-session-goal > div {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+.feed-session-goal > div > span {
+  height: 3px;
+  border-radius: 2px;
+  background: #ffffff1a;
+  flex: 1;
+  transition: background 200ms;
+}
+.feed-session-goal .done {
+  background: #c0d49c;
+}
+.goal-complete {
+  color: #d2e7b2;
+}
+.feed-stage {
+  background: #292e29;
+  padding: 0 8px 8px;
+}
+.feed-viewport {
+  border: 0;
+  border-radius: 14px;
+  scrollbar-width: none;
+}
+.question-card {
+  position: relative;
+  background: var(--surface);
+  border-top: 3px solid var(--area-color);
+}
+.question-card.is-active .question-topic {
+  animation: equation-arrive 300ms ease-out;
+}
+.alternative {
+  transition: transform 160ms, border-color 160ms, background 160ms;
+}
+.alternative:active:not(:disabled) {
+  transform: scale(0.985);
+}
+.reel-correct .answer-correct .alternative-letter {
+  animation: score-arrive 350ms ease-out;
+}
+.question-bottom {
+  gap: 10px;
+}
+.reel-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 8px;
+  border-radius: 30px;
+  padding: 11px 14px;
+  font-size: 10px;
+  color: #fffdf7;
+  background: var(--ink);
+}
+.reel-next:hover {
+  background: var(--accent);
+}
+.feed-paused {
+  z-index: 6;
+  border-radius: 14px;
+}
+.feed-column.is-immersive {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: #20251f;
+  padding: 0 max(12px, calc((100vw - 760px) / 2));
+  overscroll-behavior: contain;
+  isolation: isolate;
+}
+.is-immersive .feed-toolbar {
+  border-radius: 0;
+}
+.is-immersive .feed-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.is-immersive .feed-viewport {
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  overscroll-behavior: contain;
+}
+.is-immersive .feed-controls {
+  border-radius: 0;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+}
+.is-immersive .feed-disclaimer {
+  display: none;
+}
+@keyframes equation-arrive {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes score-arrive {
+  0% { transform: scale(0.8); }
+  55% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+@keyframes arena-confirm {
+  from { box-shadow: inset 0 0 0 2px #c3d9a1; }
+  to { box-shadow: inset 0 0 0 2px #c3d9a100; }
+}
+@keyframes celebration-arrive {
+  0% { opacity: 0; transform: translate(-50%, 18px) scale(0.8); }
+  18%, 60% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -22px) scale(0.95); }
+}
+@keyframes celebration-ring {
+  from { opacity: 0.8; transform: translate(-50%, -50%) scale(0.4); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
+}
+@keyframes celebration-particle {
+  from { opacity: 1; transform: rotate(var(--angle)) translateY(0) scale(0.6); }
+  to { opacity: 0; transform: rotate(var(--angle)) translateY(calc(-1 * var(--travel))) scale(0.2); }
+}
+@media (max-width: 600px) {
+  .arena-actions { gap: 3px; }
+  .arena-actions button { min-width: 40px; height: 40px; }
+  .arena-preview .arena-tag { display: none; }
+  .active-arena .arena-top > span { font-size: 7px; letter-spacing: 0.7px; }
+  .momentum-strip { font-size: 9px; gap: 6px; }
+  .momentum-xp > span { display: none; }
+  .feed-column > .momentum-strip { padding: 12px 16px; }
+  .feed-toolbar { padding: 8px 14px; }
+  .feed-clock .icon-button { min-width: 36px; height: 36px; }
+  .feed-live-label { display: none; }
+  .feed-session-goal { padding: 9px 16px 14px; font-size: 9px; }
+  .feed-stage { padding: 0 5px 5px; }
+  .feed-viewport { border-radius: 11px; }
+  .question-card { padding-inline: 17px; }
+  .question-bottom > span:first-child { max-width: 130px; line-height: 1.6; }
+  .reel-next { padding: 12px; font-size: 9px; }
+  .feed-column.is-immersive { padding: env(safe-area-inset-top) 0 0; }
+  .answer-celebration { top: 150px; }
+}
 @media (prefers-reduced-motion: reduce) {
+  .answer-celebration { display: none; }
   html {
     scroll-behavior: auto;
   }

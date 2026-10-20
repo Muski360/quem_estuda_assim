@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   ArrowRight,
   Check,
@@ -21,6 +22,7 @@ import type {
   RoomSession,
   RoomSnapshot,
 } from "@/lib/multiplayer/types";
+import { AnswerCelebration, SoundToggle, useStudySound } from "@/components/study-feedback";
 
 async function command<T>(body: RoomCommand, token?: string): Promise<T> {
   const response = await fetch("/api/rooms", {
@@ -64,15 +66,25 @@ export function MultiplayerGame({
   const offset = useRef(0);
   const input = useRef<HTMLInputElement>(null);
   const nameInput = useRef<HTMLInputElement>(null);
+  const refresh = useRef<() => void>(() => {});
+  const latestRoom = useRef<RoomSnapshot | null>(null);
+  const { play } = useStudySound();
   const isHost = room?.hostId === session?.playerId;
   const answer = draft?.id === room?.equation?.id ? (draft?.value ?? "") : "";
 
-  function updateRoom(next: RoomSnapshot) {
+  const updateRoom = useCallback((next: RoomSnapshot) => {
+    const previous = latestRoom.current;
+    if (previous && next.revision < previous.revision) return;
+    latestRoom.current = next;
+    if (next.status === "finished" && previous?.status !== "finished") play("complete");
+    else if (next.reveal && (!previous?.reveal || next.equation?.id !== previous.equation?.id))
+      play(next.winnerId === session?.playerId ? "correct" : next.winnerId ? "next" : "incorrect");
+    else if (next.status === "playing" && next.equation?.id !== previous?.equation?.id) play("next");
     offset.current = next.serverTime - Date.now();
     setRoom((previous) =>
-      !previous || next.serverTime >= previous.serverTime ? next : previous,
+      !previous || next.revision >= previous.revision ? next : previous,
     );
-  }
+  }, [play, session?.playerId]);
 
   useEffect(() => {
     nameInput.current?.focus();
@@ -82,7 +94,17 @@ export function MultiplayerGame({
     if (!session) return;
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout>;
+    let client: SupabaseClient | undefined;
+    let inFlight = false;
+    let queued = false;
     async function poll() {
+      if (controller.signal.aborted) return;
+      if (inFlight) {
+        queued = true;
+        return;
+      }
+      clearTimeout(timer);
+      inFlight = true;
       try {
         const response = await fetch(`/api/rooms?code=${session!.room.code}`, {
           headers: { Authorization: `Bearer ${session!.token}` },
@@ -93,7 +115,10 @@ export function MultiplayerGame({
         if (controller.signal.aborted) return;
         if (!response.ok) {
           setConnection(data.error ?? "Sala indisponível.");
-          if ([403, 404].includes(response.status)) return;
+          if ([403, 404].includes(response.status)) {
+            controller.abort();
+            return;
+          }
         } else {
           updateRoom(data.room);
           setConnection("");
@@ -101,15 +126,56 @@ export function MultiplayerGame({
       } catch {
         if (controller.signal.aborted) return;
         setConnection("Conexão interrompida. Tentando reconectar…");
+      } finally {
+        inFlight = false;
       }
-      if (!controller.signal.aborted) timer = setTimeout(poll, 700);
+      if (!controller.signal.aborted)
+        timer = setTimeout(poll, queued ? 100 : 5000);
+      queued = false;
+    }
+    refresh.current = () => {
+      void poll();
+    };
+    if (session.realtime) {
+      const config = session.realtime;
+      void import("@supabase/supabase-js")
+        .then(({ createClient }) => {
+          if (controller.signal.aborted) return;
+          client = createClient(config.url, config.key, {
+            auth: { persistSession: false, autoRefreshToken: false },
+          });
+          client
+            .channel(config.topic)
+            .on("broadcast", { event: "room_changed" }, () => {
+              void poll();
+            })
+            .subscribe((status) => {
+              if (status === "SUBSCRIBED") void poll();
+            });
+        })
+        .catch(() => {
+          /* A sincronização HTTP continua disponível sem WebSocket. */
+        });
     }
     void poll();
     return () => {
       controller.abort();
       clearTimeout(timer);
+      refresh.current = () => {};
+      if (client) void client.removeAllChannels();
     };
-  }, [session]);
+  }, [session, updateRoom]);
+
+  const transitionAt =
+    room?.status === "playing" ? (room.nextAt ?? room.endsAt) : null;
+  useEffect(() => {
+    if (transitionAt === null) return;
+    const timer = setTimeout(
+      () => refresh.current(),
+      Math.max(25, transitionAt - Date.now() - offset.current + 50),
+    );
+    return () => clearTimeout(timer);
+  }, [transitionAt]);
 
   useEffect(() => {
     const timer = window.setInterval(
@@ -182,11 +248,13 @@ export function MultiplayerGame({
         session.token,
       );
       updateRoom(result.room);
-      if (!result.correct)
+      if (!result.correct) {
+        play("incorrect");
         setWrongAnswer({
           id: room.equation.id,
           message: "Ainda não. Tente de novo, a rodada continua.",
         });
+      }
       setDraft(null);
     } catch (error) {
       setError(
@@ -226,13 +294,13 @@ export function MultiplayerGame({
           <span>
             <UsersRound size={15} aria-hidden="true" /> MELHOR COM COMPANHIA
           </span>
-          <button
+          <div className="arena-actions"><SoundToggle /><button
             className="icon-button"
             onClick={onExit}
             aria-label="Fechar multiplayer"
           >
             <X size={19} />
-          </button>
+          </button></div>
         </div>
         <div className="room-entry">
           <span className="room-entry-icon">
@@ -339,7 +407,10 @@ export function MultiplayerGame({
       : "O primeiro acerto leva o ponto.";
 
   return (
-    <div className="arena multiplayer-arena">
+    <div className="arena multiplayer-arena" data-feedback={room.reveal && room.winnerId === session.playerId ? "correct" : undefined}>
+      {room.reveal && room.winnerId === session.playerId && (
+        <AnswerCelebration key={room.equation?.id} label="+1 PONTO" detail="Você chegou primeiro" />
+      )}
       <div className="arena-top">
         <button
           className="room-code-button"
@@ -349,13 +420,13 @@ export function MultiplayerGame({
           SALA <strong>{room.code}</strong>
           {copied ? <Check size={14} /> : <Copy size={14} />}
         </button>
-        <button
+        <div className="arena-actions"><SoundToggle /><button
           className="icon-button"
           onClick={leave}
           aria-label="Sair da sala"
         >
           <LogOut size={18} />
-        </button>
+        </button></div>
       </div>
       {connection && (
         <p className="connection-message" role="status">
@@ -466,9 +537,13 @@ export function MultiplayerGame({
               s
             </span>
           </div>
+          <div className={`countdown-track${remaining < 5 ? " urgent" : ""}`} aria-hidden="true">
+            <span style={{ transform: `scaleX(${Math.min(1, remaining / DIFFICULTIES[room.settings.difficulty].seconds)})` }} />
+          </div>
           <p className="equation-hint">{room.equation?.hint}</p>
           <h3
-            className={`live-equation${room.settings.mode === "geometry" ? " geometry-equation" : ""}`}
+            key={room.equation?.id}
+            className={`live-equation equation-enter${room.settings.mode === "geometry" ? " geometry-equation" : ""}`}
           >
             {room.equation?.expression}
           </h3>
@@ -526,9 +601,9 @@ export function MultiplayerGame({
           )}
           <div className="live-scores">
             {players.map((player) => (
-              <span key={player.id}>
+              <span key={player.id} className={room.winnerId === player.id ? "round-winner" : ""}>
                 {player.name}
-                <b>{player.score}</b>
+                <b key={player.score}>{player.score}</b>
               </span>
             ))}
           </div>

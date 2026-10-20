@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "quem-estuda-assim",
+  "account_id": "9544529b847a0ecf96b62ce2116245a4",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-20",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "services": [
+    { "binding": "WORKER_SELF_REFERENCE", "service": "quem-estuda-assim" },
+  ],
+  "observability": { "enabled": true },
+}
