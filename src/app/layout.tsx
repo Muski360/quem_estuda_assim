@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { StudyFeedbackProvider } from "@/components/study-feedback";
 import { AuthProvider } from "@/components/auth/auth-provider";
+import { StudyProgressProvider } from "@/components/profile/study-progress";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -45,11 +46,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a className="skip-link" href="#conteudo">
           Pular para o conteúdo
         </a>
-        <AuthProvider><StudyFeedbackProvider>
+        <AuthProvider><StudyProgressProvider><StudyFeedbackProvider>
           <SiteHeader />
           {children}
           <SiteFooter />
-        </StudyFeedbackProvider></AuthProvider>
+        </StudyFeedbackProvider></StudyProgressProvider></AuthProvider>
       </body>
     </html>
   );

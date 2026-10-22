@@ -26,6 +26,7 @@ import { advanceMomentum, INITIAL_MOMENTUM, roundXp } from "@/lib/momentum";
 import { AnswerCelebration, MomentumStrip, SoundToggle, XpCountdown, useStudySound } from "@/components/study-feedback";
 import { GeometryViewer } from "./geometry-viewer";
 import { FormulaReveal } from "./formula-reveal";
+import { useStudyProgress } from "@/components/profile/study-progress";
 
 type Attempt = { correct: boolean; seconds: number };
 type Round = { equation: Equation; startedAt: number; deadline: number; recent: string[] };
@@ -60,6 +61,7 @@ export function SoloGame({
   const answered = useRef(false);
   const input = useRef<HTMLInputElement>(null);
   const { play } = useStudySound();
+  const { recordActivity } = useStudyProgress();
   const finished = attempts.length >= settings.rounds && feedback === null;
   const score = attempts.filter((attempt) => attempt.correct).length;
   const currentMode = round.equation.mode ?? getSelectedModes(settings.mode)[0];
@@ -123,6 +125,7 @@ export function SoloGame({
     const seconds = Math.min(duration, Math.max(0, (now - round.startedAt) / 1000));
     const earnedXp = roundXp(seconds,settings);
     const correct = !timedOut && isCorrectAnswer(value, round.equation.answer);
+    if (!timedOut) recordActivity({ id: round.equation.id, module: "calculator", xp: correct ? earnedXp : 0 });
     play(correct ? (momentum.streak >= 2 ? "combo" : "correct") : "incorrect");
     setAttempts((previous) => [
       ...previous,

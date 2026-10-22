@@ -54,7 +54,7 @@ A publicação atual é feita com `npm run deploy`. Commits locais não publicam
 
 `/entrar` e `/cadastro` oferecem e-mail/senha e Google. Há confirmação de e-mail, recuperação em `/recuperar-senha`, nova senha em `/redefinir-senha` e retorno em `/auth/callback`. A sessão persiste no navegador, renova automaticamente e sincroniza o cabeçalho entre abas; “Sair” encerra o acesso neste navegador. Nenhuma ferramenta exige conta, inclusive o multiplayer, que conserva seus tokens de sala independentes.
 
-O Auth reutiliza `@supabase/supabase-js` e as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY`. `/api/auth/config` entrega apenas esses valores públicos em tempo de execução, sem cache. `SUPABASE_SECRET_KEY` continua exclusiva do servidor e só é necessária para as salas. Sem configuração, as telas explicam a indisponibilidade e oferecem continuar sem entrar. O login atual é usado apenas para identificar a conta na interface; futuras funções privadas deverão validar a sessão no servidor e usar RLS.
+O Auth reutiliza `@supabase/supabase-js` e as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY`. `/api/auth/config` entrega apenas esses valores públicos em tempo de execução, sem cache. `SUPABASE_SECRET_KEY` continua exclusiva do servidor e só é necessária para as salas. Sem configuração, as telas explicam a indisponibilidade e oferecem continuar sem entrar. As contas conectadas também podem personalizar o perfil e acumular progresso; o banco e o armazenamento validam a sessão por RLS.
 
 Para ativar o serviço remoto (cerca de 10–15 minutos, com acesso ao Google Cloud):
 
@@ -73,11 +73,23 @@ https://quem-estuda-assim.muski.workers.dev/auth/callback?recovery=1
 
 `supabase/config.toml` já define os retornos do ambiente local e senha mínima de oito caracteres. Esse arquivo não altera as configurações de Auth do projeto hospedado. Referências: [Google no Supabase](https://supabase.com/docs/guides/auth/social-login/auth-google), [senhas e recuperação](https://supabase.com/docs/guides/auth/passwords) e [fluxo PKCE](https://supabase.com/docs/guides/auth/sessions/pkce-flow).
 
+## Perfil e progresso da conta
+
+O avatar no cabeçalho abre `/perfil`. A página permite editar nome de 2–60 caracteres, escolher entre seis cores, enviar uma foto JPG/PNG/WebP de até 5 MB e remover a foto. A prévia mostra as alterações antes de salvar; nome, cor e foto são persistidos em Supabase Auth. O nome e avatar do Google são usados inicialmente. A foto enviada é recortada ao centro, reduzida para 512×512 e convertida em WebP no navegador. O bucket público `qe-avatars` limita cada arquivo a 2 MB e permite enviar/remover apenas arquivos da pasta do próprio usuário. Cada substituição usa uma URL nova para evitar cache antigo.
+
+Os três indicadores são acumulados por conta: questões respondidas no Quem Scrolla Assim?, rodadas concluídas no Quem Calcula Assim? e XP total dos dois módulos. No solo, respostas enviadas a tempo contam mesmo quando incorretas; no multiplayer, contam os acertos que avançam a pista. Pulos e expirações sem resposta não contam. O XP segue exatamente os valores ganhos nos jogos, incluindo multiplicador e combo. A revanche reinicia o placar da sala, mas preserva o acumulado do perfil.
+
+`qe_study_stats` guarda os totais e só permite ler os dados da própria conta. `qe_study_events` registra o ID único de cada atividade; `qe_record_study_activity` valida o usuário e os limites de XP, confirma evento e totais na mesma transação e ignora reenvios. Não há permissão direta para editar contadores. Atividades pendentes são guardadas separadamente por conta e evento no navegador, para sobreviver a recargas e falhas de rede, e são reenviadas ao reconectar. O progresso do visitante não é atribuído a uma conta posteriormente.
+
+Os contadores começam com esta funcionalidade: o histórico antigo existia apenas na sessão e não pode ser recuperado. Esses totais são pessoais; solo/feed calculam o XP no navegador. Antes de usar esse XP em ranking ou recompensas, será necessário validar as respostas no servidor.
+
+Em outro projeto Supabase, aplique `npm run db:push` antes de publicar. A migração `20261021000200_profile_progress.sql` cria as tabelas, função, bucket e políticas; no projeto atual ela já foi aplicada. Depois, `npm run deploy` publica a interface no Worker.
+
 ## Feedback de estudo
 
 No cálculo, o tempo de cada questão pode ser configurado entre 5 e 180 segundos em todas as modalidades, no solo e no multiplayer. O multiplicador é `clamp(tempoPadrãoDoNível / tempoEscolhido, 0.25, 3)`, arredondado para duas casas. O XP é `round(max(0, 20 - floor(segundosDecorridos)) * multiplicador)`: o valor base perde 1 XP por segundo completo, até zero aos 20 segundos. Expirar o prazo também zera o XP disponível. O valor é fixado na resposta correta, e a pausa do solo congela a contagem. Erros, expiração e pular rendem zero, sem retirar XP acumulado. Acertos avançam em 650 ms; erros do solo mantêm 2,3 s para ler a solução.
 
-No multiplayer, cada jogador tem questão, prazo e pista próprios. Acertar avança um passo; errar mantém o jogador na mesma questão. Vence quem primeiro confirmar a meta de 5, 10, 20 ou 30 acertos. O servidor confirma ponto e XP atomicamente. Salas antigas conservam sessões e progresso na atualização. No feed, os acertos valem 10 XP, ou 15 a partir de três seguidos, multiplicados pela razão entre 3 minutos e o prazo escolhido (0,25–3×); sem tempo vale 1×. XP do solo/feed fica na sessão; XP multiplayer fica na sala e é zerado na revanche.
+No multiplayer, cada jogador tem questão, prazo e pista próprios. Acertar avança um passo; errar mantém o jogador na mesma questão. Vence quem primeiro confirmar a meta de 5, 10, 20 ou 30 acertos. O servidor confirma ponto e XP atomicamente. Salas antigas conservam sessões e progresso na atualização. No feed, os acertos valem 10 XP, ou 15 a partir de três seguidos, multiplicados pela razão entre 3 minutos e o prazo escolhido (0,25–3×); sem tempo vale 1×. Os placares mostram o XP da sessão/sala; quando há uma conta conectada, o ganho também é acumulado no perfil.
 
 O botão de som ativa melodias curtas geradas com Web Audio, inicialmente desligadas. O áudio é interrompido ao silenciar, trocar de rota ou ocultar a aba. Animações de resposta usam CSS e respeitam movimento reduzido. O modo imersivo do feed mantém a navegação por teclado, retém o foco e pode ser fechado com Escape; a meta inicial é concluir cinco questões.
 
@@ -191,11 +203,13 @@ O link externo “Quem Pensa Assim?” abre com `target="_blank"` e `rel="noopen
 
 ## Verificação realizada
 
-`npm test` cobre os geradores, perímetros/áreas/volumes de todas as figuras em todos os níveis, diversidade e repetição recente, projeção dos sólidos, tempo/XP, isolamento de pistas, cooldown e permanência da questão depois do prazo. Também verifica a configuração pública do Auth e mensagens de erro. `npm run lint` e `npm run build` validam o código e as rotas.
+`npm test` cobre os geradores, perímetros/áreas/volumes de todas as figuras em todos os níveis, diversidade e repetição recente, projeção dos sólidos, tempo/XP, isolamento de pistas, cooldown e permanência da questão depois do prazo. Também verifica a configuração pública do Auth, mensagens de erro, normalização do perfil, validação de fotos e recuperação de atividades pendentes. `npm run lint` e `npm run build` validam o código e as rotas.
 
 No Chrome headless, os fluxos de cadastro, confirmação PKCE, sessão após recarregar, login correto/incorreto, saída, recuperação e troca de senha e Google foram exercitados com respostas de Auth simuladas. Isso valida a aplicação; e-mails reais e consentimento Google dependem das credenciais e da configuração remota acima. As telas de login foram verificadas em 320, 390, 768 e 1440 px sem overflow horizontal.
 
 Também foram verificados o perímetro do trapézio, abertura/fechamento e reinício da fórmula, rotação do prisma, coeficiente de π do círculo, pulo no solo, navegação do visitante e rejeição de pulo pela API real. O treino de geometria foi conferido nas mesmas quatro larguras e com movimento reduzido.
+
+O perfil foi testado com uma conta temporária no Supabase real: upload/remoção de foto, nome/cor após recarga, cabeçalho, respostas corretas e incorretas, exclusão de pulos, XP do solo/feed/multiplayer e recuperação de uma atividade após falha de rede e recarga. RLS, idempotência, limites de XP e bloqueio de edição direta foram exercitados no banco em uma transação revertida. A API real também rejeitou upload na pasta de outra conta. O perfil foi conferido em 320, 390, 768 e 1440 px, sem overflow horizontal. A conta temporária e seus arquivos foram removidos ao terminar.
 
 `test:deployment` verifica páginas públicas e configuração de Auth, permissões de banco, evento Realtime, respostas concorrentes com pontuação única por questão, pistas independentes, cooldown, rejeição de pulo, rejeição de respostas de questões concluídas, vitória por meta e transferência do host. Esse teste de integração exige um Supabase configurado. O deploy executa a checagem de segredos no pacote antes de publicar.
 

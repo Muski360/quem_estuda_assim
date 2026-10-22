@@ -22,6 +22,7 @@ import type { Area, Question } from "@/lib/questions";
 import { QuestionCard } from "./question-card";
 import { advanceMomentum, getXpMultiplier, INITIAL_MOMENTUM } from "@/lib/momentum";
 import { AnswerCelebration, MomentumStrip, SoundToggle, useStudySound } from "@/components/study-feedback";
+import { useStudyProgress } from "@/components/profile/study-progress";
 
 type FeedSettings = { area: Area | "all"; timed: boolean; minutes: number };
 
@@ -193,6 +194,7 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
   const [paused, setPaused] = useState(false);
   const [remaining, setRemaining] = useState(settings.minutes * 60);
   const [momentum, setMomentum] = useState(INITIAL_MOMENTUM);
+  const { recordActivity } = useStudyProgress();
   const [rewardIndex, setRewardIndex] = useState<number | null>(null);
   const [immersive, setImmersive] = useState(false);
   const immersiveButton = useRef<HTMLButtonElement>(null);
@@ -321,11 +323,13 @@ function FeedSession({ settings }: { settings: FeedSettings }) {
       setAnswers(answersRef.current);
       const correct = items[index].correctIndex === value;
       const multiplier=settings.timed ? getXpMultiplier(duration,180) : 1;
-      setMomentum((previous) => advanceMomentum(previous, correct, Math.round((previous.streak >= 2 ? 15 : 10)*multiplier)));
+      const earnedXp = correct ? Math.round((momentum.streak >= 2 ? 15 : 10) * multiplier) : 0;
+      recordActivity({ id: crypto.randomUUID(), module: "scroll", xp: earnedXp });
+      setMomentum((previous) => advanceMomentum(previous, correct, earnedXp));
       if (correct) setRewardIndex(index);
       play(correct ? (momentum.streak >= 2 ? "combo" : "correct") : "incorrect");
     },
-    [paused, settings.timed, duration, goTo, items, momentum.streak, play],
+    [paused, settings.timed, duration, goTo, items, momentum.streak, play, recordActivity],
   );
 
   function skip(index: number) {

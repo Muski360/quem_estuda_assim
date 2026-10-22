@@ -4,15 +4,18 @@ import Link from "next/link";
 import { LogOut, UserRound } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "./auth-provider";
+import { profileDetails } from "@/lib/profile/profile";
+import { ProfileAvatar } from "@/components/profile/profile-avatar";
 
 export function AccountButton() {
   const { user, client, loading } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   if (!user) return <Link href="/entrar" className="account-link" aria-busy={loading}><UserRound size={16} aria-hidden="true" />Entrar</Link>;
+  const profile = profileDetails(user);
   return (
     <div className="account-menu">
-      <span className="account-name" title={user.email}>{user.email?.split("@")[0] ?? "Minha conta"}</span>
+      <Link className="account-profile-link" href="/perfil" aria-label={`Meu perfil: ${profile.name}`}><ProfileAvatar name={profile.name} color={profile.color} url={profile.avatarUrl} /><span className="account-name">{profile.name}</span></Link>
       <button type="button" className="account-link" disabled={busy} onClick={async () => {
         if (!client) return;
         setBusy(true);

@@ -26,6 +26,7 @@ import { AnswerCelebration, SoundToggle, XpCountdown, useStudySound } from "@/co
 import { roundXp } from "@/lib/momentum";
 import { GeometryViewer } from "./geometry-viewer";
 import { FormulaReveal } from "./formula-reveal";
+import { useStudyProgress } from "@/components/profile/study-progress";
 
 async function command<T>(body: RoomCommand, token?: string): Promise<T> {
   const response = await fetch("/api/rooms", {
@@ -72,6 +73,7 @@ export function MultiplayerGame({
   const refresh = useRef<() => void>(() => {});
   const latestRoom = useRef<RoomSnapshot | null>(null);
   const { play } = useStudySound();
+  const { recordActivity } = useStudyProgress();
   const isHost = room?.hostId === session?.playerId;
   const answer = draft?.id === room?.equation?.id ? (draft?.value ?? "") : "";
 
@@ -79,6 +81,11 @@ export function MultiplayerGame({
     const previous = latestRoom.current;
     if (previous && next.revision < previous.revision) return;
     latestRoom.current = next;
+    const before = previous?.players.find(({ id }) => id === session?.playerId);
+    const after = next.players.find(({ id }) => id === session?.playerId);
+    if (previous?.equation && before && after && after.score === before.score + 1) {
+      recordActivity({ id: previous.equation.id, module: "calculator", xp: after.xp - before.xp });
+    }
     if (next.status === "finished" && previous?.status !== "finished") play("complete");
     else if (next.reveal && (!previous?.reveal || next.equation?.id !== previous.equation?.id))
       play(next.reveal.correct ? "correct" : "incorrect");
@@ -87,7 +94,7 @@ export function MultiplayerGame({
     setRoom((previous) =>
       !previous || next.revision >= previous.revision ? next : previous,
     );
-  }, [play]);
+  }, [play, recordActivity, session?.playerId]);
 
   useEffect(() => {
     nameInput.current?.focus();
@@ -145,7 +152,7 @@ export function MultiplayerGame({
         .then(({ createClient }) => {
           if (controller.signal.aborted) return;
           client = createClient(config.url, config.key, {
-            auth: { persistSession: false, autoRefreshToken: false },
+            auth: { persistSession: false, autoRefreshToken: false, storageKey: "qe-room-realtime" },
           });
           client
             .channel(config.topic)

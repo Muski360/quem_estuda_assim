@@ -16,7 +16,7 @@
     "test:deployment": "node scripts/test-deployment.mjs",
     "check:secrets": "node scripts/check-worker-secrets.mjs",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test src/lib/math/generator.test.ts src/lib/math/geometry.test.ts src/lib/multiplayer/store.test.ts src/lib/momentum.test.ts src/lib/auth/auth.test.ts"
+    "test": "node --experimental-strip-types --test src/lib/math/generator.test.ts src/lib/math/geometry.test.ts src/lib/multiplayer/store.test.ts src/lib/momentum.test.ts src/lib/auth/auth.test.ts src/lib/profile/profile.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
