@@ -37,7 +37,7 @@ test("pistas individuais autenticadas, sem exposição de gabarito ou token",()=
   assert.deepEqual(second.room.players.map((p)=>p.score),[1,1]);
 });
 
-test("três erros em menos de 5s bloqueiam só o jogador; pular preserva a penalidade",()=>{
+test("três erros em menos de 5s bloqueiam só o jogador na mesma questão",()=>{
   const realNow=Date.now;
   let now=100000;
   Date.now=()=>now;
@@ -55,18 +55,18 @@ test("três erros em menos de 5s bloqueiam só o jogador; pular preserva a penal
     const until=now+5000;
     now+=200;
     assert.throws(()=>engine.answerRoom(room.code,host.token,room.equation!.id,answer(host.playerId)),/Bloqueio/);
-    const skipped=engine.skipRoom(room.code,host.token,room.equation!.id);
-    assert.equal(skipped.cooldownUntil,until);
-    assert.equal(skipped.players[0].xp,0);
-    assert.equal(skipped.players[0].score,0);
-    assert.notEqual(skipped.equation!.id,room.equation!.id);
+    const blocked=engine.readRoom(room.code,host.token);
+    assert.equal(blocked.cooldownUntil,until);
+    assert.equal(blocked.players[0].xp,0);
+    assert.equal(blocked.players[0].score,0);
+    assert.equal(blocked.equation!.id,room.equation!.id);
     const opponent=engine.answerRoom(room.code,guest.token,other.equation!.id,answer(guest.playerId));
     assert.equal(opponent.room.players[1].score,1);
-    assert.equal(engine.readRoom(room.code,host.token).equation!.id,skipped.equation!.id);
+    assert.equal(engine.readRoom(room.code,host.token).equation!.id,room.equation!.id);
     now=until-1;
-    assert.throws(()=>engine.answerRoom(room.code,host.token,skipped.equation!.id,answer(host.playerId)),/Bloqueio/);
+    assert.throws(()=>engine.answerRoom(room.code,host.token,room.equation!.id,answer(host.playerId)),/Bloqueio/);
     now=until;
-    assert.equal(engine.answerRoom(room.code,host.token,skipped.equation!.id,answer(host.playerId)).correct,true);
+    assert.equal(engine.answerRoom(room.code,host.token,room.equation!.id,answer(host.playerId)).correct,true);
   } finally {Date.now=realNow;}
 });
 
@@ -141,25 +141,35 @@ test("tempo configurado determina prazo e XP, só a meta de acertos encerra a co
   } finally {Date.now=realNow;}
 });
 
-test("pular e expirar não pontuam, IDs antigos não podem ser reenviados",()=>{
+test("tempo esgotado mantém a questão sem gabarito; só o acerto avança, sem XP",()=>{
   const realNow=Date.now;
   let now=100000;
   Date.now=()=>now;
   try {
-    const {engine,host,guest,room}=match({...DEFAULT_SETTINGS,seconds:5});
-    const skipped=engine.skipRoom(room.code,host.token,room.equation!.id);
-    assert.equal(skipped.round,2);
-    assert.throws(()=>engine.skipRoom(room.code,host.token,room.equation!.id),/encerrada/);
-    now+=5000;
-    assert.throws(()=>engine.answerRoom(room.code,host.token,skipped.equation!.id,0),/encerrada/);
+    const {engine,host,guest,room,answer}=match({...DEFAULT_SETTINGS,seconds:5});
+    assert.equal("skipRoom" in engine,false);
+    now+=60000;
     const expired=engine.readRoom(room.code,host.token);
-    assert.equal(expired.reveal!.xp,0);
-    assert.equal(expired.reveal!.correct,false);
-    now+=1800;
+    assert.equal(expired.equation!.id,room.equation!.id);
+    assert.equal(expired.round,1);
+    assert.equal(expired.reveal,null);
+    assert.equal(expired.nextAt,null);
+    assert.equal("answer" in expired.equation!,false);
+    const wrong=engine.answerRoom(room.code,host.token,expired.equation!.id,answer(host.playerId)+1);
+    assert.equal(wrong.correct,false);
+    assert.equal(wrong.room.equation!.id,room.equation!.id);
+    now+=200;
+    const solved=engine.answerRoom(room.code,host.token,expired.equation!.id,answer(host.playerId));
+    assert.equal(solved.correct,true);
+    assert.equal(solved.room.players[0].score,1);
+    assert.equal(solved.room.reveal!.xp,0);
+    now+=650;
     const next=engine.readRoom(room.code,host.token);
-    assert.equal(next.round,3);
+    assert.equal(next.round,2);
+    assert.notEqual(next.equation!.id,room.equation!.id);
+    assert.throws(()=>engine.answerRoom(room.code,host.token,room.equation!.id,answer(host.playerId)),/encerrada/);
     assert.equal(next.status,"playing");
-    assert.ok(next.players.every((p)=>p.score===0 && p.xp===0));
+    assert.ok(next.players.every((p)=>p.xp===0));
     engine.leaveRoom(room.code,host.token);
     const alone=engine.readRoom(room.code,guest.token);
     assert.equal(alone.hostId,guest.playerId);
@@ -184,7 +194,32 @@ test("upgrade de sala antiga conserva sessão e progresso sem expor os dados pri
   assert.equal(snapshot.players[0].xp,0);
   assert.deepEqual(snapshot.equation!.geometry,equation.geometry);
   assert.equal("answer" in snapshot.equation!,false);
+  assert.equal(snapshot.equation!.formula,equation.formula);
   assert.equal("token" in snapshot.players[0],false);
   assert.equal(restored.exportRoom(room.code)!.version,2);
   assert.ok(engine.exportRoom(room.code));
+});
+
+test("salas salvas com expiração antiga retomam a mesma questão até acertar",()=>{
+  const realNow=Date.now;
+  let now=100000;
+  Date.now=()=>now;
+  try {
+    const {host,room,state}=match({...DEFAULT_SETTINGS,seconds:5});
+    const saved=state();
+    const player=saved.players[0];
+    const equation=player.equation!;
+    player.reveal={answer:equation.answer,explanation:equation.explanation,xp:0,correct:false};
+    player.nextAt=now+100;
+    now+=10000;
+    const engine=createRoomEngine(saved);
+    const restored=engine.readRoom(room.code,host.token);
+    assert.equal(restored.equation!.id,equation.id);
+    assert.equal(restored.round,1);
+    assert.equal(restored.reveal,null);
+    assert.equal(restored.nextAt,null);
+    const correct=engine.answerRoom(room.code,host.token,equation.id,equation.answer);
+    assert.equal(correct.correct,true);
+    assert.equal(correct.room.reveal!.xp,0);
+  } finally {Date.now=realNow;}
 });

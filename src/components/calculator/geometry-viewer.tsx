@@ -4,43 +4,55 @@ import { useRef, useState } from "react";
 import type { PointerEvent } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Box, RotateCcw } from "lucide-react";
 import type { GeometryFigure } from "@/lib/math/generator";
-import { projectSolid, solidMesh } from "@/lib/math/geometry";
+import { isFlatFigure, projectSolid, solidMesh } from "@/lib/math/geometry";
+import type { FlatFigure } from "@/lib/math/geometry";
 
 const DEFAULT_VIEW = { yaw: -32, pitch: 24 };
-const NAMES = { square: "Quadrado", triangle: "Triângulo", rectangle: "Retângulo", cube: "Cubo", cuboid: "Bloco retangular", cylinder: "Cilindro", cone: "Cone", pyramid: "Pirâmide triangular", frustum: "Tronco de cone" };
-const COLORS = ["#5de3ff", "#ff8fc9", "#d5f85f"];
+const NAMES = { square: "Quadrado", triangle: "Triângulo", rectangle: "Retângulo", circle: "Círculo", trapezoid: "Trapézio isósceles", prism: "Prisma triangular", cube: "Cubo", cuboid: "Bloco retangular", cylinder: "Cilindro", cone: "Cone", pyramid: "Pirâmide triangular", frustum: "Tronco de cone" };
+const COLORS = ["#5de3ff", "#ff8fc9", "#d5f85f", "#ffbf80"];
+type Point = { x: number; y: number };
+
+function flatDrawing(figure: FlatFigure) {
+  const dimensions: {label: string; value: number; edge: [Point, Point]}[] = [];
+  if (figure.shape === "circle") {
+    dimensions.push({label:"Raio",value:figure.radius,edge:[{x:180,y:108},{x:245,y:108}]});
+    return { points: "", dimensions };
+  }
+  const w = figure.shape === "square" ? figure.side : figure.base;
+  const h = figure.shape === "square" ? figure.side : figure.height;
+  const scale = Math.min(180 / w, 120 / h);
+  const left = 180 - w * scale / 2, right = 180 + w * scale / 2;
+  const top = 108 - h * scale / 2, bottom = 108 + h * scale / 2;
+  const topWidth = figure.shape === "triangle" ? 0 : figure.shape === "trapezoid" ? figure.topBase * scale : w * scale;
+  const topLeft = 180 - topWidth / 2, topRight = 180 + topWidth / 2;
+  dimensions.push({label:figure.shape === "square" ? "Lado" : "Base",value:w,edge:[{x:left,y:bottom},{x:right,y:bottom}]});
+  if (figure.shape !== "square") dimensions.push({label:"Altura",value:h,edge:[{x:figure.shape === "rectangle" ? right : 180,y:bottom},{x:figure.shape === "rectangle" ? right : 180,y:top}]});
+  if (figure.shape === "triangle" && figure.side !== undefined) dimensions.push({label:"Cada lado",value:figure.side,edge:[{x:right,y:bottom},{x:180,y:top}]});
+  if (figure.shape === "trapezoid") dimensions.push(
+    {label:"Base menor",value:figure.topBase,edge:[{x:topLeft,y:top},{x:topRight,y:top}]},
+    {label:"Cada lado",value:figure.side,edge:[{x:right,y:bottom},{x:topRight,y:top}]},
+  );
+  return { points:`${left},${bottom} ${right},${bottom} ${topRight},${top} ${topLeft},${top}`, dimensions };
+}
 
 export function GeometryViewer({ figure }: { figure: GeometryFigure }) {
   const [view, setView] = useState(DEFAULT_VIEW);
   const [selected, setSelected] = useState<number | null>(null);
   const [dragging, setDragging] = useState(false);
   const drag = useRef<{ pointerId: number; x: number; y: number; yaw: number; pitch: number } | null>(null);
-  const mesh = figure.shape === "square" || figure.shape === "triangle" || figure.shape === "rectangle" ? null : solidMesh(figure);
+  const mesh = isFlatFigure(figure) ? null : solidMesh(figure);
+  const flat = isFlatFigure(figure) ? flatDrawing(figure) : null;
   const solid = mesh !== null;
-  const dimensions = mesh?.dimensions ?? (figure.shape === "square"
-    ? [{ label: "Lado", value: figure.side }]
-    : "base" in figure ? [{ label: "Base", value: figure.base }, { label: "Altura", value: figure.height }] : []);
+  const dimensions = mesh?.dimensions ?? flat!.dimensions;
   const description = `${NAMES[figure.shape]}: ${dimensions.map(({ label, value }) => `${label.toLowerCase()} ${value} cm`).join(", ")}.`;
-  const vertices = figure.shape === "square" || figure.shape === "triangle" || figure.shape === "rectangle" ? [] : projectSolid(figure, view.yaw, view.pitch);
+  const vertices = isFlatFigure(figure) ? [] : projectSolid(figure, view.yaw, view.pitch);
   const faces = mesh ? mesh.faces.map((corners, index) => ({
     corners, color: COLORS[index % COLORS.length],
     depth: corners.reduce((sum, index) => sum + vertices[index].z, 0) / corners.length,
   })).sort((a, b) => a.depth - b.depth) : [];
-  const flatWidth = figure.shape === "square" ? figure.side : "base" in figure ? figure.base : 1;
-  const flatHeight = figure.shape === "square" ? figure.side : "height" in figure ? figure.height : 1;
-  const flatScale = Math.min(190 / flatWidth, 130 / flatHeight);
-  const width = flatWidth * flatScale;
-  const height = flatHeight * flatScale;
-  const left = 180 - width / 2;
-  const bottom = 106 + height / 2;
-  const top = bottom - height;
-  const apex = left + width / 2;
   const edges = mesh
     ? mesh.dimensions.map(({edge}) => edge.map((index) => vertices[index]))
-    : [
-        [{ x: left, y: bottom }, { x: left + width, y: bottom }],
-        [{ x: figure.shape === "triangle" ? apex : left + width, y: bottom }, { x: figure.shape === "triangle" ? apex : left + width, y: top }],
-      ];
+    : flat!.dimensions.map(({edge}) => edge);
 
   function rotate(yaw: number, pitch: number) {
     setView((previous) => ({
@@ -98,20 +110,28 @@ export function GeometryViewer({ figure }: { figure: GeometryFigure }) {
             strokeWidth="1.3"
             strokeLinejoin="round"
           />
-        )) : figure.shape === "triangle" ? (
-          <>
-            <polygon points={`${left},${bottom} ${left + width},${bottom} ${apex},${top}`} fill="#5de3ff" fillOpacity="0.12" stroke="#5de3ff" strokeWidth="1.5" />
-            <path d={`M${apex - 8},${bottom}v-8h8`} fill="none" stroke="#ff8fc9" strokeWidth="1.2" />
-          </>
+        )) : figure.shape === "circle" ? (
+          <circle cx="180" cy="108" r="65" fill="#5de3ff" fillOpacity="0.12" stroke="#5de3ff" strokeWidth="1.5" />
         ) : (
-          <rect x={left} y={top} width={width} height={height} fill="#5de3ff" fillOpacity="0.12" stroke="#5de3ff" strokeWidth="1.5" />
+          <polygon points={flat!.points} fill="#5de3ff" fillOpacity="0.12" stroke="#5de3ff" strokeWidth="1.5" />
         )}
         {dimensions.map(({ value }, index) => {
           const [start, end] = edges[index];
+          const midpoint = { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 };
+          const position = solid
+            ? [{x:180,y:205},{x:56,y:112},{x:304,y:112},{x:180,y:20}][index]
+            : { x: midpoint.x, y: midpoint.y + 4 };
+          if (!solid) {
+            if (index === 0) position.y += 15;
+            else if (index === 1) position.x += figure.shape === "rectangle" ? 27 : -25;
+            else if (index === 2 && figure.shape === "trapezoid") position.y -= 16;
+            else position.x += 28;
+          }
           return (
             <g key={index} className={selected === index ? "dimension-selected" : ""}>
-              <line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke={COLORS[index]} strokeWidth={selected === index ? 4 : 2} strokeDasharray={!solid && figure.shape === "triangle" && index === 1 ? "4 3" : undefined} />
-              <text x={(start.x + end.x) / 2 + (index === 1 ? 24 : 0)} y={(start.y + end.y) / 2 + (index === 0 ? 19 : index === 2 ? -10 : 0)} fill={COLORS[index]} textAnchor="middle" className="geometry-measure">{value} cm</text>
+              <line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke={COLORS[index]} strokeWidth={selected === index ? 4 : 2} strokeDasharray={!solid && (figure.shape === "triangle" || figure.shape === "trapezoid") && index === 1 ? "4 3" : undefined} />
+              {solid && <line x1={midpoint.x} y1={midpoint.y} x2={position.x} y2={position.y - 6} stroke={COLORS[index]} strokeWidth="1" strokeOpacity="0.4" />}
+              <text x={position.x} y={position.y} fill={COLORS[index]} textAnchor="middle" className="geometry-measure">{value} cm</text>
             </g>
           );
         })}

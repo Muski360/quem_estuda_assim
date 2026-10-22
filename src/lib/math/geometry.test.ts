@@ -27,6 +27,7 @@ test("projeção preserva proporções e mantém o sólido visível ao girar", (
 
 test("malhas dos sólidos avançados preservam medidas e projeção sem pontos inválidos",()=>{
   const solids:Solid[]=[
+    {shape:"prism",base:6,baseHeight:8,baseSide:10,height:12},
     {shape:"cylinder",radius:4,height:12},
     {shape:"cone",radius:6,height:9},
     {shape:"pyramid",baseSide:8,height:9},

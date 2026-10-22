@@ -42,7 +42,7 @@ function solve(expression) {
 }
 
 try {
-  for (const path of ["/", "/scrolla"]) {
+  for (const path of ["/", "/scrolla", "/entrar", "/cadastro", "/recuperar-senha"]) {
     const response = await fetch(`${base}${path}`, {
       signal: AbortSignal.timeout(20000),
     });
@@ -50,6 +50,13 @@ try {
     assert.match(await response.text(), /Quem Estuda Assim/);
   }
   console.log("PASS páginas públicas");
+  const publicAuth = await fetch(`${base}/api/auth/config`);
+  assert.equal(publicAuth.status, 200);
+  assert.deepEqual(Object.keys(await publicAuth.json()).sort(), ["key", "url"]);
+  const refusedSkip = await request({action:"skip",code:"ABC123",equationId:"not-needed"});
+  assert.equal(refusedSkip.status,400);
+  assert.match(refusedSkip.data.error,/resolva corretamente/);
+  console.log("PASS configuração pública de auth e recusa de pulo antes de acessar o banco");
 
   const created = await request({
     action: "create",
@@ -192,12 +199,13 @@ try {
   assert.equal(blocked.status,429);
   await new Promise((resolve)=>setTimeout(resolve,200));
   const skipped=await request({action:"skip",code,equationId:nextGuest.equation.id},guest);
-  assert.equal(skipped.status,200,skipped.data.error);
-  assert.equal(skipped.data.room.cooldownUntil,wrong.data.room.cooldownUntil);
-  assert.equal(skipped.data.room.players[1].score,1);
-  assert.notEqual(skipped.data.room.equation.id,nextGuest.equation.id);
+  assert.equal(skipped.status,400);
+  const stillBlocked=await read(guest);
+  assert.equal(stillBlocked.cooldownUntil,wrong.data.room.cooldownUntil);
+  assert.equal(stillBlocked.players[1].score,1);
+  assert.equal(stillBlocked.equation.id,nextGuest.equation.id);
   assert.equal((await read(host)).equation.id,next.equation.id);
-  console.log("PASS cooldown autoritativo, pular sem pontos e adversário independente");
+  console.log("PASS cooldown autoritativo, pulo rejeitado e adversário independente");
 
   let racing=await read(host);
   const firstWrong=await request({action:"answer",code,equationId:racing.equation.id,answer:solve(racing.equation.expression)+1},host);

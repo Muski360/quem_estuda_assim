@@ -25,6 +25,7 @@ import type {
 import { AnswerCelebration, SoundToggle, XpCountdown, useStudySound } from "@/components/study-feedback";
 import { roundXp } from "@/lib/momentum";
 import { GeometryViewer } from "./geometry-viewer";
+import { FormulaReveal } from "./formula-reveal";
 
 async function command<T>(body: RoomCommand, token?: string): Promise<T> {
   const response = await fetch("/api/rooms", {
@@ -269,21 +270,6 @@ export function MultiplayerGame({
     }
   }
 
-  async function skip() {
-    if (!session || !room?.equation || busy || room.reveal) return;
-    setBusy(true);
-    setError("");
-    try {
-      const result = await command<{room:RoomSnapshot}>({action:"skip",code:room.code,equationId:room.equation.id},session.token);
-      updateRoom(result.room);
-      setDraft(null);
-      setWrongAnswer(null);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Não foi possível pular.");
-      refresh.current();
-    } finally { setBusy(false); }
-  }
-
   async function leave() {
     if (session && room) {
       try {
@@ -423,7 +409,9 @@ export function MultiplayerGame({
       : `Tempo encerrado. Resposta: ${formatAnswer(room.reveal.answer,room.reveal.factor)}.`
     : wrongAnswer && wrongAnswer.id === room.equation?.id
       ? wrongAnswer.message
-      : "Acerte para avançar. Pular não dá ponto nem XP.";
+      : remaining === 0
+        ? "O tempo de XP acabou. Resolva esta questão para avançar, sem XP."
+        : "Acerte para avançar. Esta questão fica até você resolver.";
 
   return (
     <div className="arena multiplayer-arena" data-feedback={room.reveal?.correct ? "correct" : undefined}>
@@ -486,7 +474,7 @@ export function MultiplayerGame({
             {DIFFICULTIES[room.settings.difficulty].label} ·{" "}
             Meta: {room.settings.rounds} acertos · {duration}s por questão
           </p>
-          <p className="race-rules">Cada um resolve suas questões. Erros não avançam a pista. Três erros em menos de 5 segundos bloqueiam novas respostas por 5 segundos.</p>
+          <p className="race-rules">Só o acerto avança a pista. O tempo esgotado zera o XP; a questão permanece. Três erros em menos de 5 segundos bloqueiam novas respostas por 5 segundos.</p>
           {isHost ? (
             <button
               className="button button-light"
@@ -574,6 +562,7 @@ export function MultiplayerGame({
           >
             {room.equation?.expression}
           </h3>
+          {room.equation?.formula && <FormulaReveal key={`formula-${room.equation.id}`} formula={room.equation.formula} />}
           <form onSubmit={submit} className="answer-form">
             <label htmlFor="multiplayer-answer" className="sr-only">
               {room.equation?.factor ? `Coeficiente de ${room.equation.factor}` : "Sua resposta"}
@@ -618,8 +607,7 @@ export function MultiplayerGame({
               <ArrowRight size={22} />
             </button>
           </form>
-          <button type="button" className="skip-question" onClick={skip} disabled={!!room.reveal || busy || !!connection}>Pular Questão <ArrowRight size={15} aria-hidden="true" /></button>
-          {cooldown > 0 && <p className="cooldown-message" role="status">Três erros rápidos. Respostas liberadas em {cooldown}s. Pular mantém o bloqueio.</p>}
+          {cooldown > 0 && <p className="cooldown-message" role="status">Três erros rápidos. Respostas liberadas em {cooldown}s.</p>}
           <p
             className={`answer-feedback${room.reveal ? (room.reveal.correct ? " correct" : " incorrect") : ""}`}
             role="status"

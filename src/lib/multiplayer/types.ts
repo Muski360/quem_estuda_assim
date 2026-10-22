@@ -27,5 +27,4 @@ export type RoomCommand =
   | { action: "create"; name: string; settings: GameSettings }
   | { action: "join"; code: string; name: string }
   | { action: "start" | "leave"; code: string }
-  | { action: "skip"; code: string; equationId: string }
   | { action: "answer"; code: string; equationId: string; answer: number };

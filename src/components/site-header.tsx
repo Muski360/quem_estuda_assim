@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowUpRight, Calculator, GalleryVerticalEnd } from "lucide-react";
+import { AccountButton } from "@/components/auth/account-button";
 
 function Brand() {
   return (
@@ -23,7 +24,8 @@ function Brand() {
 }
 
 export function SiteHeader() {
-  const scrolling = usePathname() === "/scrolla";
+  const pathname = usePathname();
+  const scrolling = pathname === "/scrolla";
   return (
     <header className="site-header">
       <div className="header-inner">
@@ -31,8 +33,8 @@ export function SiteHeader() {
         <nav className="module-nav" aria-label="Ferramentas de estudo">
           <Link
             href="/"
-            className={!scrolling ? "nav-link active" : "nav-link"}
-            aria-current={!scrolling ? "page" : undefined}
+            className={pathname === "/" ? "nav-link active" : "nav-link"}
+            aria-current={pathname === "/" ? "page" : undefined}
           >
             <Calculator size={17} aria-hidden="true" />
             <span>Quem calcula assim?</span>
@@ -46,16 +48,17 @@ export function SiteHeader() {
             <span>Quem scrolla assim?</span>
           </Link>
         </nav>
-        <a
+        <div className="header-actions"><a
           className="external-link"
           href="https://quem-pensa-assim-enem.happydune.chatgpt.site/"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="Quem pensa assim? (abre em nova aba)"
         >
           <span>Quem pensa assim?</span>
           <ArrowUpRight size={17} aria-hidden="true" />
           <span className="sr-only"> (abre em nova aba)</span>
-        </a>
+        </a><AccountButton /></div>
       </div>
     </header>
   );

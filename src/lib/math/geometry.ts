@@ -1,6 +1,10 @@
 import type { GeometryFigure } from "./generator.ts";
 
-export type Solid = Exclude<GeometryFigure, { shape: "square" | "rectangle" | "triangle" }>;
+export type FlatFigure = Extract<GeometryFigure, { shape: "square" | "rectangle" | "triangle" | "circle" | "trapezoid" }>;
+export type Solid = Exclude<GeometryFigure, FlatFigure>;
+export function isFlatFigure(figure: GeometryFigure): figure is FlatFigure {
+  return ["square", "rectangle", "triangle", "circle", "trapezoid"].includes(figure.shape);
+}
 type Vertex = [number, number, number];
 type Dimension = { label: string; value: number; edge: [number, number] };
 
@@ -16,6 +20,16 @@ export function solidMesh(figure: Solid) {
     faces.push([0,1,2,3],[4,7,6,5],[1,5,6,2],[4,0,3,7],[3,2,6,7],[4,5,1,0]);
     dimensions.push({ label: figure.shape === "cube" ? "Aresta" : "Comprimento", value: w, edge: [0,1] });
     if (figure.shape === "cuboid") dimensions.push({label:"Altura",value:h,edge:[1,2]}, {label:"Largura",value:d,edge:[1,5]});
+  } else if (figure.shape === "prism") {
+    for (const y of [-figure.height / 2, figure.height / 2])
+      vertices.push([-figure.base / 2, y, -figure.baseHeight / 2], [figure.base / 2, y, -figure.baseHeight / 2], [-figure.base / 2, y, figure.baseHeight / 2]);
+    faces.push([0,2,1], [3,4,5], [0,1,4,3], [1,2,5,4], [2,0,3,5]);
+    dimensions.push(
+      {label:"Cateto da base",value:figure.base,edge:[0,1]},
+      {label:"Outro cateto",value:figure.baseHeight,edge:[0,2]},
+      {label:"Lado da base",value:figure.baseSide,edge:[1,2]},
+      {label:"Altura do prisma",value:figure.height,edge:[0,3]},
+    );
   } else {
     const pyramid = figure.shape === "pyramid";
     const count = pyramid ? 3 : 24;

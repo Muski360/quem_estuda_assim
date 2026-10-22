@@ -50,6 +50,29 @@ Cache Components e Partial Prefetching foram desativados: a combinação causava
 
 A publicação atual é feita com `npm run deploy`. Commits locais não publicam o site. Para publicar a cada push, é necessário conectar o repositório ao Worker em Cloudflare Workers Builds e configurar a branch de produção.
 
+## Conta opcional com Supabase Auth
+
+`/entrar` e `/cadastro` oferecem e-mail/senha e Google. Há confirmação de e-mail, recuperação em `/recuperar-senha`, nova senha em `/redefinir-senha` e retorno em `/auth/callback`. A sessão persiste no navegador, renova automaticamente e sincroniza o cabeçalho entre abas; “Sair” encerra o acesso neste navegador. Nenhuma ferramenta exige conta, inclusive o multiplayer, que conserva seus tokens de sala independentes.
+
+O Auth reutiliza `@supabase/supabase-js` e as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY`. `/api/auth/config` entrega apenas esses valores públicos em tempo de execução, sem cache. `SUPABASE_SECRET_KEY` continua exclusiva do servidor e só é necessária para as salas. Sem configuração, as telas explicam a indisponibilidade e oferecem continuar sem entrar. O login atual é usado apenas para identificar a conta na interface; futuras funções privadas deverão validar a sessão no servidor e usar RLS.
+
+Para ativar o serviço remoto (cerca de 10–15 minutos, com acesso ao Google Cloud):
+
+1. Preencha `.dev.vars` a partir de `.dev.vars.example`. Em Supabase Auth, habilite e-mail/senha e confirmação de e-mail. Configure SMTP para entrega aos usuários; o serviço de e-mail de demonstração tem restrições.
+2. Em Auth → URL Configuration, defina a Site URL de produção e autorize os retornos abaixo, substituindo o domínio ao usar outro endereço.
+3. Crie um cliente OAuth do tipo aplicação web no Google Cloud. Cadastre as origens `http://localhost:3000` e `https://quem-estuda-assim.muski.workers.dev`; a URI de redirecionamento autorizada do Google é `https://sgsrjrgdywgppcakfzep.supabase.co/auth/v1/callback`.
+4. Habilite o provedor Google no Supabase e informe o Client ID e Client Secret do Google somente no painel do Supabase. Conclua a configuração de público/usuários de teste da aplicação OAuth conforme sua conta Google.
+5. Execute `npm run dev` e teste cadastro → confirmação → saída → login, recuperação de senha e Google. Abra links de e-mail no mesmo navegador que iniciou o fluxo PKCE.
+
+```text
+http://localhost:3000/auth/callback
+http://localhost:3000/auth/callback?recovery=1
+https://quem-estuda-assim.muski.workers.dev/auth/callback
+https://quem-estuda-assim.muski.workers.dev/auth/callback?recovery=1
+```
+
+`supabase/config.toml` já define os retornos do ambiente local e senha mínima de oito caracteres. Esse arquivo não altera as configurações de Auth do projeto hospedado. Referências: [Google no Supabase](https://supabase.com/docs/guides/auth/social-login/auth-google), [senhas e recuperação](https://supabase.com/docs/guides/auth/passwords) e [fluxo PKCE](https://supabase.com/docs/guides/auth/sessions/pkce-flow).
+
 ## Feedback de estudo
 
 No cálculo, o tempo de cada questão pode ser configurado entre 5 e 180 segundos em todas as modalidades, no solo e no multiplayer. O multiplicador é `clamp(tempoPadrãoDoNível / tempoEscolhido, 0.25, 3)`, arredondado para duas casas. O XP é `round(max(0, 20 - floor(segundosDecorridos)) * multiplicador)`: o valor base perde 1 XP por segundo completo, até zero aos 20 segundos. Expirar o prazo também zera o XP disponível. O valor é fixado na resposta correta, e a pausa do solo congela a contagem. Erros, expiração e pular rendem zero, sem retirar XP acumulado. Acertos avançam em 650 ms; erros do solo mantêm 2,3 s para ler a solução.
@@ -58,7 +81,7 @@ No multiplayer, cada jogador tem questão, prazo e pista próprios. Acertar avan
 
 O botão de som ativa melodias curtas geradas com Web Audio, inicialmente desligadas. O áudio é interrompido ao silenciar, trocar de rota ou ocultar a aba. Animações de resposta usam CSS e respeitam movimento reduzido. O modo imersivo do feed mantém a navegação por teclado, retém o foco e pode ser fechado com Escape; a meta inicial é concluir cinco questões.
 
-Geometria desenha as medidas geradas pela questão em SVG. Cubos, blocos, cilindros, cones, pirâmides de base triangular equilátera e troncos de cone podem ser girados por arraste, toque ou botões. Tocar nas medidas destaca a dimensão correspondente. Sólidos avançados aparecem em Difícil/Brutal. Respostas com √3 ou π mostram esse fator fixo antes do input: o jogador digita apenas o coeficiente. O desenho recebe dimensões, sem gabarito, e não depende de WebGL.
+Geometria alterna perímetro e área das figuras planas, ou perímetro da base e volume dos sólidos. Os desenhos em SVG incluem círculos, trapézios isósceles e prismas triangulares, além das figuras anteriores. Sólidos podem ser girados por arraste, toque ou botões; tocar nas medidas destaca a dimensão correspondente. Cilindros, cones, pirâmides equiláteras e troncos de cone aparecem em Difícil/Brutal. Respostas com √3 ou π mostram esse fator fixo antes do input: o jogador digita apenas o coeficiente. “Mostrar fórmula” revela a fórmula simbólica da questão com brilho e animação, respeitando movimento reduzido, sem exibir a resposta. A fórmula começa fechada a cada questão, tanto no solo quanto no multiplayer.
 
 ## Estrutura App Router
 
@@ -68,7 +91,10 @@ src/
 │   ├── layout.tsx                 # Header, footer, fontes e metadados
 │   ├── page.tsx                   # Quem Calcula Assim? — /
 │   ├── scrolla/page.tsx            # Quem Scrolla Assim? — /scrolla
-│   ├── api/rooms/route.ts          # HTTP: criar, entrar, iniciar, responder, pular, sair
+│   ├── api/rooms/route.ts          # HTTP: criar, entrar, iniciar, responder, sair
+│   ├── api/auth/config/route.ts    # Configuração pública em tempo de execução
+│   ├── entrar/page.tsx            # Login opcional
+│   ├── cadastro/page.tsx          # Cadastro opcional
 │   ├── globals.css                # Tokens visuais, estados e breakpoints
 │   └── icon.svg                   # Identidade vetorial
 ├── components/
@@ -107,26 +133,26 @@ O treino permite marcar de um a cinco conteúdos ao mesmo tempo. As rodadas inte
 
 | Nível       | Intervalo básico | Tempo padrão |
 | ----------- | ---------------- | ---------------- |
-| Aquecimento | 2–12             | 30 s             |
-| Médio       | 2–30             | 25 s             |
-| Difícil     | 2–75             | 20 s             |
-| Brutal      | 2–150            | 15 s             |
+| Aquecimento | 0–20             | 30 s             |
+| Médio       | 0–50             | 25 s             |
+| Difícil     | 0–100            | 20 s             |
+| Brutal      | 0–200            | 15 s             |
 
-Os intervalos de bases, fatores e dimensões são ajustados por modalidade para manter as contas apropriadas ao cálculo mental.
+Esses intervalos são de soma, subtração e quocientes. Bases, fatores e dimensões têm limites próprios: as multiplicações do Aquecimento continuam limitadas a 0–12 × 2–9. Os divisores ficam entre 2 e 12 nesse nível. O solo e cada jogador multiplayer guardam as últimas 12 expressões; o gerador tenta até 24 alternativas para evitar repetições recentes, com limite de tentativas para fontes aleatórias constantes. Salas antigas recebem esse histórico ao avançar, sem perder a sessão.
 
 - **Operações:** soma, subtração, multiplicação e divisão. A divisão é construída como `(a × b) ÷ b`, garantindo divisor não nulo e resultado inteiro. Subtrações podem ter resultado negativo.
 - **Potências e raízes:** bases aleatórias, expoentes 2 ou 3 e radicandos construídos como potências perfeitas.
 - **Primeiro grau:** escolhe primeiro a solução `x`, o coeficiente `a ≠ 0` e o termo `b`; calcula `c = ax + b`. A solução é inteira, inclusive negativa nos níveis superiores.
-- **Logaritmos:** escolhe base `b > 1` e expoente `x`; apresenta `log_b(b^x)`.
-- **Geometria:** quadrados, retângulos, triângulos, cubos e blocos; Difícil/Brutal acrescentam cilindros, cones, pirâmides equiláteras e troncos de cone. Dimensões positivas construídas para manter coeficientes inteiros. `factor?: "√3" | "π"` acompanha questões com fator fixo.
+- **Logaritmos:** alterna encontrar o expoente em `log_b(n)` e encontrar o argumento em `log_b(x) = e`, com mais bases e resultados exatos.
+- **Geometria:** quadrados, retângulos, triângulos, círculos, trapézios, cubos, blocos e prismas triangulares; Difícil/Brutal acrescentam cilindros, cones, pirâmides equiláteras e troncos de cone. Os perímetros de bases usam os lados da base, sem somar a altura do sólido. Triângulos e trapézios de perímetro usam medidas geometricamente consistentes, com lados informados. `measurement` identifica a grandeza pedida e `formula` contém só a fórmula simbólica; `factor?: "√3" | "π"` acompanha respostas com fator fixo.
 
 `parseAnswer` aceita ponto ou vírgula decimal e valores negativos. Rejeita texto, vazio, `NaN`, infinito, notação hexadecimal e entradas ambíguas. A validação numérica tolera apenas diferenças inferiores a 0,005.
 
-O solo aceita 5, 10, 20 ou 30 rodadas, registra o tempo por tentativa, permite pausa e mostra acertos, precisão e tempo médio. O prazo usa relógio absoluto; atrasos do navegador não concedem tempo extra. Pular consome uma rodada sem acerto ou XP. No multiplayer, pular troca apenas a própria questão sem avançar a pista. No feed, pular trava a questão sem XP, mostra a explicação ao voltar e avança o card.
+O solo aceita 5, 10, 20 ou 30 rodadas, registra o tempo por tentativa, permite pausa e mostra acertos, precisão e tempo médio. O prazo usa relógio absoluto; atrasos do navegador não concedem tempo extra. No solo, pular consome uma rodada sem acerto ou XP. O multiplayer não permite pular: não há botão, comando ou troca automática por tempo esgotado. Depois do prazo, a questão permanece e deve ser resolvida, valendo um acerto e zero XP. No feed, pular trava a questão sem XP, mostra a explicação ao voltar e avança o card.
 
 ## Multiplayer
 
-O servidor gera as equações, autentica cada jogador com token aleatório e decide o vencedor. O snapshot inclui só a questão do jogador autenticado e o progresso público dos adversários. Gabarito e explicação da própria questão aparecem só após o acerto ou a expiração; tokens e equações dos adversários nunca são expostos.
+O servidor gera as equações, autentica cada jogador com token aleatório e decide o vencedor. O snapshot inclui só a questão do jogador autenticado e o progresso público dos adversários. Gabarito e explicação da própria questão aparecem só após o acerto; esgotar o tempo não revela a solução. Fórmulas simbólicas podem ser consultadas durante a questão. Tokens e equações dos adversários nunca são expostos.
 
 ```text
 POST /api/rooms  { action: "create", name, settings }
@@ -134,13 +160,12 @@ POST /api/rooms  { action: "join", code, name }
 GET  /api/rooms?code=ABC123
 POST /api/rooms  { action: "start", code }
 POST /api/rooms  { action: "answer", code, equationId, answer }
-POST /api/rooms  { action: "skip", code, equationId }
 POST /api/rooms  { action: "leave", code }
 ```
 
 Com exceção de criar e entrar, as chamadas exigem `Authorization: Bearer <token>`. O host configura modalidade, nível e rodadas antes de criar a sala. A sala suporta 2–8 jogadores; o código deve ser compartilhado com os convidados, que podem abrir a aplicação em outros navegadores ou dispositivos com acesso ao mesmo servidor.
 
-Cada acerto confirmado pelo banco avança a pista do jogador. A função Postgres `qe_commit_room` confirma por versão; operações concorrentes releem o estado antes de tentar novamente. Respostas duplicadas não pontuam duas vezes, e jogadores distintos podem avançar simultaneamente. A primeira confirmação da meta encerra a partida. Há intervalo mínimo de 150 ms entre tentativas. Três respostas incorretas em uma janela estritamente menor que 5 segundos bloqueiam aquele jogador por 5 segundos (HTTP 429); pular não remove o bloqueio nem o histórico de erros. IDs de equação rejeitam respostas atrasadas. A solução fica visível por 650 ms no acerto e 1,8 s na expiração.
+Cada acerto confirmado pelo banco avança a pista do jogador. A função Postgres `qe_commit_room` confirma por versão; operações concorrentes releem o estado antes de tentar novamente. Respostas duplicadas não pontuam duas vezes, e jogadores distintos podem avançar simultaneamente. A primeira confirmação da meta encerra a partida. Há intervalo mínimo de 150 ms entre tentativas. Três respostas incorretas em uma janela estritamente menor que 5 segundos bloqueiam aquele jogador por 5 segundos (HTTP 429). Chamadas antigas de `action: "skip"` recebem HTTP 400 antes de acessar o banco. IDs de equação rejeitam respostas de questões já concluídas. A solução fica visível por 650 ms no acerto. Salas salvas com a antiga revelação por expiração retomam a mesma questão para resolução obrigatória.
 
 A interface recebe notificações pelo Supabase Realtime, busca snapshots autenticados e ordena as respostas pela revisão do banco. Há sincronização HTTP a cada 5 segundos como alternativa e uma atualização agendada no encerramento de cada rodada. As notificações contêm apenas uma versão, sem dados do jogo, e usam um tópico aleatório compartilhado somente com os participantes admitidos. Mensagens do navegador nunca atribuem pontos. Se o host sair, o próximo participante assume. Sair de uma partida com apenas um jogador restante encerra a partida. Salas sem acesso por uma hora expiram e são limpas ao criar novas salas.
 
@@ -166,8 +191,12 @@ O link externo “Quem Pensa Assim?” abre com `target="_blank"` e `rel="noopen
 
 ## Verificação realizada
 
-`npm test` cobre 21 testes dos geradores, projeção dos sólidos, validação de tempo, XP, isolamento de pistas, cooldown (inclusive entre questões), pular, expiração e atualização de salas antigas. No Chrome headless, foram exercitados coeficientes √3/π, giro e destaque de medidas, prazo/XP e pausa do solo; uma corrida em dois navegadores com cooldown e vitória; pular e multiplicador do feed. A edição do tempo foi verificada por digitação. Os layouts de 320, 390, 768 e 1440 px foram verificados sem overflow horizontal.
+`npm test` cobre os geradores, perímetros/áreas/volumes de todas as figuras em todos os níveis, diversidade e repetição recente, projeção dos sólidos, tempo/XP, isolamento de pistas, cooldown e permanência da questão depois do prazo. Também verifica a configuração pública do Auth e mensagens de erro. `npm run lint` e `npm run build` validam o código e as rotas.
 
-`test:deployment` verifica páginas públicas, permissões de banco, evento Realtime, respostas concorrentes com pontuação única por questão, pistas independentes, cooldown, pular sem pontos, rejeição de resposta atrasada, vitória por meta e transferência do host. O deploy executa a checagem de segredos no pacote antes de publicar.
+No Chrome headless, os fluxos de cadastro, confirmação PKCE, sessão após recarregar, login correto/incorreto, saída, recuperação e troca de senha e Google foram exercitados com respostas de Auth simuladas. Isso valida a aplicação; e-mails reais e consentimento Google dependem das credenciais e da configuração remota acima. As telas de login foram verificadas em 320, 390, 768 e 1440 px sem overflow horizontal.
+
+Também foram verificados o perímetro do trapézio, abertura/fechamento e reinício da fórmula, rotação do prisma, coeficiente de π do círculo, pulo no solo, navegação do visitante e rejeição de pulo pela API real. O treino de geometria foi conferido nas mesmas quatro larguras e com movimento reduzido.
+
+`test:deployment` verifica páginas públicas e configuração de Auth, permissões de banco, evento Realtime, respostas concorrentes com pontuação única por questão, pistas independentes, cooldown, rejeição de pulo, rejeição de respostas de questões concluídas, vitória por meta e transferência do host. Esse teste de integração exige um Supabase configurado. O deploy executa a checagem de segredos no pacote antes de publicar.
 
 A auditoria automatizada axe, com regras WCAG A/AA, foi aplicada às telas de treino, resultado e feed em desktop/mobile. Toque e cancelamento do arraste foram simulados no Chrome. Isso não equivale a uma auditoria completa: Safari, Firefox, leitores de tela e aparelhos físicos não foram verificados.

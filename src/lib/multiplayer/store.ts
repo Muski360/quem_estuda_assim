@@ -15,6 +15,7 @@ type Racer = Player & {
   reveal: RoomSnapshot["reveal"];
   wrongAt: number[];
   cooldownUntil: number;
+  recent?: string[];
 };
 export type Room = {
   version: 2;
@@ -49,7 +50,8 @@ function racer(name: string): Racer {
 
 function nextQuestion(room: Room, player: Racer, now: number) {
   player.questionIndex += 1;
-  player.equation = generateRound(room.settings, player.questionIndex);
+  player.equation = generateRound(room.settings, player.questionIndex, Math.random, player.recent);
+  player.recent = [...(player.recent ?? []).slice(-11), player.equation.expression];
   player.startedAt = now;
   player.endsAt = now + getQuestionSeconds(room.settings) * 1000;
   player.reveal = null;
@@ -75,11 +77,12 @@ function upgrade(room: Room) {
 function tick(room: Room, now: number) {
   if (room.status !== "playing") return;
   for (const player of room.players) {
-    if (player.nextAt !== null && now >= player.nextAt) nextQuestion(room, player, now);
-    else if (player.nextAt === null && now >= player.endsAt && player.equation) {
-      player.reveal = {answer:player.equation.answer, factor:player.equation.factor, explanation:player.equation.explanation, xp:0, correct:false};
-      player.nextAt = now + 1800;
+    // Expired questions from older rooms must also be solved before advancing.
+    if (player.reveal?.correct === false) {
+      player.reveal = null;
+      player.nextAt = null;
     }
+    if (player.nextAt !== null && now >= player.nextAt) nextQuestion(room, player, now);
   }
 }
 
@@ -94,6 +97,7 @@ function snapshot(room: Room, player: Racer, now = Date.now()): RoomSnapshot {
       expression:equation.expression, hint:equation.hint,
       ...(equation.geometry ? {geometry:equation.geometry} : {}),
       ...(equation.factor ? {factor:equation.factor} : {}),
+      ...(equation.formula ? {formula:equation.formula,measurement:equation.measurement} : {}),
     } : null,
     endsAt:player.endsAt, nextAt:player.nextAt, cooldownUntil:player.cooldownUntil,
     winnerId:room.winnerId, reveal:player.reveal, serverTime:now,
@@ -153,7 +157,7 @@ export function createRoomEngine(initial?: Room) {
     if (room.status === "playing") throw new RoomError("A partida já começou.");
     if (room.players.length < 2) throw new RoomError("Convide pelo menos mais uma pessoa.");
     for (const item of room.players) {
-      Object.assign(item,{score:0,xp:0,questionIndex:-1,wrongAt:[],cooldownUntil:0,lastAnswer:0});
+      Object.assign(item,{score:0,xp:0,questionIndex:-1,wrongAt:[],cooldownUntil:0,lastAnswer:0,recent:[]});
       nextQuestion(room,item,now);
     }
     room.status="playing";
@@ -161,15 +165,15 @@ export function createRoomEngine(initial?: Room) {
     return snapshot(room,player,now);
   }
 
-  function active(room: Room, player: Racer, equationId: string, now: number) {
-    if (room.status !== "playing" || player.nextAt !== null || now >= player.endsAt || player.equation?.id !== equationId)
+  function active(room: Room, player: Racer, equationId: string) {
+    if (room.status !== "playing" || player.nextAt !== null || player.equation?.id !== equationId)
       throw new RoomError("Esta questão já foi encerrada.",409);
     return player.equation;
   }
 
   function answerRoom(code: string, token: string, equationId: string, answer: number) {
     const {room,player,now}=authorized(code,token);
-    const equation=active(room,player,equationId,now);
+    const equation=active(room,player,equationId);
     if (!Number.isFinite(answer)) throw new RoomError("Digite um número válido.");
     if (now < player.cooldownUntil) throw new RoomError("Bloqueio por excesso de erros. Aguarde 5 segundos.",429);
     if (now-player.lastAnswer < 150) throw new RoomError("Aguarde um instante entre respostas.",429);
@@ -196,15 +200,6 @@ export function createRoomEngine(initial?: Room) {
     return {room:snapshot(room,player,now),correct};
   }
 
-  function skipRoom(code: string, token: string, equationId: string) {
-    const {room,player,now}=authorized(code,token);
-    active(room,player,equationId,now);
-    if (now-player.lastAnswer < 150) throw new RoomError("Aguarde um instante entre tentativas.",429);
-    player.lastAnswer=now;
-    nextQuestion(room,player,now);
-    return snapshot(room,player,now);
-  }
-
   function leaveRoom(code: string, token: string) {
     const {room,player}=authorized(code,token);
     room.players=room.players.filter((item)=>item.id !== player.id);
@@ -218,5 +213,5 @@ export function createRoomEngine(initial?: Room) {
     }
   }
 
-  return {createRoom,joinRoom,readRoom,startRoom,answerRoom,skipRoom,leaveRoom,exportRoom:(code:string)=>rooms.get(code) ?? null};
+  return {createRoom,joinRoom,readRoom,startRoom,answerRoom,leaveRoom,exportRoom:(code:string)=>rooms.get(code) ?? null};
 }

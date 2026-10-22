@@ -25,9 +25,16 @@ import type { Equation, GameSettings } from "@/lib/math/generator";
 import { advanceMomentum, INITIAL_MOMENTUM, roundXp } from "@/lib/momentum";
 import { AnswerCelebration, MomentumStrip, SoundToggle, XpCountdown, useStudySound } from "@/components/study-feedback";
 import { GeometryViewer } from "./geometry-viewer";
+import { FormulaReveal } from "./formula-reveal";
 
 type Attempt = { correct: boolean; seconds: number };
-type Round = { equation: Equation; startedAt: number; deadline: number };
+type Round = { equation: Equation; startedAt: number; deadline: number; recent: string[] };
+
+function createRound(settings: GameSettings, index: number, recent: readonly string[] = []): Round {
+  const equation = generateRound(settings, index, Math.random, recent);
+  const now = Date.now();
+  return { equation, startedAt: now, deadline: now + getQuestionSeconds(settings) * 1000, recent: [...recent.slice(-11), equation.expression] };
+}
 
 export function SoloGame({
   settings,
@@ -37,14 +44,7 @@ export function SoloGame({
   onExit: () => void;
 }) {
   const duration = getQuestionSeconds(settings);
-  const [round, setRound] = useState<Round>(() => {
-    const now = Date.now();
-    return {
-      equation: generateRound(settings, 0),
-      startedAt: now,
-      deadline: now + duration * 1000,
-    };
-  });
+  const [round, setRound] = useState<Round>(() => createRound(settings, 0));
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState<{
@@ -99,16 +99,11 @@ export function SoloGame({
     const timer = window.setTimeout(() => {
       setFeedback(null);
       if (attempts.length < settings.rounds) {
-        const now = Date.now();
         answered.current = false;
         setAnswer("");
         setError("");
         setRemaining(duration);
-        setRound({
-          equation: generateRound(settings, attempts.length),
-          startedAt: now,
-          deadline: now + duration * 1000,
-        });
+        setRound((previous) => createRound(settings, attempts.length, previous.recent));
       }
     }, feedback.correct ? 650 : 2300);
     return () => window.clearTimeout(timer);
@@ -170,8 +165,7 @@ export function SoloGame({
     setError("");
     play("next");
     if (count < settings.rounds) {
-      const now=Date.now();
-      setRound({equation:generateRound(settings,count),startedAt:now,deadline:now+duration*1000});
+      setRound((previous) => createRound(settings, count, previous.recent));
       setRemaining(duration);
       answered.current=false;
     }
@@ -311,10 +305,11 @@ export function SoloGame({
             className={`live-equation equation-enter${currentMode === "geometry" ? " geometry-equation" : ""}`}
           >
             {round?.equation.expression ?? "…"}
-            {currentMode !== "linear" && currentMode !== "geometry" && (
+            {currentMode !== "geometry" && !round.equation.expression.includes("=") && (
               <span> = ?</span>
             )}
           </h3>
+          {round.equation.formula && <FormulaReveal key={`formula-${round.equation.id}`} formula={round.equation.formula} />}
           <form onSubmit={submit} className="answer-form">
             <label className="sr-only" htmlFor="solo-answer">
               {round.equation.factor ? `Coeficiente de ${round.equation.factor}` : "Sua resposta"}

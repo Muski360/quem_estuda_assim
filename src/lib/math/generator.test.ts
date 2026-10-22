@@ -83,74 +83,63 @@ test("potências, raízes e logaritmos mantêm a relação inversa", () => {
       );
     }
     const logarithm = generateEquation("logarithms", "brutal");
-    const match = logarithm.expression.match(/^log([₂₃₄₅₆₇₈])\((\d+)\)$/)!;
-    assert.equal(
-      subscript.indexOf(match[1]) ** logarithm.answer,
-      Number(match[2]),
-    );
+    const match = logarithm.expression.match(/^log([₀-₉]+)\((\d+|x)\)(?: = (\d+))?$/)!;
+    const base = Number([...match[1]].map((digit) => subscript.indexOf(digit)).join(""));
+    if (match[2] === "x") assert.equal(logarithm.answer, base ** Number(match[3]));
+    else assert.equal(base ** logarithm.answer, Number(match[2]));
   }
 });
 
-test("áreas e volumes correspondem às dimensões apresentadas", () => {
-  const shapes = new Set<string>();
-  for (let index = 0; index < 300; index++) {
-    const equation = generateEquation("geometry", "warmup");
-    const dimensions = equation.expression.match(/\d+/g)!.map(Number);
-    const shape = equation.expression.split(" · ")[0];
-    shapes.add(shape);
-    const [a, b, c] = dimensions;
-    const expected =
-      shape === "Quadrado"
-        ? a ** 2
-        : shape === "Triângulo"
-          ? (a * b) / 2
-          : shape === "Retângulo"
-            ? a * b
-            : shape === "Cubo"
-              ? a ** 3
-              : a * b * c;
-    assert.equal(equation.answer, expected, equation.expression);
-    const figure = equation.geometry!;
-    assert.ok(figure, "Geometria precisa de dados para desenhar a figura");
-    assert.equal(figure.shape, ({ Quadrado: "square", Triângulo: "triangle", Retângulo: "rectangle", Cubo: "cube", Bloco: "cuboid" } as Record<string, string>)[shape]);
-    assert.equal("answer" in figure, false);
-    if (figure.shape === "square" || figure.shape === "cube")
-      assert.equal(figure.side, a);
-    else if (figure.shape === "cuboid")
-      assert.deepEqual([figure.width, figure.height, figure.depth], [a, b, c]);
-    else if ("base" in figure) assert.deepEqual([figure.base, figure.height], [a, b]);
-  }
-  assert.equal(shapes.size, 5);
-});
+function geometryAt(shape: number, perimeter: boolean, difficulty: Difficulty = "hard") {
+  const sequence = [0.4, 0.4, perimeter ? 0.75 : 0.25, 0.4, 0.4, (shape + 0.5) / (difficulty === "warmup" || difficulty === "medium" ? 8 : 12)];
+  return generateEquation("geometry", difficulty, () => sequence.shift() ?? 0.4);
+}
 
-test("sólidos avançados usam coeficientes exatos de π ou √3 só em Difícil/Brutal", () => {
-  for (const difficulty of ["hard","brutal"] as const) {
-    for (const [index,shape] of [[5,"cylinder"],[6,"cone"],[7,"pyramid"],[8,"frustum"]] as const) {
-      const equation=generateEquation("geometry",difficulty,()=> (index+.5)/9);
-      const figure=equation.geometry!;
-      assert.equal(figure.shape,shape);
-      if (figure.shape==="pyramid") {
-        assert.equal(equation.factor,"√3");
-        assert.equal(equation.answer,figure.baseSide**2*figure.height/12);
-      } else if (figure.shape==="cylinder" || figure.shape==="cone") {
-        assert.equal(equation.factor,"π");
-        assert.equal(equation.answer,figure.radius**2*figure.height/(figure.shape==="cone" ? 3:1));
-      } else if (figure.shape==="frustum") {
-        assert.equal(equation.factor,"π");
-        assert.equal(equation.answer,figure.height/3*(figure.radius**2+figure.radius*figure.topRadius+figure.topRadius**2));
-        assert.ok(figure.radius > figure.topRadius);
+test("perímetros, áreas e volumes conferem para todas as figuras e níveis", () => {
+  for (const difficulty of Object.keys(DIFFICULTIES) as Difficulty[]) {
+    const count = difficulty === "warmup" || difficulty === "medium" ? 8 : 12;
+    const shapes = new Set<string>();
+    for (let index = 0; index < count; index++) for (const perimeter of [false, true]) {
+      const equation = geometryAt(index, perimeter, difficulty);
+      const figure = equation.geometry!;
+      shapes.add(figure.shape);
+      let expected: number;
+      switch (figure.shape) {
+        case "square": expected = perimeter ? 4 * figure.side : figure.side ** 2; break;
+        case "rectangle": expected = perimeter ? 2 * (figure.base + figure.height) : figure.base * figure.height; break;
+        case "triangle":
+          expected = perimeter ? figure.base + 2 * figure.side! : figure.base * figure.height / 2;
+          if (perimeter) assert.equal((figure.base / 2) ** 2 + figure.height ** 2, figure.side! ** 2);
+          break;
+        case "circle": expected = perimeter ? 2 * figure.radius : figure.radius ** 2; break;
+        case "trapezoid":
+          expected = perimeter ? figure.base + figure.topBase + 2 * figure.side : (figure.base + figure.topBase) * figure.height / 2;
+          assert.equal(((figure.base - figure.topBase) / 2) ** 2 + figure.height ** 2, figure.side ** 2);
+          break;
+        case "cube": expected = perimeter ? 4 * figure.side : figure.side ** 3; break;
+        case "cuboid": expected = perimeter ? 2 * (figure.width + figure.depth) : figure.width * figure.height * figure.depth; break;
+        case "prism":
+          expected = perimeter ? figure.base + figure.baseHeight + figure.baseSide : figure.base * figure.baseHeight * figure.height / 2;
+          assert.equal(figure.base ** 2 + figure.baseHeight ** 2, figure.baseSide ** 2);
+          break;
+        case "cylinder": expected = perimeter ? 2 * figure.radius : figure.radius ** 2 * figure.height; break;
+        case "cone": expected = perimeter ? 2 * figure.radius : figure.radius ** 2 * figure.height / 3; break;
+        case "pyramid": expected = perimeter ? 3 * figure.baseSide : figure.baseSide ** 2 * figure.height / 12; break;
+        case "frustum": expected = perimeter ? 2 * figure.radius : figure.height / 3 * (figure.radius ** 2 + figure.radius * figure.topRadius + figure.topRadius ** 2); break;
       }
-      assert.match(equation.hint,/coeficiente/);
-      assert.equal(Number.isSafeInteger(equation.answer),true);
-      assert.equal("answer" in figure,false);
+      assert.equal(equation.answer, expected, `${difficulty}/${equation.expression}`);
+      assert.ok(Number.isSafeInteger(expected));
+      assert.ok(equation.formula);
+      assert.equal("answer" in figure, false);
+      const pi = ["circle", "cylinder", "cone", "frustum"].includes(figure.shape);
+      assert.equal(equation.factor, pi ? "π" : figure.shape === "pyramid" && !perimeter ? "√3" : undefined);
+      if (perimeter) {
+        assert.ok(["perimeter", "basePerimeter"].includes(equation.measurement!));
+        assert.match(equation.hint, /perímetro.*cm\?/);
+        assert.doesNotMatch(equation.hint, /cm[²³]/);
+      } else assert.ok(["area", "volume"].includes(equation.measurement!));
     }
-  }
-  for (const difficulty of ["warmup","medium"] as const) {
-    for (let i=0;i<9;i++) {
-      const equation=generateEquation("geometry",difficulty,()=> (i+.5)/9);
-      assert.equal(equation.factor,undefined);
-      assert.ok(["square","triangle","rectangle","cube","cuboid"].includes(equation.geometry!.shape));
-    }
+    assert.equal(shapes.size, count);
   }
   assert.equal(formatAnswer(12,"√3"),"12√3");
   assert.equal(formatAnswer(12,"π"),"12π");
@@ -169,11 +158,45 @@ test("tempo aceita só segundos inteiros entre 5 e 180 e mantém salas antigas",
 });
 
 test("aquecimento também inclui cubos e blocos com medidas estruturadas", () => {
-  for (const [random, expected] of [[0.7, "cube"], [0.95, "cuboid"]] as const) {
-    const equation = generateEquation("geometry", "warmup", () => random);
+  for (const [shape, expected] of [[3, "cube"], [4, "cuboid"]] as const) {
+    const equation = geometryAt(shape, false, "warmup");
     assert.equal(equation.geometry?.shape, expected);
   }
   assert.equal(generateEquation("basic", "warmup").geometry, undefined);
+});
+
+test("intervalos e formatos ampliam diversidade sem multiplicações maiores no aquecimento", () => {
+  let seed = 123;
+  const random = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+  for (const [mode, minimum] of [["basic", 350], ["powers", 22], ["linear", 300], ["logarithms", 32], ["geometry", 280]] as const) {
+    const expressions = new Set<string>();
+    for (let i = 0; i < 1000; i++) {
+      const equation = generateEquation(mode, "warmup", random);
+      expressions.add(equation.expression);
+      if (mode === "basic" && equation.expression.includes("×")) {
+        const [left, right] = equation.expression.split(" × ").map(Number);
+        assert.ok(left <= 12 && right <= 9);
+      }
+    }
+    assert.ok(expressions.size >= minimum, `${mode}: apenas ${expressions.size} contas diferentes`);
+  }
+});
+
+test("histórico evita repetição recente e tentativas têm limite com RNG constante", () => {
+  const settings: GameSettings = { mode: "powers", difficulty: "warmup", rounds: 30 };
+  let seed = 456;
+  const random = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+  const recent: string[] = [];
+  for (let index = 0; index < 100; index++) {
+    const equation = generateRound(settings, index, random, recent);
+    assert.ok(!recent.includes(equation.expression));
+    recent.push(equation.expression);
+    if (recent.length > 12) recent.shift();
+  }
+  const repeated = generateRound(settings, 0, () => 0.5);
+  let calls = 0;
+  assert.equal(generateRound(settings, 1, () => { calls++; return 0.5; }, [repeated.expression]).expression, repeated.expression);
+  assert.ok(calls <= 24 * 10);
 });
 
 test("seleção múltipla aceita apenas conteúdos únicos e não vazios", () => {

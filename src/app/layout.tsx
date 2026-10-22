@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { StudyFeedbackProvider } from "@/components/study-feedback";
+import { AuthProvider } from "@/components/auth/auth-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,11 +45,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a className="skip-link" href="#conteudo">
           Pular para o conteúdo
         </a>
-        <StudyFeedbackProvider>
+        <AuthProvider><StudyFeedbackProvider>
           <SiteHeader />
           {children}
           <SiteFooter />
-        </StudyFeedbackProvider>
+        </StudyFeedbackProvider></AuthProvider>
       </body>
     </html>
   );

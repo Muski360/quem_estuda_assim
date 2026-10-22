@@ -1,8 +1,8 @@
 export const DIFFICULTIES = {
-  warmup: { label: "Aquecimento", max: 12, seconds: 30 },
-  medium: { label: "Médio", max: 30, seconds: 25 },
-  hard: { label: "Difícil", max: 75, seconds: 20 },
-  brutal: { label: "Brutal", max: 150, seconds: 15 },
+  warmup: { label: "Aquecimento", max: 20, seconds: 30 },
+  medium: { label: "Médio", max: 50, seconds: 25 },
+  hard: { label: "Difícil", max: 100, seconds: 20 },
+  brutal: { label: "Brutal", max: 200, seconds: 15 },
 } as const;
 
 export const MODES = {
@@ -28,7 +28,7 @@ export const MODES = {
   },
   geometry: {
     label: "Geometria",
-    description: "Áreas e volumes, sem papel",
+    description: "Perímetros, áreas e volumes",
     symbol: "△",
   },
 } as const;
@@ -43,10 +43,13 @@ export type GameSettings = {
 };
 export type GeometryFigure =
   | { shape: "square"; side: number }
-  | { shape: "triangle"; base: number; height: number }
+  | { shape: "triangle"; base: number; height: number; side?: number }
   | { shape: "rectangle"; base: number; height: number }
+  | { shape: "circle"; radius: number }
+  | { shape: "trapezoid"; base: number; topBase: number; height: number; side: number }
   | { shape: "cube"; side: number }
   | { shape: "cuboid"; width: number; height: number; depth: number }
+  | { shape: "prism"; base: number; baseHeight: number; baseSide: number; height: number }
   | { shape: "cylinder" | "cone"; radius: number; height: number }
   | { shape: "pyramid"; baseSide: number; height: number }
   | { shape: "frustum"; radius: number; topRadius: number; height: number };
@@ -62,6 +65,8 @@ export type Equation = {
   explanation: string;
   geometry?: GeometryFigure;
   factor?: AnswerFactor;
+  measurement?: "area" | "volume" | "perimeter" | "basePerimeter";
+  formula?: string;
 };
 
 export const DEFAULT_SETTINGS: GameSettings = {
@@ -102,10 +107,15 @@ export function getSelectedModes(mode: GameSettings["mode"]): MathMode[] {
   return Array.isArray(mode) ? mode : [mode];
 }
 
-export function generateRound(settings: GameSettings, index: number, random = Math.random): Equation {
+export function generateRound(settings: GameSettings, index: number, random = Math.random, recent: readonly string[] = []): Equation {
   const modes = getSelectedModes(settings.mode);
   if (modes.length === 0) throw new Error("Selecione pelo menos um conteúdo.");
-  return generateEquation(modes[index % modes.length], settings.difficulty, random);
+  let equation: Equation;
+  for (let attempt = 0; attempt < 24; attempt++) {
+    equation = generateEquation(modes[index % modes.length], settings.difficulty, random);
+    if (!recent.includes(equation.expression)) return equation;
+  }
+  return equation!;
 }
 
 export function parseAnswer(value: string): number | null {
@@ -133,14 +143,16 @@ export function generateEquation(
     Math.floor(random() * (max - min + 1)) + min;
   const level = Object.keys(DIFFICULTIES).indexOf(difficulty);
   const max = DIFFICULTIES[difficulty].max;
-  const a = integer(2, max);
-  const b = integer(2, max);
+  const a = integer(0, max);
+  const b = integer(0, max);
   let expression: string;
   let answer: number;
   let hint = "Calcule mentalmente. Você consegue.";
   let explanation: string;
   let geometry: GeometryFigure | undefined;
   let factor: AnswerFactor | undefined;
+  let measurement: Equation["measurement"];
+  let formula: string | undefined;
 
   switch (mode) {
     case "basic": {
@@ -153,18 +165,20 @@ export function generateEquation(
         answer = a - b;
       } else if (operation === 2) {
         const factor = integer(2, 9 + level * 5);
-        expression = `${a} × ${factor}`;
-        answer = a * factor;
+        const multiplicand = integer(0, [12, 30, 75, 150][level]);
+        expression = `${multiplicand} × ${factor}`;
+        answer = multiplicand * factor;
       } else {
-        expression = `${a * b} ÷ ${b}`;
+        const divisor = integer(2, 12 + level * 6);
+        expression = `${a * divisor} ÷ ${divisor}`;
         answer = a;
       }
       explanation = `${expression} = ${answer}. Separe os números em partes menores para ganhar velocidade.`;
       break;
     }
     case "powers": {
-      const base = integer(2, 9 + level * 3);
       const exponent = integer(2, level > 1 ? 3 : 2);
+      const base = integer(2, exponent === 3 ? 9 + level * 2 : 12 + level * 3);
       if (integer(0, 1) === 0) {
         expression = `${base}${superscript(exponent)}`;
         answer = base ** exponent;
@@ -188,75 +202,133 @@ export function generateEquation(
       break;
     }
     case "logarithms": {
-      const base = integer(2, 5 + level);
-      answer = integer(1, 2 + level);
-      expression = `log${subscript(base)}(${base ** answer})`;
-      hint = "A qual expoente a base deve ser elevada?";
-      explanation = `log${subscript(base)}(${base ** answer}) = ${answer}, porque ${base}${superscript(answer)} = ${base ** answer}.`;
+      const base = integer(2, 9 + level * 2);
+      const exponent = integer(1, base > 5 + level ? 2 : 2 + level);
+      const argument = base ** exponent;
+      if (integer(0, 1) === 0) {
+        answer = exponent;
+        expression = `log${subscript(base)}(${argument})`;
+        hint = "A qual expoente a base deve ser elevada?";
+      } else {
+        answer = argument;
+        expression = `log${subscript(base)}(x) = ${exponent}`;
+        hint = "Qual é o valor de x dentro do logaritmo?";
+      }
+      explanation = `log${subscript(base)}(${argument}) = ${exponent}, porque ${base}${superscript(exponent)} = ${argument}.`;
       break;
     }
     case "geometry": {
-      const side = integer(2, 8 + level * 6);
-      const height = integer(2, 8 + level * 5);
-      const shape = integer(0, level >= 2 ? 8 : 4);
+      let calculation: string;
+      const perimeter = integer(0, 1) === 1;
+      const side = integer(2, (perimeter ? 16 : 8) + level * 5);
+      const height = integer(2, 8 + level * 4);
+      const shape = integer(0, level >= 2 ? 11 : 7);
+      measurement = shape === 0 || shape === 1 || shape === 2 || shape === 5 || shape === 6
+        ? (perimeter ? "perimeter" : "area") : (perimeter ? "basePerimeter" : "volume");
       if (shape === 0) {
         geometry = { shape: "square", side };
         expression = `Quadrado · lado ${side} cm`;
-        answer = side ** 2;
-        explanation = `Área = lado² = ${side} × ${side} = ${answer} cm².`;
+        answer = perimeter ? side * 4 : side ** 2;
+        formula = perimeter ? "P = 4 × lado" : "A = lado²";
+        calculation = perimeter ? `4 × ${side}` : `${side}²`;
       } else if (shape === 1) {
-        geometry = { shape: "triangle", base: side * 2, height };
-        expression = `Triângulo · b ${side * 2} · h ${height}`;
-        answer = side * height;
-        explanation = `Área = (base × altura) ÷ 2 = (${side * 2} × ${height}) ÷ 2 = ${answer} cm².`;
+        if (perimeter) {
+          const scale = integer(1, 4 + level * 2);
+          const [halfBase, triangleHeight] = integer(0, 1) ? [3, 4] : [4, 3];
+          geometry = { shape: "triangle", base: halfBase * 2 * scale, height: triangleHeight * scale, side: 5 * scale };
+          expression = `Triângulo isósceles · base ${geometry.base} cm · lados ${geometry.side} cm`;
+          answer = geometry.base + 2 * geometry.side!;
+          formula = "P = base + lado + lado";
+          calculation = `${geometry.base} + ${geometry.side} + ${geometry.side}`;
+        } else {
+          geometry = { shape: "triangle", base: side * 2, height };
+          expression = `Triângulo · b ${side * 2} cm · h ${height} cm`;
+          answer = side * height;
+          formula = "A = (base × altura) ÷ 2";
+          calculation = `(${side * 2} × ${height}) ÷ 2`;
+        }
       } else if (shape === 2) {
         geometry = { shape: "rectangle", base: side, height };
         expression = `Retângulo · ${side} × ${height} cm`;
-        answer = side * height;
-        explanation = `Área = base × altura = ${side} × ${height} = ${answer} cm².`;
+        answer = perimeter ? 2 * (side + height) : side * height;
+        formula = perimeter ? "P = 2 × (base + altura)" : "A = base × altura";
+        calculation = perimeter ? `2 × (${side} + ${height})` : `${side} × ${height}`;
       } else if (shape === 3) {
-        geometry = { shape: "cube", side };
-        expression = `Cubo · aresta ${side} cm`;
-        answer = side ** 3;
-        explanation = `Volume = aresta³ = ${side}³ = ${answer} cm³.`;
+        const edge = perimeter ? side : integer(2, 8 + level * 3);
+        geometry = { shape: "cube", side: edge };
+        expression = `Cubo · aresta ${edge} cm`;
+        answer = perimeter ? edge * 4 : edge ** 3;
+        formula = perimeter ? "P da base = 4 × aresta" : "V = aresta³";
+        calculation = perimeter ? `4 × ${edge}` : `${edge}³`;
       } else if (shape === 4) {
-        geometry = { shape: "cuboid", width: side, height, depth: 2 };
-        expression = `Bloco · ${side} × ${height} × 2 cm`;
-        answer = side * height * 2;
-        explanation = `Volume = comprimento × largura × altura = ${side} × ${height} × 2 = ${answer} cm³.`;
+        const depth = integer(2, 6 + level * 2);
+        geometry = { shape: "cuboid", width: side, height, depth };
+        expression = `Bloco · comprimento ${side} cm · largura ${depth} cm · altura ${height} cm`;
+        answer = perimeter ? 2 * (side + depth) : side * height * depth;
+        formula = perimeter ? "P da base = 2 × (comprimento + largura)" : "V = comprimento × largura × altura";
+        calculation = perimeter ? `2 × (${side} + ${depth})` : `${side} × ${depth} × ${height}`;
+      } else if (shape === 5) {
+        geometry = { shape: "circle", radius: side };
+        expression = `Círculo · raio ${side} cm`;
+        factor = "π";
+        answer = perimeter ? 2 * side : side ** 2;
+        formula = perimeter ? "P = 2 × π × raio" : "A = π × raio²";
+        calculation = perimeter ? `2 × π × ${side}` : `π × ${side}²`;
+      } else if (shape === 6) {
+        const scale = integer(1, 3 + level);
+        const topBase = integer(2, 10 + level * 4);
+        geometry = { shape: "trapezoid", base: topBase + 6 * scale, topBase, height: 4 * scale, side: 5 * scale };
+        expression = `Trapézio isósceles · bases ${geometry.base} e ${topBase} cm · lados ${geometry.side} cm · h ${geometry.height} cm`;
+        answer = perimeter ? geometry.base + topBase + 2 * geometry.side : (geometry.base + topBase) * geometry.height / 2;
+        formula = perimeter ? "P = base maior + base menor + lado + lado" : "A = (base maior + base menor) × altura ÷ 2";
+        calculation = perimeter ? `${geometry.base} + ${topBase} + ${geometry.side} + ${geometry.side}` : `(${geometry.base} + ${topBase}) × ${geometry.height} ÷ 2`;
+      } else if (shape === 7) {
+        const scale = integer(1, 3 + level);
+        geometry = { shape: "prism", base: 3 * scale, baseHeight: 4 * scale, baseSide: 5 * scale, height };
+        expression = `Prisma triangular · base com lados ${geometry.base}, ${geometry.baseHeight} e ${geometry.baseSide} cm · h ${height} cm`;
+        answer = perimeter ? 12 * scale : geometry.base * geometry.baseHeight * height / 2;
+        formula = perimeter ? "P da base = a + b + c" : "V = (cateto a × cateto b ÷ 2) × altura";
+        calculation = perimeter ? `${geometry.base} + ${geometry.baseHeight} + ${geometry.baseSide}` : `(${geometry.base} × ${geometry.baseHeight} ÷ 2) × ${height}`;
       } else {
         const radius = integer(2, level === 3 ? 9 : 6);
         const solidHeight = 3 * integer(2, level === 3 ? 10 : 6);
-        factor = shape === 7 ? "√3" : "π";
-        if (shape === 5) {
+        factor = perimeter && shape === 10 ? undefined : shape === 10 ? "√3" : "π";
+        if (shape === 8) {
           geometry = { shape: "cylinder", radius, height: solidHeight };
           expression = `Cilindro · r ${radius} cm · h ${solidHeight} cm`;
-          answer = radius ** 2 * solidHeight;
-          explanation = `V = πr²h = π × ${radius}² × ${solidHeight} = ${answer}π cm³.`;
-        } else if (shape === 6) {
+          answer = perimeter ? 2 * radius : radius ** 2 * solidHeight;
+          formula = perimeter ? "P da base = 2 × π × raio" : "V = π × raio² × altura";
+          calculation = perimeter ? `2 × π × ${radius}` : `π × ${radius}² × ${solidHeight}`;
+        } else if (shape === 9) {
           geometry = { shape: "cone", radius, height: solidHeight };
           expression = `Cone · r ${radius} cm · h ${solidHeight} cm`;
-          answer = radius ** 2 * solidHeight / 3;
-          explanation = `V = πr²h ÷ 3 = π × ${radius}² × ${solidHeight} ÷ 3 = ${answer}π cm³.`;
-        } else if (shape === 7) {
+          answer = perimeter ? 2 * radius : radius ** 2 * solidHeight / 3;
+          formula = perimeter ? "P da base = 2 × π × raio" : "V = π × raio² × altura ÷ 3";
+          calculation = perimeter ? `2 × π × ${radius}` : `π × ${radius}² × ${solidHeight} ÷ 3`;
+        } else if (shape === 10) {
           const baseSide = radius * 2;
           geometry = { shape: "pyramid", baseSide, height: solidHeight };
           expression = `Pirâmide · base equilátera de lado ${baseSide} cm · h ${solidHeight} cm`;
-          answer = radius ** 2 * solidHeight / 3;
-          explanation = `A base equilátera tem área a²√3 ÷ 4. V = a²h√3 ÷ 12 = ${baseSide}² × ${solidHeight}√3 ÷ 12 = ${answer}√3 cm³.`;
+          answer = perimeter ? 3 * baseSide : radius ** 2 * solidHeight / 3;
+          formula = perimeter ? "P da base = 3 × lado" : "V = lado² × altura × √3 ÷ 12";
+          calculation = perimeter ? `3 × ${baseSide}` : `${baseSide}² × ${solidHeight} × √3 ÷ 12`;
         } else {
           const largeRadius = radius + integer(2, 5);
           geometry = { shape: "frustum", radius: largeRadius, topRadius: radius, height: solidHeight };
           expression = `Tronco de cone · R ${largeRadius} cm · r ${radius} cm · h ${solidHeight} cm`;
-          answer = solidHeight / 3 * (largeRadius ** 2 + largeRadius * radius + radius ** 2);
-          explanation = `V = πh(R² + Rr + r²) ÷ 3 = π × ${solidHeight} × (${largeRadius}² + ${largeRadius} × ${radius} + ${radius}²) ÷ 3 = ${answer}π cm³.`;
+          answer = perimeter ? 2 * largeRadius : solidHeight / 3 * (largeRadius ** 2 + largeRadius * radius + radius ** 2);
+          formula = perimeter ? "P da base maior = 2 × π × raio maior" : "V = π × altura × (R² + R × r + r²) ÷ 3";
+          calculation = perimeter ? `2 × π × ${largeRadius}` : `π × ${solidHeight} × (${largeRadius}² + ${largeRadius} × ${radius} + ${radius}²) ÷ 3`;
         }
       }
-      hint = shape < 3 ? "Qual é a área, em cm²?" : "Qual é o volume, em cm³?";
+      const unit = perimeter ? "cm" : measurement === "area" ? "cm²" : "cm³";
+      const label = measurement === "basePerimeter" ? (shape === 11 ? "perímetro da base maior" : "perímetro da base") : measurement === "perimeter" ? "perímetro" : measurement === "area" ? "área" : "volume";
+      hint = `Qual é o ${label === "área" ? "valor da área" : label}, em ${unit}?`;
       if (factor) hint += ` Digite apenas o coeficiente de ${factor}.`;
+      explanation = `${formula}. Substituindo: ${calculation} = ${formatAnswer(answer, factor)} ${unit}.`;
       break;
     }
   }
 
-  return { id: crypto.randomUUID(), mode, expression, answer, hint, explanation, ...(geometry ? { geometry } : {}), ...(factor ? { factor } : {}) };
+  return { id: crypto.randomUUID(), mode, expression, answer, hint, explanation, ...(geometry ? { geometry, measurement, formula } : {}), ...(factor ? { factor } : {}) };
 }

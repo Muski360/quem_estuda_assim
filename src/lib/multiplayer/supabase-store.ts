@@ -118,9 +118,6 @@ export async function runRoomCommand(command: ExistingCommand, token: string) {
             command.answer,
           );
           break;
-        case "skip":
-          result = {room: engine.skipRoom(code, token, command.equationId)};
-          break;
         case "leave":
           engine.leaveRoom(code, token);
           result = { ok: true };

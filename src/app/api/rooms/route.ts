@@ -67,9 +67,7 @@ export async function POST(request: Request) {
           ),
         );
       case "skip":
-        if (typeof data.equationId !== "string" || data.equationId.length > 100)
-          throw new RoomError("Questão inválida.");
-        return json(await runRoomCommand({action:"skip",code:data.code,equationId:data.equationId},token(request)));
+        throw new RoomError("No multiplayer, resolva corretamente a questão para avançar.");
       case "answer":
         if (
           typeof data.equationId !== "string" ||
