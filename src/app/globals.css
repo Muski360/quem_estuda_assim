@@ -3238,9 +3238,32 @@ svg {
 .has-geometry .xp-race-score { margin: 6px 0 9px; }
 .has-geometry .xp-race-score > strong { font-size: 30px; }
 .has-geometry .equation-hint { margin-top: 12px; }
+.geometry-prompt {
+  padding: 14px 16px;
+  border-left: 4px solid #d6f58b;
+  background: #d6f58b0d;
+  text-align: left;
+}
+.geometry-prompt > strong {
+  display: block;
+  color: #d6f58b;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -.5px;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.geometry-prompt > span {
+  display: block;
+  margin-top: 8px;
+  color: #d9e5ff;
+  font-size: 14px;
+  line-height: 1.5;
+}
 .has-geometry .geometry-equation {
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.5;
   letter-spacing: 0;
   color: #d9e5ff;

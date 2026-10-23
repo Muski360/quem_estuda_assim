@@ -26,6 +26,7 @@ import { AnswerCelebration, SoundToggle, XpCountdown, useStudySound } from "@/co
 import { roundXp } from "@/lib/momentum";
 import { GeometryViewer } from "./geometry-viewer";
 import { FormulaReveal } from "./formula-reveal";
+import { EquationHint } from "./equation-hint";
 import { useStudyProgress } from "@/components/profile/study-progress";
 
 async function command<T>(body: RoomCommand, token?: string): Promise<T> {
@@ -561,7 +562,7 @@ export function MultiplayerGame({
             maximum={roundXp(0,room.settings)}
             active={!room.reveal}
           />
-          <p className="equation-hint">{room.equation?.hint}</p>
+          <EquationHint equation={room.equation} />
           {room.equation?.geometry && <GeometryViewer key={`figure-${room.equation.id}`} figure={room.equation.geometry} />}
           <h3
             key={room.equation?.id}

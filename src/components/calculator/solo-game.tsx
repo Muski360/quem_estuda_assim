@@ -26,6 +26,7 @@ import { advanceMomentum, INITIAL_MOMENTUM, roundXp } from "@/lib/momentum";
 import { AnswerCelebration, MomentumStrip, SoundToggle, XpCountdown, useStudySound } from "@/components/study-feedback";
 import { GeometryViewer } from "./geometry-viewer";
 import { FormulaReveal } from "./formula-reveal";
+import { EquationHint } from "./equation-hint";
 import { useStudyProgress } from "@/components/profile/study-progress";
 
 type Attempt = { correct: boolean; seconds: number };
@@ -299,9 +300,7 @@ export function SoloGame({
             <span style={{ transform: `scaleX(${remaining / duration})` }} />
           </div>
           <XpCountdown available={feedback ? momentum.lastGain : roundXp(duration - remaining,settings)} maximum={roundXp(0,settings)} active={!feedback} />
-          <p className="equation-hint">
-            {round?.equation.hint ?? "Preparando seu treino…"}
-          </p>
+          <EquationHint equation={round.equation} />
           {round.equation.geometry && <GeometryViewer key={`figure-${round.equation.id}`} figure={round.equation.geometry} />}
           <h3
             key={round.equation.id}

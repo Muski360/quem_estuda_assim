@@ -20,10 +20,15 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
+    "katex": "^0.19.1",
     "lucide-react": "^1.60.0",
     "next": "16.4.2",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "react-markdown": "^10.1.0",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.20.12",
