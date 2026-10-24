@@ -50,11 +50,11 @@ Cache Components e Partial Prefetching foram desativados: a combinação causava
 
 A publicação atual é feita com `npm run deploy`. Commits locais não publicam o site. Para publicar a cada push, é necessário conectar o repositório ao Worker em Cloudflare Workers Builds e configurar a branch de produção.
 
-## Conta opcional com Supabase Auth
+## Autenticação com Supabase Auth
 
 `/entrar` e `/cadastro` oferecem e-mail/senha e Google. Há confirmação de e-mail, recuperação em `/recuperar-senha`, nova senha em `/redefinir-senha` e retorno em `/auth/callback`. A sessão persiste no navegador, renova automaticamente e sincroniza o cabeçalho entre abas; “Sair” encerra o acesso neste navegador. Nenhuma ferramenta exige conta, inclusive o multiplayer, que conserva seus tokens de sala independentes.
 
-O Auth reutiliza `@supabase/supabase-js` e as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY`. `/api/auth/config` entrega apenas esses valores públicos em tempo de execução, sem cache. `SUPABASE_SECRET_KEY` continua exclusiva do servidor e só é necessária para as salas. Sem configuração, as telas explicam a indisponibilidade e oferecem continuar sem entrar. As contas conectadas também podem personalizar o perfil e acumular progresso; o banco e o armazenamento validam a sessão por RLS.
+O Auth reutiliza `@supabase/supabase-js` e as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY`. `/api/auth/config` entrega apenas esses valores públicos em tempo de execução, sem cache. `SUPABASE_SECRET_KEY` fica no servidor e nos scripts administrativos de importação/teste. O Quem Calcula funciona sem conta; o Quem Scrolla exige autenticação para guardar o histórico e excluir questões já respondidas. Login, cadastro e Google preservam o retorno ao Scroll, sem alterar a URL de callback já configurada. Somente caminhos internos conhecidos são aceitos como destino.
 
 Para ativar o serviço remoto (cerca de 10–15 minutos, com acesso ao Google Cloud):
 
@@ -77,7 +77,7 @@ https://quem-estuda-assim.muski.workers.dev/auth/callback?recovery=1
 
 O avatar no cabeçalho abre `/perfil`. A página permite editar nome de 2–60 caracteres, escolher entre seis cores, enviar uma foto JPG/PNG/WebP de até 5 MB e remover a foto. A prévia mostra as alterações antes de salvar; nome, cor e foto são persistidos em Supabase Auth. O nome e avatar do Google são usados inicialmente. A foto enviada é recortada ao centro, reduzida para 512×512 e convertida em WebP no navegador. O bucket público `qe-avatars` limita cada arquivo a 2 MB e permite enviar/remover apenas arquivos da pasta do próprio usuário. Cada substituição usa uma URL nova para evitar cache antigo.
 
-Os três indicadores são acumulados por conta: questões respondidas no Quem Scrolla Assim?, rodadas concluídas no Quem Calcula Assim? e XP total dos dois módulos. No solo, respostas enviadas a tempo contam mesmo quando incorretas; no multiplayer, contam os acertos que avançam a pista. Pulos e expirações sem resposta não contam. O XP segue exatamente os valores ganhos nos jogos, incluindo multiplicador e combo. A revanche reinicia o placar da sala, mas preserva o acumulado do perfil.
+Os três indicadores são acumulados por conta: questões respondidas no Quem Scrolla Assim?, rodadas concluídas no Quem Calcula Assim? e XP total dos dois módulos. No solo, respostas enviadas a tempo contam mesmo quando incorretas; no multiplayer, contam os acertos que avançam a pista. No Scroll oficial, cada questão entra na contagem uma vez; as revisões têm indicadores separados. Pulos e expirações sem resposta não contam. O Calcula mantém multiplicador e combo; o Scroll dá 10 XP por acerto e 15 a partir do terceiro acerto seguido, sem multiplicador de tempo e sem repetir XP em revisão. A revanche reinicia o placar da sala, mas preserva o acumulado do perfil.
 
 `qe_study_stats` guarda os totais e só permite ler os dados da própria conta. `qe_study_events` registra o ID único de cada atividade; `qe_record_study_activity` valida o usuário e os limites de XP, confirma evento e totais na mesma transação e ignora reenvios. Não há permissão direta para editar contadores. Atividades pendentes são guardadas separadamente por conta e evento no navegador, para sobreviver a recargas e falhas de rede, e são reenviadas ao reconectar. O progresso do visitante não é atribuído a uma conta posteriormente.
 
@@ -105,8 +105,8 @@ src/
 │   ├── scrolla/page.tsx            # Quem Scrolla Assim? — /scrolla
 │   ├── api/rooms/route.ts          # HTTP: criar, entrar, iniciar, responder, sair
 │   ├── api/auth/config/route.ts    # Configuração pública em tempo de execução
-│   ├── entrar/page.tsx            # Login opcional
-│   ├── cadastro/page.tsx          # Cadastro opcional
+│   ├── entrar/page.tsx            # Login com retorno à ferramenta escolhida
+│   ├── cadastro/page.tsx          # Cadastro e confirmação de e-mail
 │   ├── globals.css                # Tokens visuais, estados e breakpoints
 │   └── icon.svg                   # Identidade vetorial
 ├── components/
@@ -120,11 +120,12 @@ src/
 │   │   ├── geometry-viewer.tsx    # SVG com rotação e destaque de medidas
 │   │   └── multiplayer-game.tsx   # Lobby, sincronização e placar
 │   └── scroll/
-│       ├── scroll-feed.tsx        # Filtros, snap, paginação e cronômetro
-│       └── question-card.tsx      # Enunciado, alternativas e explicação
-├── data/questions.json            # Seis questões autorais de demonstração
+│       ├── scroll-feed.tsx        # Modos, filtros, sessão e cronômetro
+│       └── question-card.tsx      # Leitura, seleção, confirmação e gabarito
+├── data/questions.json            # Mock antigo, fora do bundle da aplicação
 └── lib/
-    ├── questions.ts               # Contrato e validação do banco inicial
+    ├── questions.ts               # Contrato público das questões oficiais
+    ├── scroll/                    # Contratos, validação, cliente e testes do Scroll
     ├── momentum.ts                # XP, sequência e melhor combo da sessão
     ├── math/
     │   ├── generator.ts           # Motor procedural e validação numérica
@@ -160,7 +161,7 @@ Esses intervalos são de soma, subtração e quocientes. Bases, fatores e dimens
 
 `parseAnswer` aceita ponto ou vírgula decimal e valores negativos. Rejeita texto, vazio, `NaN`, infinito, notação hexadecimal e entradas ambíguas. A validação numérica tolera apenas diferenças inferiores a 0,005.
 
-O solo aceita 5, 10, 20 ou 30 rodadas, registra o tempo por tentativa, permite pausa e mostra acertos, precisão e tempo médio. O prazo usa relógio absoluto; atrasos do navegador não concedem tempo extra. No solo, pular consome uma rodada sem acerto ou XP. O multiplayer não permite pular: não há botão, comando ou troca automática por tempo esgotado. Depois do prazo, a questão permanece e deve ser resolvida, valendo um acerto e zero XP. No feed, pular trava a questão sem XP, mostra a explicação ao voltar e avança o card.
+O solo aceita 5, 10, 20 ou 30 rodadas, registra o tempo por tentativa, permite pausa e mostra acertos, precisão e tempo médio. A opção Aprender mantém a resolução em passos e exige avanço manual depois da resposta. O prazo usa relógio absoluto; atrasos do navegador não concedem tempo extra. No solo, pular consome uma rodada sem acerto ou XP. O multiplayer não permite pular: não há botão, comando ou troca automática por tempo esgotado. Depois do prazo, a questão permanece e deve ser resolvida, valendo um acerto e zero XP. No Scroll, pular consome o item sem resposta ou XP e permite que ele volte em outro estudo.
 
 ## Multiplayer
 
@@ -183,13 +184,76 @@ A interface recebe notificações pelo Supabase Realtime, busca snapshots autent
 
 As salas ficam em `public.qe_rooms`, protegida por RLS e permissões que bloqueiam a leitura e escrita pelas chaves públicas. Tokens e gabaritos completos são acessíveis apenas ao servidor. Não há dependência da memória entre requisições. O limite inicial é de 200 salas e 8 participantes por sala. Não há recuperação de sessão após recarregar a página nem remoção automática de jogadores desconectados; saídas pelo botão são registradas imediatamente.
 
-## Feed de questões
+## Quem Scrolla Assim: ENEM oficial
 
-O container tem altura fixa responsiva e usa `scroll-snap-type: y mandatory`, `scroll-snap-align: start` e scroll nativo. Cada card preserva o enunciado completo em uma área interna rolável para telas pequenas. Também há navegação por botões e pelas setas quando o container está focado.
+O Scroll exige conta. A tela de estudo ocupa o viewport no celular e no desktop; a rolagem lê o enunciado e o avanço usa botões. Escolher uma alternativa não envia a resposta: é preciso confirmar em **Responder**. Após confirmar, o gabarito aparece e a próxima questão depende do estudante. O primeiro lote de 100 questões também permite abrir uma explicação em passos, com análise das cinco alternativas.
 
-Os filtros cobrem Matemática, Ciências da Natureza, Ciências Humanas e Linguagens. O modo com tempo aceita 1–30 minutos por questão, pausa o cronômetro e avança automaticamente ao expirar sem resposta. A resposta bloqueia as alternativas, mostra o gabarito e uma explicação; o avanço após responder é manual para permitir a leitura. Alterar área ou tempo reinicia a sessão.
+Há feed de inéditas, sessões de 5/10/20 questões e revisão de erros/favoritos. Sessões podem usar 1–30 minutos por questão, com três minutos como padrão. Pular ou expirar consome um item da sessão, sem resposta, meta ou XP; a questão pode voltar em outra sessão. Respondidas são excluídas das inéditas por conta, incluindo outros dispositivos. Uma revisão correta retira o item dos erros sem alterar a precisão da primeira resposta. Ao esgotar os filtros, o app oferece revisão ou outra seleção.
 
-O mock é explicitamente identificado como autoral de demonstração, sem atribuição indevida a provas oficiais. Ao chegar ao fim, o feed acrescenta ciclos de revisão do mesmo banco. Para ampliar, adicione objetos a `src/data/questions.json` com `id` único, `area`, `topic`, `title`, `support`, `prompt`, cinco `alternatives`, `correctIndex` de 0 a 4 e `explanation`. Para um banco grande, substitua a repetição por paginação de API e virtualize os cards antigos.
+Os filtros são área, ano disponível e inglês/espanhol; o idioma afeta só as questões estrangeiras. As preferências e a meta diária de 5/10/20 respostas são salvas na conta. Inéditas e revisões contam uma vez por questão no dia, no fuso `America/Sao_Paulo`. Uma resposta inicia a sequência diária; o nível sobe a cada 100 XP totais dos dois módulos. Tempo ativo desconsidera pausa, aba oculta, espera pela rede e inatividade superior a 60 segundos; é limitado a duas horas por questão. Rascunho, sessão e tempo parcial podem ser retomados no mesmo navegador. As respostas confirmadas acompanham a conta.
+
+`/scrolla/progresso` apresenta primeiras respostas, acertos, precisão, revisões, XP, tempo ativo, evolução de 7/14/28 dias e resultados por área. Histórico e favoritos têm paginação; a questão completa pode ser aberta no histórico. Totais do perfil anteriores ao banco oficial são preservados, sem inventar um histórico retroativo. Eventos pendentes do antigo mock permanecem no armazenamento do navegador; não atribuem pontos ao novo banco nem bloqueiam a fila do Calcula.
+
+O backend usa `GET/POST /api/scroll`, com Bearer token do Supabase Auth validado no servidor. As funções Postgres isolam contas, validam comandos e confirmam resposta, XP e contagem na mesma transação. O item da sessão é a chave de idempotência: reenvios ou respostas concorrentes não pontuam novamente. Gabaritos não saem nos itens pendentes; tabelas de conteúdo e progresso bloqueiam acesso direto por chaves públicas. A revisão não aceita XP enviado pelo navegador. O RPC genérico anterior aceita apenas Calcula.
+
+Só a questão atual é montada. O servidor prepara até três itens e o navegador antecipa as imagens da próxima questão. Textos, tabelas e fórmulas usam `react-markdown`, GFM e KaTeX com `trust: false`; HTML não é executado. As figuras são servidas pelo bucket próprio `qe-enem-assets`, com nomes por hash e cache imutável. Há ampliação em diálogo, foco por teclado e movimento reduzido. O banco autoral antigo não é carregado na aplicação.
+
+### Importação e qualidade do acervo
+
+O acervo inicial vem dos arquivos públicos da [API ENEM](https://github.com/yunger7/enem-api), commit fixo `938c56fbd3b391e03d93316c920a90c3e54842e5`, confrontados com os [gabaritos oficiais do INEP](https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos). A API comunitária não é um serviço oficial do governo. Provas e referências bibliográficas originais são identificadas em cada questão; não há afiliação ao INEP/MEC.
+
+Dos **2.757 registros**, **2.287 questões** passaram na validação inicial e **470 ficaram separadas**. Foram publicadas **1.354 imagens**, cerca de 70 MB, no armazenamento próprio. O relatório com IDs, motivos e correções de área está em [docs/enem-import-report.json](docs/enem-import-report.json). A edição 2010 permanece separada porque os PDFs apontados como gabarito não produziram uma tabela de respostas verificável nesta extração. Outros motivos incluem anulações, divergências, alternativas incompletas, imagens ausentes e contexto que exige revisão.
+
+A validação é conservadora: questões curtas de Natureza/Matemática sem contexto textual suficiente ficam separadas, mesmo que possam estar completas em uma figura. A classificação de área segue a numeração oficial de cada edição, corrigindo metadados inconsistentes da fonte comunitária. A amostragem visual cobre as quatro áreas de cada ano aprovado, incluindo alternativas visuais; **não é uma revisão editorial integral**. Itens identificados manualmente ficam em `scripts/enem/exclusions.json` até correção.
+
+Para reproduzir a importação, instale as dependências Python (`python -m pip install -r scripts/enem/requirements.txt`) e execute, em ordem:
+
+```sh
+npm run enem:download
+npm run enem:validate
+npm run enem:gallery
+npm run enem:import
+```
+
+O último comando é **dry run**: verifica contagens e hashes sem publicar. A galeria fica em `output/enem/gallery.html`; arquivos brutos, PDFs e imagens de trabalho ficam ignorados pelo Git. Para servir a galeria localmente: `python -m http.server 3011 --bind 127.0.0.1 --directory output/enem`.
+
+Após a conferência visual, `npm run enem:import -- --publish` envia somente os aprovados. Exige `npm run db:push` e as variáveis do Supabase. O registro de conferência está em `docs/enem-import-review.json`; o importador verifica o hash do acervo aprovado contra esse registro. Se a fonte ou normalização mudar, refaça a conferência e atualize o registro antes de publicar. O envio retoma imagens já existentes, mantém IDs estáveis, não altera o histórico e recusa substituir um item cujo conteúdo mudou. Itens separados nunca são ativados.
+
+Testes específicos:
+
+```sh
+npm run enem:test
+npm run test:scroll
+```
+
+O teste de integração exige o servidor em `http://localhost:3000` (ou `SCROLL_TEST_BASE_URL`) e um Supabase configurado. Cria contas temporárias sem enviar e-mails e as remove ao terminar. Verifica concorrência, isolamento, filtros, inéditas, revisão, favoritos, meta, pausa, prazo e integração com o Calcula.
+
+## Entender, revisar e evoluir
+
+A home autenticada tem um **Plano de hoje**: retomar a sessão, fazer revisões devidas ou começar com cinco questões com explicação. Visitantes continuam acessando o Calcula em `/`. No solo, **Aprender** mantém a resolução em passos na tela até avançar manualmente; o ritmo rápido e o multiplayer conservam suas regras.
+
+- **Explicações:** 100 aprovadas, 25 por área, produzidas em arquivos editoriais sem API paga nem geração durante o uso. O gabarito oficial é distinguido da explicação da plataforma. Os filtros de matéria, assunto e conteúdo com explicação mostram a cobertura do piloto. Conteúdo e gabarito ficam protegidos antes da primeira resposta; no histórico, a resolução é carregada somente ao abrir.
+- **Revisão programada:** erro inicial agenda um dia; acerto inicial, três. Acertos devidos avançam por 3/7/14/30 dias; erro retorna a um. Revisão antecipada não avança o calendário, mas registra o contato para não simular lembrança após sete dias. A fila inclui questões já estudadas nos dois idiomas. Erros e favoritos continuam disponíveis para revisão manual.
+- **Missões:** cinco questões distintas no Scroll rendem 20 XP; até três revisões devidas, 15 XP; cinco acertos no Calcula solo, 15 XP. O objetivo de revisão é fixado no primeiro acesso/atividade do dia e só aparece quando há pendências. Máximo de 50 XP extras por dia, sem XP repetido por questão. Pulos, expiração e eventos antigos não completam a missão do Calcula. Metas e sequência do Scroll continuam iguais.
+- **Domínio e conquistas:** domínio requer cinco questões distintas, quatro acertos nas últimas cinco primeiras respostas e, para consolidar, revisão correta depois de pelo menos sete dias. Erro posterior em revisão retira a consolidação. Cinco conquistas registram meta, sequências de três/sete dias, dez revisões e primeiro assunto consolidado. As conquistas não concedem XP adicional.
+- **Dados:** tentativas, agendamento e bônus são confirmados na mesma transação, com isolamento por conta e idempotência. Totais antigos e primeiras respostas permanecem. Calcula registra modalidade, resultado e data pelo RPC `qe_record_calculator`; o contrato antigo continua aceito sem elegibilidade retroativa. Esse progresso do Calcula é pessoal e informado pelo navegador, sem validação competitiva das respostas.
+
+### Conteúdo editorial e manutenção
+
+As resoluções revisáveis estão em `scripts/learning/content/`; a taxonomia controlada fica em `scripts/learning/taxonomy.json`. O inventário de versões e hashes está em `docs/learning/pilot-lock.json`, a conferência em `docs/learning/review.json` e os candidatos separados em `scripts/learning/quarantine.json`. Essa conferência assistida não equivale a revisão integral por especialistas humanos.
+
+```sh
+npm run learning:validate
+npm run learning:import -- --publish
+npm run learning:reports
+npm run test:learning
+```
+
+`learning:validate` não publica. Para mudar conteúdo, aumente a versão com `npm run learning:import -- --prepare --version=2`, confira o lote e atualize o registro de revisão para o novo digest antes de publicar. Uma versão já publicada não pode ser sobrescrita com conteúdo diferente. A reimportação do mesmo lote preserva histórico e XP; versões anteriores ficam arquivadas. Uma mudança no checksum da questão exige nova revisão.
+
+Relatos enviados pelos estudantes ficam privados em `qe_content_reports`. `npm run learning:reports -- --resolve=UUID` encerra um relato; `--withdraw=enem-ANO-regular-NUMERO` retira uma explicação, preservando a questão e as versões arquivadas. Uma versão retirada não pode ser republicada por uma reimportação rotineira. A ferramenta usa exclusivamente a chave administrativa no ambiente local.
+
+Os novos recursos estendem `/api/scroll`: `GET ?view=learning`, `GET ?view=explanation&questionId=…` e `POST {action:"report",questionId,version,category,message}`. A versão informada no relato identifica a explicação que foi lida, inclusive se uma versão nova for publicada enquanto a tela está aberta. Novos filtros: `explanationOnly`, `subject` e `topic`; `mode:"due"` abre a revisão programada. A API valida o token Supabase, impede cache público e mantém as tabelas privadas. Não há serviço de IA em produção.
 
 ## Direção visual
 
@@ -197,9 +261,9 @@ O mock é explicitamente identificado como autoral de demonstração, sem atribu
 - **Âncoras:** papel quente e grafite, terracota nas ações, serifada editorial nos momentos de incentivo; o asterisco identifica o ecossistema.
 - **Conteúdo:** configurar → resolver → entender o resultado; no feed, filtrar → ler → responder → aprender.
 - **Interação:** estados de seleção, feedback imediato e transições discretas em CSS. Scroll nativo e alternativa por botões; sem efeitos que dependem de hover.
-- **Orçamento técnico:** App Router existente, CSS e SVG, apenas Lucide como dependência adicional. Layouts de 320 px a desktop; fontes com fallback de sistema, foco visível e movimento reduzido.
+- **Orçamento técnico:** App Router existente, CSS, SVG e Lucide; Markdown/KaTeX para preservar os enunciados oficiais. Layouts de 320 px a desktop; fontes com fallback de sistema, foco visível e movimento reduzido.
 
-O link externo “Quem Pensa Assim?” abre com `target="_blank"` e `rel="noopener noreferrer"`. Solo e feed funcionam sem credenciais. O multiplayer exige as variáveis do Supabase configuradas.
+O link externo “Quem Pensa Assim?” abre com `target="_blank"` e `rel="noopener noreferrer"`. O solo funciona sem credenciais. Scroll e multiplayer exigem as variáveis do Supabase configuradas; o Scroll também exige conta.
 
 ## Verificação realizada
 
@@ -214,3 +278,5 @@ O perfil foi testado com uma conta temporária no Supabase real: upload/remoçã
 `test:deployment` verifica páginas públicas e configuração de Auth, permissões de banco, evento Realtime, respostas concorrentes com pontuação única por questão, pistas independentes, cooldown, rejeição de pulo, rejeição de respostas de questões concluídas, vitória por meta e transferência do host. Esse teste de integração exige um Supabase configurado. O deploy executa a checagem de segredos no pacote antes de publicar.
 
 A auditoria automatizada axe, com regras WCAG A/AA, foi aplicada às telas de treino, resultado e feed em desktop/mobile. Toque e cancelamento do arraste foram simulados no Chrome. Isso não equivale a uma auditoria completa: Safari, Firefox, leitores de tela e aparelhos físicos não foram verificados.
+
+A versão com ENEM oficial passou em 33 testes nativos, quatro testes do importador, integração com o Supabase real, lint e build OpenNext para Cloudflare. A importação foi repetida sem duplicar dados. No Chrome, foram verificados retorno do login por senha e callback em outra aba, escolha antes de confirmar, erro de rede com seleção preservada, favoritos, pausa, histórico, recarga e layouts de 320/390/768/1440 px. A auditoria axe A/AA não encontrou violações nas telas atuais de questão, opções, ampliação, progresso e acesso sem login em desktop/mobile. KaTeX, tabelas, remoção de HTML executável e bloqueio de links inseguros também foram exercitados. Contas temporárias foram removidas; o Worker não foi publicado nesta etapa.

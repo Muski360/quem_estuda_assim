@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 import { getAuthClient } from "@/lib/auth/client";
 import { authErrorMessage } from "@/lib/auth/errors";
+import { authReturnTo } from "@/lib/auth/return-to";
 
 export function AuthCallback() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export function AuthCallback() {
           if (active) setError(authErrorMessage({ code: "flow_state_not_found" }));
           return;
         }
-        if (active) router.replace(params.get("recovery") === "1" ? "/redefinir-senha" : "/");
+        if (active) router.replace(params.get("recovery") === "1" ? "/redefinir-senha" : authReturnTo());
       } catch (error) {
         if (active) setError(authErrorMessage(error));
       }

@@ -14,8 +14,11 @@
 /coverage
 /.playwright-cli/
 /output/playwright/
+/output/learning/
 /output/enem/
 /output/enem-source/
+__pycache__/
+*.pyc
 
 # next.js
 /.next/

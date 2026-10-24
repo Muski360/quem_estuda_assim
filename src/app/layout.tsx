@@ -6,6 +6,8 @@ import { StudyFeedbackProvider } from "@/components/study-feedback";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { StudyProgressProvider } from "@/components/profile/study-progress";
 import "./globals.css";
+import "@/components/learning/learning.css";
+import { LearningCelebrations } from "@/components/learning/learning-celebrations";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,6 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <AuthProvider><StudyProgressProvider><StudyFeedbackProvider>
           <SiteHeader />
+          <LearningCelebrations />
           {children}
           <SiteFooter />
         </StudyFeedbackProvider></StudyProgressProvider></AuthProvider>

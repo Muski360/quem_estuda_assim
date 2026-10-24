@@ -1,0 +1,25 @@
+{
+  "status": "approved",
+  "digest": "204088d90b613ff32eb322d03911a7152579bf5961297db98ea0a33ac82cd308",
+  "reviewer": "Codex-assisted editorial review; not a claim of specialist human review",
+  "sample": [
+    "enem-2021-regular-162",
+    "enem-2018-regular-161",
+    "enem-2016-regular-145",
+    "enem-2011-regular-58",
+    "enem-2013-regular-75",
+    "enem-2013-regular-13",
+    "enem-2018-regular-77",
+    "enem-2023-regular-1-ingles",
+    "enem-2016-regular-135",
+    "enem-2018-regular-30"
+  ],
+  "checks": [
+    "All 100 independently proposed answers match the previously INEP-verified bank after quarantine replacements.",
+    "All 9 source images visually inspected, including five graphic alternatives.",
+    "Numerical sample independently recalculated; A-E rationales and source context reread.",
+    "Metanogenesis (2011/79) and phototaxis (2019/107) terminology explicitly contextualized."
+  ],
+  "quarantine": "scripts/learning/quarantine.json",
+  "reviewedAt": "2026-10-24"
+}

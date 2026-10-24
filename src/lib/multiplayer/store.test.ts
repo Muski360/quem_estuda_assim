@@ -24,6 +24,7 @@ test("pistas individuais autenticadas, sem exposição de gabarito ou token",()=
   assert.notEqual(room.equation!.id,other.equation!.id);
   assert.equal("answer" in room.equation!,false);
   assert.equal("explanation" in room.equation!,false);
+  assert.equal("steps" in room.equation!,false);
   assert.equal("token" in room.players[0],false);
   assert.equal("equation" in room.players[1],false);
   assert.equal(room.reveal,null);

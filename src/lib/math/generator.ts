@@ -40,6 +40,7 @@ export type GameSettings = {
   difficulty: Difficulty;
   rounds: number;
   seconds?: number;
+  learn?: boolean;
 };
 export type GeometryFigure =
   | { shape: "square"; side: number }
@@ -63,6 +64,7 @@ export type Equation = {
   answer: number;
   hint: string;
   explanation: string;
+  steps?: string[];
   geometry?: GeometryFigure;
   factor?: AnswerFactor;
   measurement?: "area" | "volume" | "perimeter" | "basePerimeter";
@@ -90,6 +92,7 @@ export function isGameSettings(value: unknown): value is GameSettings {
     Object.hasOwn(DIFFICULTIES, settings.difficulty) &&
     typeof settings.rounds === "number" &&
     [5, 10, 20, 30].includes(settings.rounds) &&
+    (settings.learn === undefined || typeof settings.learn === "boolean") &&
     (settings.seconds === undefined ||
       (typeof settings.seconds === "number" && Number.isInteger(settings.seconds) && settings.seconds >= 5 && settings.seconds <= 180))
   );
@@ -149,6 +152,7 @@ export function generateEquation(
   let answer: number;
   let hint = "Calcule mentalmente. Você consegue.";
   let explanation: string;
+  let steps: string[] = [];
   let geometry: GeometryFigure | undefined;
   let factor: AnswerFactor | undefined;
   let measurement: Equation["measurement"];
@@ -160,18 +164,25 @@ export function generateEquation(
       if (operation === 0) {
         expression = `${a} + ${b}`;
         answer = a + b;
+        const tens = Math.floor(b / 10) * 10;
+        steps = [`Separe ${b} em ${tens} + ${b - tens}.`, `Some primeiro: ${a} + ${tens} = ${a + tens}.`, `Complete com as unidades: ${a + tens} + ${b - tens} = ${answer}.`];
       } else if (operation === 1) {
         expression = `${a} − ${b}`;
         answer = a - b;
+        const tens = Math.floor(b / 10) * 10;
+        steps = [`Separe ${b} em ${tens} + ${b - tens}.`, `Subtraia primeiro: ${a} − ${tens} = ${a - tens}.`, `Retire as unidades restantes: ${a - tens} − ${b - tens} = ${answer}.`];
       } else if (operation === 2) {
         const factor = integer(2, 9 + level * 5);
         const multiplicand = integer(0, [12, 30, 75, 150][level]);
         expression = `${multiplicand} × ${factor}`;
         answer = multiplicand * factor;
+        const tens = Math.floor(multiplicand / 10) * 10;
+        steps = [`Decomponha ${multiplicand} em ${tens} + ${multiplicand - tens}.`, `Distribua: ${tens} × ${factor} = ${tens * factor}; ${multiplicand - tens} × ${factor} = ${(multiplicand - tens) * factor}.`, `Some os produtos: ${tens * factor} + ${(multiplicand - tens) * factor} = ${answer}.`];
       } else {
         const divisor = integer(2, 12 + level * 6);
         expression = `${a * divisor} ÷ ${divisor}`;
         answer = a;
+        steps = [`Dividir ${a * divisor} por ${divisor} é encontrar o fator que falta em ${divisor} × ? = ${a * divisor}.`, `Confira a multiplicação inversa: ${divisor} × ${a} = ${a * divisor}.`, `Portanto, ${a * divisor} ÷ ${divisor} = ${a}.`];
       }
       explanation = `${expression} = ${answer}. Separe os números em partes menores para ganhar velocidade.`;
       break;
@@ -183,10 +194,12 @@ export function generateEquation(
         expression = `${base}${superscript(exponent)}`;
         answer = base ** exponent;
         explanation = `${base}${superscript(exponent)} = ${Array(exponent).fill(base).join(" × ")} = ${answer}.`;
+        steps = [`O expoente ${exponent} indica ${exponent} fatores iguais a ${base}.`, `Escreva a multiplicação: ${Array(exponent).fill(base).join(" × ")}.`, exponent === 3 ? `Primeiro ${base} × ${base} = ${base * base}; depois ${base * base} × ${base} = ${answer}.` : `Calcule: ${base} × ${base} = ${answer}.`];
       } else {
         expression = `${exponent === 2 ? "√" : "∛"}${base ** exponent}`;
         answer = base;
         explanation = `A raiz é ${base}, pois ${base}${superscript(exponent)} = ${base ** exponent}.`;
+        steps = [`Procure um número que elevado a ${exponent} resulte em ${base ** exponent}.`, `Teste a operação inversa: ${Array(exponent).fill(base).join(" × ")} = ${base ** exponent}.`, `Logo, a raiz pedida é ${base}.`];
       }
       hint = "Potência ou raiz: encontre a operação inversa.";
       break;
@@ -199,6 +212,7 @@ export function generateEquation(
       expression = `${coefficient}x ${offset < 0 ? "−" : "+"} ${Math.abs(offset)} = ${result}`;
       hint = "Qual é o valor de x?";
       explanation = `Isole x: ${coefficient}x = ${result - offset}. Logo, x = ${result - offset} ÷ ${coefficient} = ${answer}.`;
+      steps = [`Desfaça o termo constante ${offset}: ${coefficient}x = ${result} − (${offset}) = ${result - offset}.`, `Divida os dois lados por ${coefficient}: x = ${result - offset} ÷ ${coefficient} = ${answer}.`, `Verifique na equação: ${coefficient} × (${answer}) + (${offset}) = ${result}.`];
       break;
     }
     case "logarithms": {
@@ -215,6 +229,7 @@ export function generateEquation(
         hint = "Qual é o valor de x dentro do logaritmo?";
       }
       explanation = `log${subscript(base)}(${argument}) = ${exponent}, porque ${base}${superscript(exponent)} = ${argument}.`;
+      steps = [`Pela definição, logaritmo e potência descrevem a mesma relação: base elevada ao logaritmo é igual ao argumento.`, `Neste caso: ${base}${superscript(exponent)} = ${Array(exponent).fill(base).join(" × ")} = ${argument}.`, `A incógnita da expressão vale ${answer}.`];
       break;
     }
     case "geometry": {
@@ -330,5 +345,5 @@ export function generateEquation(
     }
   }
 
-  return { id: crypto.randomUUID(), mode, expression, answer, hint, explanation, ...(geometry ? { geometry, measurement, formula } : {}), ...(factor ? { factor } : {}) };
+  return { id: crypto.randomUUID(), mode, expression, answer, hint, explanation, steps: steps.length ? steps : [`Identifique as medidas e o que foi pedido: ${expression}.`, `Use a fórmula: ${formula}.`, explanation], ...(geometry ? { geometry, measurement, formula } : {}), ...(factor ? { factor } : {}) };
 }

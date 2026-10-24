@@ -3,9 +3,16 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Eye, EyeOff, LoaderCircle, Mail } from "lucide-react";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { authErrorMessage } from "@/lib/auth/errors";
 import { useAuth } from "./auth-provider";
+import { authReturnTo, safeReturnTo } from "@/lib/auth/return-to";
+
+const subscribeToLocation = (listener: () => void) => {
+  window.addEventListener("popstate", listener);
+  return () => window.removeEventListener("popstate", listener);
+};
+const getReturnTo = () => safeReturnTo(new URLSearchParams(window.location.search).get("next"));
 
 type Mode = "login" | "signup" | "recover" | "update";
 const COPY = {
@@ -25,6 +32,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const returnTo = useSyncExternalStore(subscribeToLocation, getReturnTo, () => "/");
   const passwordMode = mode !== "recover";
   const newPassword = mode === "signup" || mode === "update";
   const disabled = loading || busy || !client;
@@ -32,6 +40,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
+    authReturnTo();
     if (!client || disabled) return;
     setError("");
     setMessage("");
@@ -44,11 +53,11 @@ export function AuthForm({ mode }: { mode: Mode }) {
       if (mode === "login") {
         const { error } = await client.auth.signInWithPassword({ email: email.trim(), password });
         if (error) throw error;
-        router.replace("/");
+        router.replace(authReturnTo());
       } else if (mode === "signup") {
         const { data, error } = await client.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: callback() } });
         if (error) throw error;
-        if (data.session) router.replace("/");
+        if (data.session) router.replace(authReturnTo());
         else {
           setMessage("Confira seu e-mail e abra o link de confirmação neste navegador. Se você já tem uma conta, entre com sua senha.");
           setPassword("");
@@ -70,6 +79,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
   }
 
   async function google() {
+    authReturnTo();
     if (!client || disabled) return;
     setBusy(true);
     setError("");
@@ -88,14 +98,14 @@ export function AuthForm({ mode }: { mode: Mode }) {
         <p className="eyebrow">QUEM ESTUDA ASSIM?</p>
         <h1>Menos decoreba.<br /><em>Mais você.</em></h1>
         <p>Um espaço para praticar, errar e entender. No seu ritmo.</p>
-        <span className="auth-optional">A conta é opcional. Todas as ferramentas continuam livres para usar.</span>
+        <span className="auth-optional">O treino de cálculo é livre. No Scroll, sua conta guarda respostas, favoritos e evolução.</span>
       </section>
       <section className="auth-panel" aria-labelledby="auth-title">
         <span className="auth-mark" aria-hidden="true">✳</span>
         <h2 id="auth-title">{COPY[mode].title}</h2>
         <p>{COPY[mode].description}</p>
         {user && (mode === "login" || mode === "signup") ? (
-          <div className="auth-signed-in"><p>Você entrou como <strong>{user.email}</strong>.</p><Link href="/" className="button button-primary">Continuar estudando<ArrowRight size={17} aria-hidden="true" /></Link></div>
+          <div className="auth-signed-in"><p>Você entrou como <strong>{user.email}</strong>.</p><Link href={returnTo} className="button button-primary">Continuar estudando<ArrowRight size={17} aria-hidden="true" /></Link></div>
         ) : mode === "update" && !loading && !user ? (
           <div className="auth-signed-in"><p>Solicite um link de recuperação para redefinir sua senha.</p><Link href="/recuperar-senha" className="button button-primary">Recuperar acesso<ArrowRight size={17} aria-hidden="true" /></Link></div>
         ) : (
@@ -115,7 +125,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
             </form>
           </>
         )}
-        <p className="auth-switch">{mode === "login" ? <>Primeira vez aqui? <Link href="/cadastro">Criar uma conta</Link></> : <Link href="/entrar">Voltar para o login</Link>}</p>
+        <p className="auth-switch">{mode === "login" ? <>Primeira vez aqui? <Link href={`/cadastro?next=${encodeURIComponent(returnTo)}`}>Criar uma conta</Link></> : <Link href={`/entrar?next=${encodeURIComponent(returnTo)}`}>Voltar para o login</Link>}</p>
         <Link className="auth-guest" href="/">Continuar sem entrar<ArrowRight size={15} aria-hidden="true" /></Link>
       </section>
     </main>

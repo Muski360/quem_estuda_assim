@@ -15,8 +15,18 @@
     "db:push": "node scripts/apply-migrations.mjs",
     "test:deployment": "node scripts/test-deployment.mjs",
     "check:secrets": "node scripts/check-worker-secrets.mjs",
+    "enem:download": "node scripts/enem/download.mjs",
+    "enem:validate": "python scripts/enem/validate.py",
+    "enem:gallery": "node scripts/enem/gallery.mjs",
+    "enem:import": "node --import ./scripts/local-env.mjs scripts/enem/import.mjs",
+    "enem:test": "python -m unittest discover -s scripts/enem",
+    "test:scroll": "node --import ./scripts/local-env.mjs scripts/test-scroll.mjs",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test src/lib/math/generator.test.ts src/lib/math/geometry.test.ts src/lib/multiplayer/store.test.ts src/lib/momentum.test.ts src/lib/auth/auth.test.ts src/lib/profile/profile.test.ts"
+    "test": "node --experimental-strip-types --test src/lib/math/generator.test.ts src/lib/math/geometry.test.ts src/lib/multiplayer/store.test.ts src/lib/momentum.test.ts src/lib/auth/auth.test.ts src/lib/profile/profile.test.ts src/lib/scroll/scroll.test.ts scripts/learning/content.test.mjs",
+    "learning:validate": "node scripts/learning/import.mjs",
+    "learning:import": "node --import ./scripts/local-env.mjs scripts/learning/import.mjs",
+    "learning:reports": "node --import ./scripts/local-env.mjs scripts/learning/reports.mjs",
+    "test:learning": "node --import ./scripts/local-env.mjs scripts/test-learning.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

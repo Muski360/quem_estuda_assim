@@ -32,7 +32,7 @@ export function SiteHeader() {
         <Brand />
         <nav className="module-nav" aria-label="Ferramentas de estudo">
           <Link
-            href="/"
+            href="/#calculator-title"
             className={pathname === "/" ? "nav-link active" : "nav-link"}
             aria-current={pathname === "/" ? "page" : undefined}
           >

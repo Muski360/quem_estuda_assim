@@ -1,4 +1,4 @@
-export type StudyActivity = { id: string; module: "scroll" | "calculator"; xp: number };
+export type StudyActivity = { id: string; module: "scroll" | "calculator"; xp: number; mode?: "solo" | "multiplayer"; correct?: boolean; occurredAt?: string };
 export type StudyStats = { scroll_questions: number; calculator_rounds: number; total_xp: number };
 export const EMPTY_STATS: StudyStats = { scroll_questions: 0, calculator_rounds: 0, total_xp: 0 };
 
@@ -7,7 +7,8 @@ export function isStudyActivity(value: unknown): value is StudyActivity {
   const activity = value as Record<string, unknown>;
   return typeof activity.id === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(activity.id) &&
     (activity.module === "scroll" || activity.module === "calculator") &&
-    typeof activity.xp === "number" && Number.isInteger(activity.xp) && activity.xp >= 0 && activity.xp <= (activity.module === "scroll" ? 45 : 60);
+    typeof activity.xp === "number" && Number.isInteger(activity.xp) && activity.xp >= 0 && activity.xp <= (activity.module === "scroll" ? 45 : 60) &&
+    (activity.mode === undefined || (activity.mode === "solo" || activity.mode === "multiplayer") && typeof activity.correct === "boolean" && typeof activity.occurredAt === "string" && Number.isFinite(Date.parse(activity.occurredAt)));
 }
 
 export function parsePendingActivities(value: string | null): StudyActivity[] {
@@ -20,5 +21,5 @@ export function parsePendingActivities(value: string | null): StudyActivity[] {
 }
 
 export function newerStats(current: StudyStats | null, incoming: StudyStats): StudyStats {
-  return current && current.scroll_questions + current.calculator_rounds > incoming.scroll_questions + incoming.calculator_rounds ? current : incoming;
+  return current && (current.total_xp > incoming.total_xp || current.scroll_questions + current.calculator_rounds > incoming.scroll_questions + incoming.calculator_rounds) ? current : incoming;
 }

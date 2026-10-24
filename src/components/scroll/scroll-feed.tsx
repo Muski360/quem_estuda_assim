@@ -1,520 +1,211 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  ArrowDown,
-  ArrowRight,
-  ArrowUp,
-  BookOpen,
-  Check,
-  ChevronRight,
-  Clock3,
-  Infinity as InfinityIcon,
-  Maximize2,
-  Minimize2,
-  Pause,
-  Play,
-  RotateCcw,
-  SlidersHorizontal,
-} from "lucide-react";
-import { AREAS, questions } from "@/lib/questions";
-import type { Area, Question } from "@/lib/questions";
-import { QuestionCard } from "./question-card";
-import { advanceMomentum, getXpMultiplier, INITIAL_MOMENTUM } from "@/lib/momentum";
-import { AnswerCelebration, MomentumStrip, SoundToggle, useStudySound } from "@/components/study-feedback";
+import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Check, Clock3, Flame, LoaderCircle, Pause, Play, Settings2, X, Zap } from "lucide-react";
+import { useAuth } from "@/components/auth/auth-provider";
 import { useStudyProgress } from "@/components/profile/study-progress";
+import { AnswerCelebration, MomentumStrip, SoundToggle, useStudySound } from "@/components/study-feedback";
+import { AREAS } from "@/lib/questions";
+import { scrollRequest, ScrollRequestError } from "@/lib/scroll/client";
+import { DEFAULT_SCROLL_SETTINGS } from "@/lib/scroll/types";
+import type { ScrollSession, ScrollSettings, ScrollStats } from "@/lib/scroll/types";
+import { QuestionCard } from "./question-card";
+import { isStudyImage } from "./question-content";
+import { ScrollAccess } from "./scroll-access";
+import { isUuid } from "@/lib/scroll/validation";
 
-type FeedSettings = { area: Area | "all"; timed: boolean; minutes: number };
+export const MODE_LABELS = { feed: "Feed de inéditas", session: "Sessão curta", due: "Revisão programada", errors: "Revisão de erros", favorites: "Revisão de favoritos" };
+const message = (error: unknown) => error instanceof Error ? error.message : "Não foi possível conectar. Tente novamente.";
 
-export function ScrollFeed() {
-  const [settings, setSettings] = useState<FeedSettings>({
-    area: "all",
-    timed: false,
-    minutes: 3,
-  });
-  const [session, setSession] = useState(0);
-  return (
-    <section className="scroll-section" aria-labelledby="scroll-title">
-      <div className="section-heading">
-        <div className="section-name">
-          <span className="section-index">02</span>
-          <h2 id="scroll-title">
-            Quem scrolla assim<span>?</span>
-          </h2>
-          <span className="section-label">
-            CURIOSIDADE QUE VIRA CONHECIMENTO
-          </span>
-        </div>
-        <span className="section-caption">
-          <BookOpen size={15} aria-hidden="true" /> Um feed com propósito.
-        </span>
-      </div>
-      <div className="scroll-layout">
-        <aside className="feed-sidebar">
-          <div className="panel-title">
-            <h3>Encontre seu ritmo.</h3>
-            <SlidersHorizontal size={17} aria-hidden="true" />
-          </div>
-          <div className="field-heading">
-            <span>01</span>
-            <h4>Qual é a sua área?</h4>
-          </div>
-          <div
-            className="area-options"
-            role="group"
-            aria-label="Filtrar questões por área"
-          >
-            <button
-              className={settings.area === "all" ? "selected" : ""}
-              aria-pressed={settings.area === "all"}
-              onClick={() => setSettings({ ...settings, area: "all" })}
-            >
-              <span className="all-area-symbol">
-                <BookOpen size={17} aria-hidden="true" />
-              </span>
-              <span>Todas as áreas</span>
-              <ChevronRight size={15} aria-hidden="true" />
-            </button>
-            {(Object.entries(AREAS) as [Area, (typeof AREAS)[Area]][]).map(
-              ([area, details]) => (
-                <button
-                  key={area}
-                  className={`${settings.area === area ? "selected " : ""}${details.color}`}
-                  aria-pressed={settings.area === area}
-                  onClick={() => setSettings({ ...settings, area })}
-                >
-                  <span className="area-initials" aria-hidden="true">
-                    {details.short}
-                  </span>
-                  <span>{details.label}</span>
-                  {settings.area === area ? (
-                    <Check size={15} aria-hidden="true" />
-                  ) : (
-                    <ChevronRight size={15} aria-hidden="true" />
-                  )}
-                </button>
-              ),
-            )}
-          </div>
-          <div className="field-heading">
-            <span>02</span>
-            <h4>Como quer praticar?</h4>
-          </div>
-          <div
-            className="segmented time-mode"
-            role="group"
-            aria-label="Modo de tempo"
-          >
-            <button
-              className={!settings.timed ? "selected" : ""}
-              aria-pressed={!settings.timed}
-              onClick={() => setSettings({ ...settings, timed: false })}
-            >
-              <InfinityIcon size={16} aria-hidden="true" /> Sem tempo
-            </button>
-            <button
-              className={settings.timed ? "selected" : ""}
-              aria-pressed={settings.timed}
-              onClick={() => setSettings({ ...settings, timed: true })}
-            >
-              <Clock3 size={15} aria-hidden="true" /> Com tempo
-            </button>
-          </div>
-          {settings.timed ? (
-            <div className="minutes-field">
-              <label htmlFor="question-minutes">Minutos por questão</label>
-              <input
-                id="question-minutes"
-                type="number"
-                min={1}
-                max={30}
-                value={settings.minutes}
-                onChange={(event) => {
-                  const minutes = Number(event.target.value);
-                  setSettings({
-                    ...settings,
-                    minutes: Math.max(
-                      1,
-                      Math.min(30, Math.floor(minutes) || 1),
-                    ),
-                  });
-                }}
-              />
-            </div>
-          ) : (
-            <p className="feed-time-note">
-              Sem pressa. Leia, pense e responda quando estiver pronto.
-            </p>
-          )}
-          {settings.timed && <p className="feed-time-note">{getXpMultiplier(settings.minutes*60,180)}× XP · referência: 3 minutos por questão.</p>}
-          <div className="feed-howto">
-            <span className="eyebrow">UM SCROLL, UMA DESCOBERTA</span>
-            <p>
-              Leia o enunciado.
-              <br />
-              Escolha uma alternativa.
-              <br />
-              <strong>Entenda o porquê.</strong>
-            </p>
-            <span>
-              <ArrowDown size={14} aria-hidden="true" /> Role para a próxima
-              questão
-            </span>
-          </div>
-          <button
-            className="restart-feed"
-            onClick={() => setSession((value) => value + 1)}
-          >
-            <RotateCcw size={14} aria-hidden="true" /> Reiniciar sessão
-          </button>
-        </aside>
-        <FeedSession
-          key={`${settings.area}-${settings.timed}-${settings.minutes}-${session}`}
-          settings={settings}
-        />
-      </div>
-    </section>
-  );
-}
+export function ScrollFeed() { return <ScrollAccess><ScrollWorkspace /></ScrollAccess>; }
 
-function FeedSession({ settings }: { settings: FeedSettings }) {
-  const base = useMemo(
-    () =>
-      questions.filter(
-        (question) =>
-          settings.area === "all" || question.area === settings.area,
-      ),
-    [settings.area],
-  );
-  const [items, setItems] = useState<Question[]>(base);
-  const [active, setActive] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [expired, setExpired] = useState<Record<number, boolean>>({});
-  const [skipped, setSkipped] = useState<Record<number, boolean>>({});
-  const [paused, setPaused] = useState(false);
-  const [remaining, setRemaining] = useState(settings.minutes * 60);
-  const [momentum, setMomentum] = useState(INITIAL_MOMENTUM);
-  const { recordActivity } = useStudyProgress();
-  const [rewardIndex, setRewardIndex] = useState<number | null>(null);
-  const [immersive, setImmersive] = useState(false);
-  const immersiveButton = useRef<HTMLButtonElement>(null);
+function ScrollWorkspace() {
+  const { client, user } = useAuth();
+  const { refresh: refreshProfile } = useStudyProgress();
   const { play } = useStudySound();
-  const viewport = useRef<HTMLDivElement>(null);
-  const activeRef = useRef(0);
-  const answersRef = useRef<Record<number, number>>({});
-  const expiredRef = useRef<Record<number, boolean>>({});
-  const skippedRef = useRef<Record<number, boolean>>({});
-  const deadlines = useRef<Record<number, number>>({});
-  const pausedAt = useRef(0);
-  const duration = settings.minutes * 60;
-
+  const [stats, setStats] = useState<ScrollStats | null>(null);
+  const [settings, setSettings] = useState<ScrollSettings>(DEFAULT_SCROLL_SETTINGS);
+  const [session, setSession] = useState<ScrollSession | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [needsLogin, setNeedsLogin] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [reward, setReward] = useState<{ id: string; xp: number; streak: number } | null>(null);
+  const [seconds, setSeconds] = useState(0);
+  const controls = useRef<HTMLDialogElement>(null);
+  const lock = useRef(false);
+  const mutationVersion = useRef(0);
+  const activeTime = useRef(0);
+  const expired = useRef("");
+  const retry = useRef<{ action: string; extra: Record<string, unknown> } | null>(null);
+  const current = session?.items[0];
+  const nextQuestion = session?.items[1]?.question;
+  const sessionKey = `qe:scroll-session:${user?.id}`;
   useEffect(() => {
-    if (!immersive) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const escape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setImmersive(false);
-        immersiveButton.current?.focus();
-      }
-    };
-    document.addEventListener("keydown", escape);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", escape);
-    };
-  }, [immersive]);
-
-  const goTo = useCallback((index: number) => {
-    const container = viewport.current;
-    const target = container?.querySelector<HTMLElement>(
-      `[data-index="${index}"]`,
-    );
-    if (container && target) {
-      const top = target.offsetTop;
-      container.scrollTo({
-        top,
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "instant"
-          : "smooth",
-      });
-    }
-  }, []);
-
+    if (!nextQuestion) return;
+    const media = JSON.stringify(nextQuestion).match(/https:\/\/[^\s"()]+\/qe-enem-assets\/[a-f0-9]+\.(?:png|jpe?g|webp)/g) ?? [];
+    for (const src of new Set(media)) if (isStudyImage(src)) { const image = new Image(); image.src = src; }
+  }, [nextQuestion]);
+  const refresh = useCallback(async () => {
+    if (client) setStats(await scrollRequest<ScrollStats>(client));
+  }, [client]);
   useEffect(() => {
-    const root = viewport.current;
-    if (!root) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting || entry.intersectionRatio < 0.55) continue;
-          const index = Number((entry.target as HTMLElement).dataset.index);
-          if (activeRef.current !== index) play("next");
-          activeRef.current = index;
-          setActive(index);
-          if (settings.timed && !deadlines.current[index])
-            deadlines.current[index] = Date.now() + duration * 1000;
-          setRemaining(
-            Math.max(
-              0,
-              Math.ceil(
-                ((deadlines.current[index] ?? Date.now() + duration * 1000) -
-                  Date.now()) /
-                  1000,
-              ),
-            ),
-          );
-          if (index >= items.length - 2) {
-            // shortcut: o mock se repete em revisões; use paginação quando houver banco de questões.
-            setItems((previous) => [...previous, ...base]);
-          }
+    if (!client) return;
+    let active = true;
+    async function load() {
+      try {
+        const loaded = await scrollRequest<ScrollStats>(client!);
+        if (!active) return;
+        setStats(loaded);
+        const params = new URLSearchParams(window.location.search);
+        const mode = params.get("mode");
+        const override = !!mode || params.has("subject") || params.has("topic") || params.has("explained");
+        const configured: ScrollSettings = { ...loaded.settings };
+        if (mode && Object.hasOwn(MODE_LABELS, mode)) configured.mode = mode as ScrollSettings["mode"];
+        if ([5, 10, 20].includes(Number(params.get("target")))) configured.target = Number(params.get("target")) as ScrollSettings["target"];
+        if (params.has("explained")) configured.explanationOnly = params.get("explained") === "1";
+        for (const key of ["subject", "topic"] as const) if (params.has(key) && /^[a-z][a-z0-9-]{0,59}$/.test(params.get(key)!)) configured[key] = params.get(key);
+        if (override) { configured.timed = false; if (params.has("subject")) configured.area = "all"; }
+        if (mode === "due") { configured.area = "all"; configured.year = null; configured.subject = null; configured.topic = null; configured.explanationOnly = false; }
+        setSettings(configured);
+        let saved: string | null = null;
+        try { saved = override ? null : sessionStorage.getItem(sessionKey); } catch { /* Sessions still work without browser storage. */ }
+        if (isUuid(params.get("sessionId"))) saved = params.get("sessionId");
+        if (saved) {
+          try {
+            const restored = await scrollRequest<ScrollSession>(client!, `view=session&sessionId=${saved}`);
+            if (active) { setSession(restored); try { sessionStorage.setItem(sessionKey, restored.id); } catch { /* Server keeps the session. */ } }
+          } catch { try { sessionStorage.removeItem(sessionKey); } catch { /* Ignore unavailable storage. */ } }
         }
-      },
-      { root, threshold: 0.55 },
-    );
-    root
-      .querySelectorAll("[data-index]")
-      .forEach((card) => observer.observe(card));
-    return () => observer.disconnect();
-  }, [items.length, settings.timed, duration, base, play]);
-
-  useEffect(() => {
-    if (!settings.timed || paused) return;
-    const timer = window.setInterval(() => {
-      const index = activeRef.current;
-      if (answersRef.current[index] !== undefined || expiredRef.current[index] || skippedRef.current[index])
-        return;
-      const deadline = deadlines.current[index];
-      if (!deadline) return;
-      const seconds = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-      setRemaining(seconds);
-      if (seconds === 0) {
-        expiredRef.current = { ...expiredRef.current, [index]: true };
-        setExpired(expiredRef.current);
-        setMomentum((previous) => advanceMomentum(previous, false, 0));
-        play("incorrect");
-        goTo(index + 1);
-      }
-    }, 200);
-    return () => window.clearInterval(timer);
-  }, [settings.timed, paused, goTo, play]);
-
-  const answer = useCallback(
-    (index: number, value: number) => {
-      if (
-        answersRef.current[index] !== undefined ||
-        expiredRef.current[index] ||
-        skippedRef.current[index] ||
-        paused
-      )
-        return;
-      if (
-        settings.timed &&
-        Date.now() >= (deadlines.current[index] ?? Infinity)
-      ) {
-        expiredRef.current = { ...expiredRef.current, [index]: true };
-        setExpired(expiredRef.current);
-        setMomentum((previous) => advanceMomentum(previous, false, 0));
-        play("incorrect");
-        goTo(index + 1);
-        return;
-      }
-      answersRef.current = { ...answersRef.current, [index]: value };
-      setAnswers(answersRef.current);
-      const correct = items[index].correctIndex === value;
-      const multiplier=settings.timed ? getXpMultiplier(duration,180) : 1;
-      const earnedXp = correct ? Math.round((momentum.streak >= 2 ? 15 : 10) * multiplier) : 0;
-      recordActivity({ id: crypto.randomUUID(), module: "scroll", xp: earnedXp });
-      setMomentum((previous) => advanceMomentum(previous, correct, earnedXp));
-      if (correct) setRewardIndex(index);
-      play(correct ? (momentum.streak >= 2 ? "combo" : "correct") : "incorrect");
-    },
-    [paused, settings.timed, duration, goTo, items, momentum.streak, play, recordActivity],
-  );
-
-  function skip(index: number) {
-    if (paused || answersRef.current[index] !== undefined || expiredRef.current[index] || skippedRef.current[index]) return;
-    skippedRef.current={...skippedRef.current,[index]:true};
-    setSkipped(skippedRef.current);
-    setRewardIndex(null);
-    setMomentum((previous)=>advanceMomentum(previous,false,0));
-    play("next");
-    viewport.current?.focus({preventScroll:true});
-    goTo(index+1);
-  }
-
-  function togglePause() {
-    if (!paused) pausedAt.current = Date.now();
-    else {
-      const elapsed = Date.now() - pausedAt.current;
-      for (const key of Object.keys(deadlines.current))
-        deadlines.current[Number(key)] += elapsed;
-    }
-    setPaused(!paused);
-  }
-
-  const correct = Object.entries(answers).filter(
-    ([index, choice]) => items[Number(index)]?.correctIndex === choice,
-  ).length;
-  const answered = Object.keys(answers).length;
-  const completed = answered + Object.keys(expired).length;
-  const hasAnswer = answers[active] !== undefined || expired[active] || skipped[active];
-
-  return (
-    <div
-      className={`feed-column${immersive ? " is-immersive" : ""}`}
-      role={immersive ? "dialog" : undefined}
-      aria-modal={immersive ? true : undefined}
-      aria-label={immersive ? "Feed em modo imersivo" : undefined}
-      onKeyDown={(event) => {
-        if (!immersive || event.key !== "Tab") return;
-        const controls = [...event.currentTarget.querySelectorAll<HTMLElement>("button:not(:disabled), [tabindex='0']")]
-          .filter((control) => !control.closest("[inert]") && control.getClientRects().length);
-        const first = controls[0];
-        const last = controls.at(-1);
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last?.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first?.focus();
+        if (!saved && params.get("start") === "1") {
+          const started = await scrollRequest<ScrollSession>(client!, { action: "start", settings: configured });
+          if (active) { setSession(started); try { sessionStorage.setItem(sessionKey, started.id); } catch { /* Server keeps the session. */ } }
+          window.history.replaceState(null, "", window.location.pathname);
         }
-      }}
-    >
-      <div className="feed-toolbar">
-        <div>
-          <span className="status-dot" />
-          <span>PARA VOCÊ <span className="feed-live-label">/ ENEM</span></span>
+      } catch (error) { if (active) setError(message(error)); }
+      finally { if (active) setLoading(false); }
+    }
+    void load();
+    return () => { active = false; };
+  }, [client, sessionKey]);
+
+  const applySession = useCallback((value: ScrollSession) => {
+    setSession(value);
+    try { sessionStorage.setItem(sessionKey, value.id); } catch { /* Answers are already safe in the account. */ }
+  }, [sessionKey]);
+  const run = useCallback(async (action: string, extra: Record<string, unknown> = {}) => {
+    if (!client || lock.current) return;
+    lock.current = true; mutationVersion.current++; setBusy(true); setError(""); setNeedsLogin(false);
+    const payload = { action, sessionId: session?.id, itemId: current?.id, activeMs: Math.floor(activeTime.current), ...extra };
+    retry.current = { action, extra };
+    try {
+      let result = await scrollRequest<ScrollSession>(client, payload);
+      if (action === "skip") {
+        setNotice(result.items[0]?.status === "expired" ? "Tempo esgotado. A questão pode voltar em outra sessão." : "Questão pulada · sem XP. Ela pode voltar em outra sessão.");
+        result = await scrollRequest<ScrollSession>(client, { action: "next", sessionId: result.id });
+      }
+      applySession(result);
+      if (action === "start") { controls.current?.close(); setReward(null); window.history.replaceState(null, "", window.location.pathname); }
+      else if (action === "answer") {
+        const answer = result.items[0];
+        if (answer?.correct) { play(result.streak >= 3 ? "combo" : "correct"); setReward({ id: answer.id, xp: answer.xp, streak: result.streak }); }
+        else play("incorrect");
+      } else if (action === "next" || action === "skip") { setReward(null); play(result.finished ? "complete" : "next"); }
+      void refresh().catch(() => {});
+      void refreshProfile();
+    } catch (error) {
+      setError(message(error));
+      setNeedsLogin(error instanceof ScrollRequestError && error.status === 401);
+    } finally { lock.current = false; setBusy(false); }
+  }, [client, session?.id, current?.id, applySession, play, refresh, refreshProfile]);
+
+  const favorite = async () => {
+    if (!client || !current || lock.current) return;
+    lock.current = true; mutationVersion.current++; setBusy(true); setError("");
+    try {
+      const result = await scrollRequest<{ favorite: boolean }>(client, { action: "favorite", questionId: current.question.id, favorite: !current.favorite });
+      setSession(value => value && { ...value, items: value.items.map(item => item.question.id === current.question.id ? { ...item, favorite: result.favorite } : item) });
+    } catch (error) { setError(message(error)); }
+    finally { lock.current = false; setBusy(false); }
+  };
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => setNotice(""), 4000);
+    return () => clearTimeout(timer);
+  }, [notice]);
+  useEffect(() => {
+    if (!current?.deadline || current.status !== "pending") return;
+    const update = () => {
+      const now = current.pausedAt ? Date.parse(current.pausedAt) : Date.now();
+      setSeconds(Math.max(0, Math.ceil((Date.parse(current.deadline!) - now) / 1000)));
+    };
+    update(); const timer = window.setInterval(update, 500);
+    return () => clearInterval(timer);
+  }, [current?.id, current?.deadline, current?.pausedAt, current?.status]);
+  useEffect(() => {
+    if (!current?.deadline || current.status !== "pending" || current.pausedAt || busy || seconds > 0 || expired.current === current.id || Date.now() < Date.parse(current.deadline)) return;
+    expired.current = current.id;
+    void run("skip");
+  }, [seconds, current, busy, run]);
+  useEffect(() => {
+    if (!client || !session?.id) return;
+    let active = true;
+    const sync = async () => {
+      if (document.hidden || lock.current) return;
+      const version = mutationVersion.current;
+      try {
+        const value = await scrollRequest<ScrollSession>(client, `view=session&sessionId=${session.id}`);
+        if (active && !lock.current && version === mutationVersion.current) setSession(value);
+        if (active) void refresh().catch(() => {});
+      } catch { /* A failed background sync must not erase a draft. */ }
+    };
+    window.addEventListener("focus", sync);
+    return () => { active = false; window.removeEventListener("focus", sync); };
+  }, [client, session?.id, refresh]);
+
+  const goal = stats?.settings.goal ?? 5;
+  const today = Math.min(stats?.today ?? 0, goal);
+  const finished = session && (session.finished || session.exhausted);
+  const start = () => { void run("start", { settings }); };
+  return <main id="conteudo" className="sc-workspace">
+    <header className="sc-topbar"><Link href="/" className="sc-wordmark" aria-label="Quem Estuda Assim? — início">✳ <span>quem scrolla assim?</span></Link><div><Link className="sc-progress-link" href="/scrolla/progresso"><BarChart3 size={17} aria-hidden="true" /><span>Meu progresso</span></Link><Link className="sc-profile-link" href="/perfil">Meu perfil</Link><SoundToggle /></div></header>
+    <aside className="sc-rail"><div><Link className="sc-back" href="/"><ArrowLeft size={15} aria-hidden="true" />Quem calcula assim?</Link><span className="sc-eyebrow">SEU ESPAÇO DE ESTUDO</span><h2>Um acerto<br /><em>de cada vez.</em></h2><p>Questões reais do ENEM.<br />Um próximo passo sempre à mão.</p></div>
+      <div className="sc-daily"><div><Flame size={19} aria-hidden="true" /><strong>{stats?.streak ?? 0}</strong><span>{stats?.streak === 1 ? "dia de estudo" : "dias de estudo"}</span></div><label htmlFor="sc-goal">{today >= goal ? "Meta do dia concluída" : "Sua meta de hoje"}<strong>{today}/{goal}</strong></label><progress id="sc-goal" max={goal} value={today} /><p>Inéditas e revisões contam. Cada questão, uma vez por dia.</p></div>
+      <div className="sc-level"><span>NÍVEL {Math.floor((stats?.totalXp ?? 0) / 100) + 1}</span><strong>{stats?.totalXp ?? 0}<small> XP total</small></strong><progress aria-label="Progresso para o próximo nível" max={100} value={(stats?.totalXp ?? 0) % 100} /><p>{100 - (stats?.totalXp ?? 0) % 100} XP para o próximo nível</p></div>
+      <button className="sc-rail-settings" onClick={() => controls.current?.showModal()} disabled={loading || busy}><Settings2 size={17} aria-hidden="true" />Modo e filtros<ArrowRight size={15} aria-hidden="true" /></button><span className="sc-rail-note">2009–2023 · Aplicação regular<br />Gabaritos conferidos com o INEP</span>
+    </aside>
+    <div className="sc-main">
+      {notice && <p className="sc-notice" role="status">{notice}</p>}
+      <div className="sc-sessionbar"><div><span className="sc-live-dot" /><strong>{MODE_LABELS[session?.mode ?? settings.mode]}</strong>{session?.target && <span>{Math.min(session.completed + (!finished && current?.status === "pending" ? 1 : 0), session.target)}/{session.target}</span>}</div><div>
+        {current?.deadline && !finished && <span className={`sc-clock${seconds <= 30 ? " urgent" : ""}`} role="timer" aria-label="Tempo restante"><Clock3 size={15} aria-hidden="true" />{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</span>}
+        {current && !finished && <><button className="sc-icon" disabled={busy} onClick={() => void run("pause", { paused: !current.pausedAt })} aria-label={current.pausedAt ? "Retomar estudo" : "Pausar estudo"}>{current.pausedAt ? <Play size={17} /> : <Pause size={17} />}</button><button className="sc-icon" disabled={busy} onClick={() => void run("finish")} aria-label="Encerrar sessão"><X size={18} /></button></>}
+        <button className="sc-icon" disabled={loading || busy} onClick={() => controls.current?.showModal()} aria-label="Mudar modo e filtros"><Settings2 size={18} /></button>
+      </div></div>
+      {session && !finished && <MomentumStrip momentum={{ streak: session.streak, best: session.streak, xp: session.xp, lastGain: current?.xp ?? 0 }} />}
+      <div className="sc-mobile-goal"><span><Flame size={14} aria-hidden="true" />{stats?.streak ?? 0} {stats?.streak === 1 ? "dia" : "dias"}</span><span>Meta de hoje <strong>{today}/{goal}</strong>{today >= goal && <Check size={14} aria-label="Meta concluída" />}</span><span><Zap size={13} aria-hidden="true" />{stats?.totalXp ?? 0} XP</span></div>
+      {error && <div className="sc-error" role="alert"><span>{error}</span>{needsLogin ? <Link href="/entrar?next=%2Fscrolla">Entrar novamente</Link> : <button onClick={() => retry.current ? void run(retry.current.action, retry.current.extra) : void refresh().then(() => setError("")).catch(e => setError(message(e)))} disabled={busy}>Tentar novamente</button>}</div>}
+      {loading ? <div className="sc-empty" aria-busy="true"><LoaderCircle className="spin" size={28} aria-hidden="true" /><p role="status">Preparando seu estudo…</p></div>
+        : finished ? <div className="sc-empty sc-summary"><span className="sc-summary-mark"><Check size={28} aria-hidden="true" /></span><span className="sc-eyebrow">{session.exhausted ? "VOCÊ CHEGOU AO FIM DESTA SELEÇÃO" : "SESSÃO CONCLUÍDA"}</span><h1>{session.exhausted && !session.answered ? "Outro caminho para aprender." : "Seu esforço fica."}</h1><p>{session.exhausted ? "Experimente outros filtros ou revise o que já estudou." : "Cada resposta já está salva na sua conta."}</p><dl className="sc-summary-stats"><div><dt>Respondidas</dt><dd>{session.answered}</dd></div><div><dt>Acertos</dt><dd>{session.correct}</dd></div><div><dt>XP conquistado</dt><dd>+{session.xp}</dd></div></dl><button className="sc-primary" onClick={() => controls.current?.showModal()}>Escolher próximo estudo<ArrowRight size={18} aria-hidden="true" /></button><Link className="sc-text-button" href="/scrolla?mode=due">Revisar o que ficou pendente</Link><Link className="sc-text-button" href="/scrolla/progresso">Ver meu progresso</Link></div>
+        : current ? <div className="sc-current-question"><QuestionCard key={current.id} item={current} busy={busy} activeTimeRef={activeTime} onAnswer={choice => void run("answer", { choice })} onNext={() => void run("next")} onSkip={() => void run("skip")} onFavorite={() => void favorite()} />
+          {reward && <AnswerCelebration key={reward.id} label={reward.xp ? `+${reward.xp} XP` : "REVISÃO CERTA"} detail={reward.streak >= 3 ? `Combo ${reward.streak} · você está no ritmo` : "Mais um passo no seu estudo"} />}
+          {current.pausedAt && <div className="sc-pause-overlay"><Pause size={30} aria-hidden="true" /><h2>Um respiro faz parte.</h2><p>Retome quando estiver pronto.</p><button className="sc-primary" disabled={busy} onClick={() => void run("pause", { paused: false })}>Retomar<Play size={17} aria-hidden="true" /></button></div>}
         </div>
-        <div className="feed-clock">
-          {settings.timed ? (
-            <>
-              <Clock3 size={15} aria-hidden="true" />
-              <span role="timer" aria-label="Tempo restante da questão">
-                {hasAnswer
-                  ? "Concluída"
-                  : `${String(Math.floor(remaining / 60)).padStart(2, "0")}:${String(remaining % 60).padStart(2, "0")}`}
-              </span>
-              <button
-                className="icon-button"
-                onClick={togglePause}
-                aria-label={paused ? "Retomar cronômetro" : "Pausar cronômetro"}
-              >
-                {paused ? <Play size={15} /> : <Pause size={15} />}
-              </button>
-            </>
-          ) : (
-            <>
-              <InfinityIcon size={17} aria-hidden="true" />
-              <span>No seu tempo</span>
-            </>
-          )}
-          <SoundToggle />
-          <button
-            ref={immersiveButton}
-            className="icon-button"
-            onClick={() => setImmersive(!immersive)}
-            aria-label={immersive ? "Sair do modo imersivo" : "Ativar modo imersivo"}
-            title={immersive ? "Sair do modo imersivo (Esc)" : "Modo imersivo"}
-            aria-pressed={immersive}
-          >
-            {immersive ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
-          </button>
-        </div>
-      </div>
-      <MomentumStrip momentum={momentum} />
-      <div className={`feed-session-goal${completed >= 5 ? " goal-complete" : ""}`}>
-        <span>{completed >= 5 ? "Meta concluída" : "Meta da sessão"} <strong>{Math.min(5, completed)}/5</strong></span>
-        <div role="progressbar" aria-label="Meta de cinco questões concluídas" aria-valuenow={Math.min(5, completed)} aria-valuemin={0} aria-valuemax={5}>
-          {[0, 1, 2, 3, 4].map((step) => <span key={step} className={completed > step ? "done" : ""} />)}
-        </div>
-        {completed >= 5 && <Check size={14} aria-label="Meta concluída" />}
-      </div>
-      <div className="feed-stage">
-        {rewardIndex !== null && (
-          <AnswerCelebration
-            key={rewardIndex}
-            label={momentum.streak >= 3 ? `COMBO ${momentum.streak}` : `+${momentum.lastGain} XP`}
-            detail={momentum.streak >= 3 ? "Você está no ritmo" : "Conhecimento desbloqueado"}
-          />
-        )}
-        <div
-          ref={viewport}
-          inert={paused ? true : undefined}
-          className="feed-viewport snap-y snap-mandatory"
-          aria-label="Feed vertical de questões"
-          tabIndex={0}
-          onKeyDown={(event) => {
-            if (event.target !== event.currentTarget) return;
-            if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-              event.preventDefault();
-              goTo(activeRef.current + (event.key === "ArrowDown" ? 1 : -1));
-            }
-          }}
-        >
-          {items.map((question, index) => (
-            <QuestionCard
-              key={`${question.id}-${index}`}
-              question={question}
-              index={index}
-              cycle={Math.floor(index / base.length)}
-              selected={answers[index]}
-              expired={!!expired[index]}
-              skipped={!!skipped[index]}
-              active={active === index}
-              onAnswer={(value) => answer(index, value)}
-              onSkip={() => skip(index)}
-              onNext={() => {
-                viewport.current?.focus({ preventScroll: true });
-                goTo(index + 1);
-              }}
-            />
-          ))}
-        </div>
-        {paused && (
-          <div className="feed-paused">
-            <Pause size={28} aria-hidden="true" />
-            <h3>
-              Um respiro também
-              <br />
-              faz parte.
-            </h3>
-            <button className="button button-primary" onClick={togglePause}>
-              Retomar
-              <Play size={16} aria-hidden="true" />
-            </button>
-          </div>
-        )}
-      </div>
-      <div className="feed-controls">
-        <div className="feed-score">
-          <span>
-            <Check size={15} aria-hidden="true" />
-            {correct} {correct === 1 ? "acerto" : "acertos"}
-          </span>
-          <span>
-            {answered} {answered === 1 ? "respondida" : "respondidas"}
-          </span>
-        </div>
-        <div className="feed-pagination">
-          <button
-            onClick={() => goTo(active - 1)}
-            disabled={active === 0}
-            aria-label="Questão anterior"
-          >
-            <ArrowUp size={18} />
-          </button>
-          <span>{String(active + 1).padStart(2, "0")}</span>
-          <button onClick={() => goTo(active + 1)} aria-label="Próxima questão">
-            <ArrowDown size={18} />
-          </button>
-        </div>
-      </div>
-      <p className="feed-disclaimer">
-        Questões autorais de demonstração. Ao completar a seleção, você entra em
-        revisão.
-        <ArrowRight size={13} aria-hidden="true" />
-      </p>
+          : <div className="sc-empty sc-welcome"><BookOpen size={35} strokeWidth={1.3} aria-hidden="true" /><span className="sc-eyebrow">SEU PRÓXIMO ACERTO COMEÇA AQUI</span><h1>Troque o scroll<br /><em>por repertório.</em></h1><p>Escolha seu ritmo. Leia com calma.<br />Seu progresso acompanha você.</p><div className="sc-mode-choices" role="group" aria-label="Modo de estudo">{(["feed", "session", "due"] as const).map(mode => <button key={mode} className={(mode === "due" ? !["feed", "session"].includes(settings.mode) : settings.mode === mode) ? "selected" : ""} aria-pressed={mode === "due" ? !["feed", "session"].includes(settings.mode) : settings.mode === mode} onClick={() => setSettings(s => ({ ...s, mode }))}><strong>{mode === "feed" ? "Feed" : mode === "session" ? "Sessão" : "Revisão"}</strong><span>{mode === "feed" ? "Só inéditas" : mode === "session" ? `${settings.target} questões` : "Programadas e erros"}</span></button>)}</div><button className="sc-primary" onClick={start} disabled={busy || !stats}>{busy ? "Preparando…" : `Começar ${settings.mode === "feed" ? "meu feed" : settings.mode === "session" ? "minha sessão" : "minha revisão"}`}<ArrowRight size={18} aria-hidden="true" /></button><button className="sc-text-button" onClick={() => controls.current?.showModal()} disabled={!stats}>Escolher filtros e meta diária</button><span className="sc-welcome-note">Escolha, confirme e confira o gabarito.</span></div>}
     </div>
-  );
+    <dialog ref={controls} className="sc-controls-dialog" aria-labelledby="sc-controls-title"><form onSubmit={event => { event.preventDefault(); start(); }}><div className="sc-dialog-heading"><div><span className="sc-eyebrow">DO SEU JEITO</span><h2 id="sc-controls-title">Seu próximo estudo.</h2></div><button className="sc-icon" type="button" onClick={() => controls.current?.close()} aria-label="Fechar opções"><X size={22} /></button></div>
+      <fieldset><legend>Modo de estudo</legend><div className="sc-mode-tabs">{(["feed", "session", "due", "errors", "favorites"] as const).map(mode => <button key={mode} type="button" className={settings.mode === mode ? "selected" : ""} aria-pressed={settings.mode === mode} onClick={() => setSettings(s => ({ ...s, mode }))}>{MODE_LABELS[mode]}</button>)}</div></fieldset>
+      <label>Área<select value={settings.area} onChange={e => setSettings(s => ({ ...s, area: e.target.value as ScrollSettings["area"], subject: null, topic: null }))}><option value="all">Todas as áreas</option>{Object.entries(AREAS).map(([area, details]) => <option key={area} value={area}>{details.label}</option>)}</select></label>
+      <div className="sc-form-pair"><label>Ano<select value={settings.year ?? "all"} onChange={e => setSettings(s => ({ ...s, year: e.target.value === "all" ? null : Number(e.target.value) }))}><option value="all">Todos os anos</option>{stats?.years.map(year => <option key={year} value={year}>{year}</option>)}</select></label><label>Língua estrangeira<select value={settings.language} onChange={e => setSettings(s => ({ ...s, language: e.target.value as ScrollSettings["language"] }))}><option value="ingles">Inglês</option><option value="espanhol">Espanhol</option></select></label></div>
+      <p className="sc-control-note">O idioma só filtra as questões de língua estrangeira.</p>
+      {settings.mode === "session" && <><label>Questões nesta sessão<select value={settings.target} onChange={e => setSettings(s => ({ ...s, target: Number(e.target.value) as ScrollSettings["target"] }))}>{[5, 10, 20].map(n => <option key={n} value={n}>{n} questões</option>)}</select></label><label className="sc-check-label"><input type="checkbox" checked={settings.timed} onChange={e => setSettings(s => ({ ...s, timed: e.target.checked }))} />Usar cronômetro por questão</label>{settings.timed && <label>Minutos por questão<input type="number" min={1} max={30} required value={settings.minutes} onChange={e => setSettings(s => ({ ...s, minutes: Number(e.target.value) }))} /></label>}</>}
+      <label className="sc-check-label"><input type="checkbox" checked={!!settings.explanationOnly} onChange={e => setSettings(s => ({ ...s, explanationOnly: e.target.checked }))} />Somente questões com explicação</label>
+      <label>Matéria<select value={settings.subject ?? "all"} onChange={e => setSettings(s => ({ ...s, subject: e.target.value === "all" ? null : e.target.value, topic: null, area: "all" }))}><option value="all">Todas as matérias</option>{[...new Map(stats?.learning.taxonomy.map(t => [t.subject, t.subjectLabel])).entries()].map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
+      <label>Assunto<select value={settings.topic ? `${settings.subject}/${settings.topic}` : "all"} onChange={e => { const [subject, topic] = e.target.value.split("/"); setSettings(s => ({ ...s, subject: e.target.value === "all" ? s.subject : subject, topic: e.target.value === "all" ? null : topic, area: "all" })); }}><option value="all">Todos os assuntos</option>{stats?.learning.taxonomy.filter(t => !settings.subject || t.subject === settings.subject).map(t => <option key={`${t.subject}/${t.topic}`} value={`${t.subject}/${t.topic}`}>{settings.subject ? t.topicLabel : `${t.subjectLabel} · ${t.topicLabel}`}</option>)}</select></label>
+      <p className="sc-control-note">{stats?.learning.coverage.explained ?? 0} questões com explicação e classificação. O restante continua no estudo geral.{settings.mode === "due" && " A revisão programada também recupera questões já estudadas no outro idioma."}</p>
+      <label>Minha meta diária<select value={settings.goal} onChange={e => setSettings(s => ({ ...s, goal: Number(e.target.value) as ScrollSettings["goal"] }))}>{[5, 10, 20].map(n => <option key={n} value={n}>{n} respostas por dia</option>)}</select></label><p className="sc-control-note">Revisões contam para a meta. XP por questão só nas inéditas; missões dão bônus uma vez por dia.</p>
+      <button className="sc-primary" disabled={busy || !stats}>{busy ? "Preparando…" : session && !finished ? "Aplicar e recomeçar" : "Começar com estas opções"}<ArrowRight size={17} aria-hidden="true" /></button>
+    </form></dialog>
+  </main>;
 }

@@ -25,6 +25,8 @@ test("todos os geradores produzem resultados finitos, inteiros e variados", () =
       const expressions = new Set<string>();
       for (let index = 0; index < 200; index++) {
         const equation = generateEquation(mode, difficulty, random);
+        assert.ok(equation.steps && equation.steps.length >= 3);
+        assert.ok(!equation.steps.some(step => /undefined|NaN/.test(step)));
         assert.ok(
           Number.isSafeInteger(equation.answer),
           `${mode}/${difficulty}: ${equation.expression}`,

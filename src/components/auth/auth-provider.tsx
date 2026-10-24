@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await client.auth.getSession();
       if (active) setState({ client, user: data.session?.user ?? null, loading: false, error: error ? "Seu acesso expirou. Entre novamente." : "" });
     }).catch(() => {
-      if (active) setState({ client: null, user: null, loading: false, error: "O login está temporariamente indisponível. Você pode estudar sem entrar." });
+      if (active) setState({ client: null, user: null, loading: false, error: "O login está temporariamente indisponível. O treino de cálculo continua acessível sem entrar." });
     });
     return () => { active = false; unsubscribe?.(); };
   }, []);

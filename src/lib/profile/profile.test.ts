@@ -41,4 +41,8 @@ test("fila recuperada rejeita dados inválidos e deduplica eventos; respostas an
   const current = { scroll_questions:3, calculator_rounds:4, total_xp:60 };
   assert.equal(newerStats(current, EMPTY_STATS), current);
   assert.equal(newerStats(null, current), current);
+  assert.equal(newerStats({ ...current, total_xp: 80 }, current).total_xp, 80, "Uma resposta antiga não desfaz o bônus de missão com a mesma contagem");
+  assert.equal(newerStats(current, { ...current, total_xp: 80 }).total_xp, 80);
+  assert.equal(isStudyActivity({ ...activity, module: "calculator", mode: "solo", correct: true, occurredAt: "2026-10-24T12:00:00Z" }), true);
+  assert.equal(isStudyActivity({ ...activity, module: "calculator", mode: "solo" }), false);
 });

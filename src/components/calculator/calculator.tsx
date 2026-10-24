@@ -209,6 +209,7 @@ export function Calculator() {
                   }} />
               </div>
               <p className="mode-selection-help"><strong>{getXpMultiplier(getQuestionSeconds(settings), DIFFICULTIES[settings.difficulty].seconds)}× XP</strong>Até {roundXp(0,settings)} XP por acerto. Mais tempo reduz o multiplicador.</p>
+              {!multiplayer && <label className="learn-calculator-option"><input type="checkbox" checked={!!settings.learn} onChange={e => setSettings({ ...settings, learn: e.target.checked })} /><span><strong>Aprender</strong><small>Ler a resolução e avançar no seu ritmo.</small></span></label>}
             </fieldset>
             <button
               className="button button-primary start-button"

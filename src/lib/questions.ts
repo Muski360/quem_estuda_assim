@@ -1,5 +1,3 @@
-import data from "@/data/questions.json";
-
 export const AREAS = {
   mathematics: { label: "Matemática", short: "MAT", color: "terracotta" },
   nature: { label: "Ciências da Natureza", short: "NAT", color: "sage" },
@@ -7,27 +5,15 @@ export const AREAS = {
   languages: { label: "Linguagens", short: "LIN", color: "lavender" },
 } as const;
 export type Area = keyof typeof AREAS;
+export type Alternative = { letter: string; text: string; image: string | null };
+export type Classification = { subject: string; topic: string; subjectLabel: string; topicLabel: string };
+export type Explanation = { version: number; summary: string; steps: string[]; alternatives: Record<string, string> };
 export type Question = {
-  id: string;
-  area: Area;
-  topic: string;
-  title: string;
-  support: string;
-  prompt: string;
-  alternatives: string[];
-  correctIndex: number;
-  explanation: string;
+  id: string; year: number; number: number; area: Area;
+  language: "ingles" | "espanhol" | null;
+  context: string; prompt: string; alternatives: Alternative[];
+  source: { application: string; booklet: string; page: string; answerKey: string; commit: string };
+  explanation?: string | null;
+  hasExplanation?: boolean;
+  classification?: Classification | null;
 };
-
-export const questions: Question[] = data.map((question) => {
-  if (
-    !Object.hasOwn(AREAS, question.area) ||
-    question.alternatives.length !== 5 ||
-    !Number.isInteger(question.correctIndex) ||
-    question.correctIndex < 0 ||
-    question.correctIndex > 4
-  ) {
-    throw new Error(`Questão inválida: ${question.id}`);
-  }
-  return { ...question, area: question.area as Area };
-});

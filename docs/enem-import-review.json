@@ -1,0 +1,290 @@
+{
+  "commit": "938c56fbd3b391e03d93316c920a90c3e54842e5",
+  "approved": 2287,
+  "status": "approved",
+  "digest": "a83d27a2555a3fea2b626c1fa16e61f363759307c09175a2dc08404fac8a65c2",
+  "samples": [
+    {
+      "id": "enem-2009-regular-91",
+      "year": 2009,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2009-regular-85",
+      "year": 2009,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2009-regular-21",
+      "year": 2009,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2009-regular-149",
+      "year": 2009,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2011-regular-100",
+      "year": 2011,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2011-regular-11",
+      "year": 2011,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2011-regular-47",
+      "year": 2011,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2011-regular-152",
+      "year": 2011,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2012-regular-103",
+      "year": 2012,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2012-regular-1",
+      "year": 2012,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2012-regular-55",
+      "year": 2012,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2012-regular-152",
+      "year": 2012,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2013-regular-103",
+      "year": 2013,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2013-regular-1",
+      "year": 2013,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2013-regular-55",
+      "year": 2013,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2013-regular-153",
+      "year": 2013,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2014-regular-105",
+      "year": 2014,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2014-regular-16",
+      "year": 2014,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2014-regular-55",
+      "year": 2014,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2014-regular-143",
+      "year": 2014,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2015-regular-108",
+      "year": 2015,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2015-regular-1",
+      "year": 2015,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2015-regular-48",
+      "year": 2015,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2015-regular-154",
+      "year": 2015,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2016-regular-105",
+      "year": 2016,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2016-regular-17",
+      "year": 2016,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2016-regular-48",
+      "year": 2016,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2016-regular-168",
+      "year": 2016,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2017-regular-21",
+      "year": 2017,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2017-regular-51",
+      "year": 2017,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2017-regular-108",
+      "year": 2017,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2017-regular-136",
+      "year": 2017,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2018-regular-11",
+      "year": 2018,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2018-regular-56",
+      "year": 2018,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2018-regular-108",
+      "year": 2018,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2018-regular-139",
+      "year": 2018,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2019-regular-10",
+      "year": 2019,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2019-regular-47",
+      "year": 2019,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2019-regular-113",
+      "year": 2019,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2019-regular-136",
+      "year": 2019,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2020-regular-1-ingles",
+      "year": 2020,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2020-regular-51",
+      "year": 2020,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2020-regular-113",
+      "year": 2020,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2020-regular-137",
+      "year": 2020,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2021-regular-12",
+      "year": 2021,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2021-regular-85",
+      "year": 2021,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2021-regular-102",
+      "year": 2021,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2021-regular-137",
+      "year": 2021,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2022-regular-1-espanhol",
+      "year": 2022,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2022-regular-49",
+      "year": 2022,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2022-regular-103",
+      "year": 2022,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2022-regular-137",
+      "year": 2022,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2023-regular-1-ingles",
+      "year": 2023,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2023-regular-46",
+      "year": 2023,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2023-regular-110",
+      "year": 2023,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2023-regular-145",
+      "year": 2023,
+      "area": "mathematics"
+    }
+  ],
+  "scope": "Amostragem visual por ano e area, incluindo imagens e alternativas visuais. Nao e revisao editorial integral.",
+  "reviewedAt": "2026-10-23T23:47:35.209Z"
+}

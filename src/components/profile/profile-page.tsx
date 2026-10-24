@@ -1,4 +1,5 @@
 "use client";
+import { ProfileLearningSummary } from "@/components/learning/profile-learning-summary";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -100,16 +101,18 @@ function ProfileEditor({ user, client }: { user: User; client: SupabaseClient })
         <ProfileAvatar name={draft.name || saved.name} color={draft.color} url={avatarUrl} />
         <button type="button" className="profile-camera" onClick={() => fileInput.current?.click()} disabled={busy} aria-label="Alterar foto de perfil"><Camera size={20} aria-hidden="true" /></button>
       </div>
-      <div className="profile-identity-copy"><p className="eyebrow">MEU PERFIL</p><h1 id="profile-title">{draft.name || saved.name}<span aria-label="Conta conectada"><CheckCheck size={20} aria-hidden="true" /></span></h1><p className="profile-email">{user.email}</p><span className="profile-member">Por aqui desde {memberSince}</span></div>
+      <div className="profile-identity-copy"><p className="eyebrow">MEU PERFIL</p><h1 id="profile-title">{draft.name || saved.name}<span role="img" aria-label="Conta conectada"><CheckCheck size={20} aria-hidden="true" /></span></h1><p className="profile-email">{user.email}</p><span className="profile-member">Por aqui desde {memberSince}</span></div>
       <a className="profile-edit-link" href="#editar-perfil">Editar perfil<ArrowRight size={16} aria-hidden="true" /></a>
     </section>
 
     <section className="profile-progress" aria-labelledby="profile-progress-title">
       <div className="profile-section-heading"><div><p className="eyebrow">CADA RESPOSTA CONTA</p><h2 id="profile-progress-title">Seu progresso</h2></div><span>Acumulado da sua conta</span></div>
+      <Link className="auth-back" href="/scrolla/progresso">Ver assuntos, revisões e conquistas<ArrowRight size={16} aria-hidden="true" /></Link>
+      <ProfileLearningSummary />
       <dl className="profile-stats" aria-busy={statsLoading}>
-        <div><dt><GalleryVerticalEnd size={18} aria-hidden="true" />Questões respondidas</dt><dd>{stats ? format.format(stats.scroll_questions) : "—"}</dd><span>Quem scrolla assim?</span></div>
-        <div><dt><Calculator size={18} aria-hidden="true" />Rodadas concluídas</dt><dd>{stats ? format.format(stats.calculator_rounds) : "—"}</dd><span>Quem calcula assim?</span></div>
-        <div className="profile-xp"><dt><Zap size={18} aria-hidden="true" />XP total</dt><dd>{stats ? format.format(stats.total_xp) : "—"}<small>XP</small></dd><span>Somando os dois modos</span></div>
+        <div><dt><GalleryVerticalEnd size={18} aria-hidden="true" />Questões respondidas</dt><dd>{stats ? format.format(stats.scroll_questions) : "—"}</dd><dd className="profile-stat-note">Quem scrolla assim?</dd></div>
+        <div><dt><Calculator size={18} aria-hidden="true" />Rodadas concluídas</dt><dd>{stats ? format.format(stats.calculator_rounds) : "—"}</dd><dd className="profile-stat-note">Quem calcula assim?</dd></div>
+        <div className="profile-xp"><dt><Zap size={18} aria-hidden="true" />XP total</dt><dd>{stats ? format.format(stats.total_xp) : "—"}<small>XP</small></dd><dd className="profile-stat-note">Somando os dois modos</dd></div>
       </dl>
       {statsError ? <div className="profile-sync" role="status"><p>{statsError}</p><button type="button" onClick={() => void refresh()}><RotateCcw size={14} aria-hidden="true" />Tentar novamente</button></div>
         : <p className="profile-counting-note" role="status">{statsLoading ? "Carregando suas estatísticas…" : pending ? "Salvando suas últimas respostas…" : "Seu progresso é salvo enquanto você estuda com a conta conectada. Pulos não entram na contagem."}</p>}

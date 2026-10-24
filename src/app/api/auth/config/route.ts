@@ -4,7 +4,7 @@ export async function GET() {
   const headers = { "Cache-Control": "no-store" };
   if (!url || !key) {
     return Response.json(
-      { error: "O login está temporariamente indisponível. Você pode continuar estudando sem entrar." },
+      { error: "O login está temporariamente indisponível. Você pode continuar no treino de cálculo sem entrar." },
       { status: 503, headers },
     );
   }

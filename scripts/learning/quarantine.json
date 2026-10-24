@@ -1,0 +1,8 @@
+[
+  { "id": "enem-2015-regular-150", "reason": "O contexto importado começa na fórmula e omite os dados iniciais da receita. Substituída por 2015/159 no piloto." },
+  { "id": "enem-2012-regular-157", "reason": "Resolução independente chegou a 89 viagens; gabarito do acervo indica 88. Necessária conferência integral com a prova original. Sem explicação publicada." },
+  { "id": "enem-2014-regular-13", "reason": "Resolução inicial privilegiou curvatura; gabarito indica rotação. Separada para revisão conceitual do recorte espacial e temporal." },
+  { "id": "enem-2013-regular-6", "reason": "Resolução inicial privilegiou destruição cultural; gabarito indica resistência frustrada. Exige revisão do argumento de cada alternativa." },
+  { "id": "enem-2009-regular-46", "reason": "Terminologia sobre trabalho nas obras egípcias exige contextualização historiográfica adicional." },
+  { "id": "enem-2021-regular-98", "reason": "Analogia entre circulação fetal e anfíbia separada para revisão especializada; substituída por botânica." }
+]

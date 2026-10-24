@@ -1,0 +1,15 @@
+{
+  "matematica": { "label": "Matemática", "area": "mathematics", "topics": { "funcoes": "Funções", "geometria-espacial": "Geometria espacial", "porcentagem": "Porcentagem", "razoes": "Razões e proporções", "geometria-plana": "Geometria plana", "combinatoria": "Análise combinatória", "escalas": "Escalas", "inequacoes": "Inequações", "numeros-unidades": "Números e unidades", "potencias": "Potências", "progressoes": "Progressões e ciclos", "estatistica": "Estatística", "contagem": "Contagem" } },
+  "quimica": { "label": "Química", "area": "nature", "topics": { "interacoes": "Interações intermoleculares", "ambiente": "Química e ambiente", "radioatividade": "Radioatividade" } },
+  "fisica": { "label": "Física", "area": "nature", "topics": { "ondas": "Ondas", "pressao": "Pressão", "termodinamica": "Termodinâmica", "optica": "Óptica", "eletricidade": "Eletricidade" } },
+  "biologia": { "label": "Biologia", "area": "nature", "topics": { "fisiologia": "Fisiologia humana", "celulas": "Biologia celular", "genetica": "Genética", "botanica": "Botânica", "saude": "Saúde e doenças", "ecologia": "Ecologia", "comportamento": "Comportamento animal" } },
+  "historia": { "label": "História", "area": "humanities", "topics": { "cidadania": "Cidadania e direitos", "brasil-colonia": "Brasil colonial", "estado-moderno": "Estado moderno" } },
+  "geografia": { "label": "Geografia", "area": "humanities", "topics": { "questao-agraria": "Questão agrária", "energia": "Energia e produção", "populacao": "População", "geopolitica": "Geopolítica", "terra-cartografia": "Cartografia e território", "ambiente": "Ambiente e sociedade", "relevo-solos": "Relevo e solos" } },
+  "filosofia": { "label": "Filosofia", "area": "humanities", "topics": { "existencia": "Existência e subjetividade", "pensamento-critico": "Pensamento crítico", "etica": "Ética e ação coletiva" } },
+  "sociologia": { "label": "Sociologia", "area": "humanities", "topics": { "poder-participacao": "Poder e participação", "genero": "Gênero e movimentos sociais" } },
+  "ingles": { "label": "Inglês", "area": "languages", "topics": { "leitura-ingles": "Leitura e interpretação em inglês" } },
+  "espanhol": { "label": "Espanhol", "area": "languages", "topics": { "leitura-espanhol": "Leitura e interpretação em espanhol" } },
+  "portugues": { "label": "Língua Portuguesa", "area": "languages", "topics": { "figuras-linguagem": "Figuras de linguagem", "interpretacao": "Interpretação e inferência", "generos": "Gêneros e tipos textuais", "variacao-identidade": "Variação e identidade", "oralidade": "Oralidade e registro" } },
+  "literatura": { "label": "Literatura", "area": "languages", "topics": { "interpretacao-literaria": "Interpretação literária", "recursos-poeticos": "Recursos poéticos" } },
+  "educacao-fisica": { "label": "Educação Física", "area": "languages", "topics": { "corpo-cultura": "Corpo e cultura" } }
+}

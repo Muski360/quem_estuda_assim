@@ -42,8 +42,9 @@ function AccountProgress({ children, userId, client }: { children: ReactNode; us
         while (queue.current.length) {
           const activity = queue.current[0];
           // shortcut: personal solo/feed XP comes from the browser; verify answers server-side before adding competitive rankings.
-          const { data, error } = await client.rpc("qe_record_study_activity", {
-            p_event_id: activity.id, p_module: activity.module, p_xp: activity.xp,
+          const { data, error } = await client.rpc("qe_record_calculator", {
+            p_event_id: activity.id, p_xp: activity.xp, p_mode: activity.mode ?? null,
+            p_correct: activity.correct ?? null, p_occurred_at: activity.occurredAt ?? null,
           }).setHeader("Authorization", `Bearer ${token}`).single();
           if (error) throw error;
           queue.current = queue.current.filter(({ id }) => id !== activity.id);
@@ -76,7 +77,7 @@ function AccountProgress({ children, userId, client }: { children: ReactNode; us
   }, [client, userId, flush]);
 
   const recordActivity = useCallback((activity: StudyActivity) => {
-    if (!client || !userId || !isStudyActivity(activity)) return;
+    if (!client || !userId || !isStudyActivity(activity) || activity.module !== "calculator") return;
     if (!queue.current.some(({ id }) => id === activity.id)) queue.current.push(activity);
     try { localStorage.setItem(storageKey + activity.id, JSON.stringify(activity)); }
     catch { setError("O navegador não conseguiu guardar o progresso pendente. Mantenha esta aba aberta até sincronizar."); }
@@ -86,7 +87,8 @@ function AccountProgress({ children, userId, client }: { children: ReactNode; us
 
   useEffect(() => {
     if (!client || !userId) return;
-    try { queue.current = Object.keys(localStorage).filter((key) => key.startsWith(storageKey)).flatMap((key) => parsePendingActivities(localStorage.getItem(key))); }
+    // Legacy demo feed events stay in storage; official Scroll answers are now committed by the server.
+    try { queue.current = Object.keys(localStorage).filter((key) => key.startsWith(storageKey)).flatMap((key) => parsePendingActivities(localStorage.getItem(key))).filter(activity => activity.module === "calculator"); }
     catch { /* Recording still works in memory when storage is unavailable. */ }
     const update = () => { void refresh(); };
     update();

@@ -9,7 +9,7 @@ export type RoomSnapshot = {
   players: Player[];
   status: "waiting" | "playing" | "finished";
   round: number;
-  equation: Omit<Equation, "answer" | "explanation"> | null;
+  equation: Omit<Equation, "answer" | "explanation" | "steps"> | null;
   endsAt: number;
   nextAt: number | null;
   cooldownUntil: number;

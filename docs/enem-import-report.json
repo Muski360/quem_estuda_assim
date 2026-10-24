@@ -1,0 +1,4734 @@
+{
+  "commit": "938c56fbd3b391e03d93316c920a90c3e54842e5",
+  "total": 2757,
+  "approved": 2287,
+  "quarantined": 470,
+  "byYear": {
+    "2009": 173,
+    "2011": 149,
+    "2012": 162,
+    "2013": 145,
+    "2014": 139,
+    "2015": 141,
+    "2016": 133,
+    "2017": 176,
+    "2018": 181,
+    "2019": 181,
+    "2020": 178,
+    "2021": 175,
+    "2022": 181,
+    "2023": 173
+  },
+  "byArea": {
+    "nature": 532,
+    "languages": 674,
+    "mathematics": 455,
+    "humanities": 626
+  },
+  "reasons": {
+    "answer_mismatch": 14,
+    "context_requires_review": 255,
+    "official_answer_unverified": 185,
+    "invalid_alternatives": 7,
+    "language_not_identified": 9,
+    "formula_requires_review: expoentes x² e y² foram transcritos como x2 e y2 no acervo": 1,
+    "incomplete_text": 4,
+    "invalid_image": 1,
+    "unresolved_media": 7,
+    "annulled": 6,
+    "missing_image": 6,
+    "empty_alternative": 1
+  },
+  "correctedAreas": [
+    {
+      "id": "enem-2009-regular-1",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-104",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-125",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-126",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-13",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-140",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-157",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-166",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-23",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-24",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-29",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-8",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-9",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2009-regular-98",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2011-regular-149",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2011-regular-152",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2011-regular-153",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2011-regular-68",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2012-regular-140",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2012-regular-162",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2012-regular-164",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2012-regular-68",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2013-regular-152",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2013-regular-155",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2013-regular-51",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2013-regular-53",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2013-regular-60",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2013-regular-63",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2013-regular-84",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2013-regular-88",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2014-regular-56",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2014-regular-69",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2014-regular-71",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2014-regular-79",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2015-regular-126",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2015-regular-46",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2015-regular-56",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2015-regular-78",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2015-regular-89",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2016-regular-79",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-10",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-108",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-126",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-128",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-130",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-134",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-141",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-146",
+      "from": "nature",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-26",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-32",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2017-regular-8",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2018-regular-106",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2018-regular-115",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2018-regular-117",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2018-regular-140",
+      "from": "nature",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2018-regular-142",
+      "from": "nature",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2018-regular-32",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2018-regular-93",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2019-regular-119",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2019-regular-123",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2019-regular-141",
+      "from": "nature",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2019-regular-21",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2019-regular-94",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2019-regular-95",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2020-regular-102",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2020-regular-124",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2020-regular-150",
+      "from": "nature",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2020-regular-152",
+      "from": "nature",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2020-regular-20",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2021-regular-100",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2021-regular-106",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2021-regular-120",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2021-regular-140",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2021-regular-149",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2021-regular-28",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2021-regular-37",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2021-regular-44",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2021-regular-9",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2021-regular-94",
+      "from": "mathematics",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2022-regular-108",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2022-regular-24",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2022-regular-7",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2022-regular-92",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-109",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-128",
+      "from": "mathematics",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-130",
+      "from": "mathematics",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-131",
+      "from": "mathematics",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-148",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-149",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-153",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-154",
+      "from": "humanities",
+      "to": "mathematics",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-30",
+      "from": "humanities",
+      "to": "languages",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-81",
+      "from": "languages",
+      "to": "humanities",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-93",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-94",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-96",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-97",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    },
+    {
+      "id": "enem-2023-regular-98",
+      "from": "humanities",
+      "to": "nature",
+      "reason": "official_exam_numbering"
+    }
+  ],
+  "quarantine": [
+    {
+      "id": "enem-2009-regular-120",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2009\\questions\\120\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2009-regular-15",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2009\\questions\\15\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2009-regular-2",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2009\\questions\\2\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2009-regular-27",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2009\\questions\\27\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2009-regular-32",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2009\\questions\\32\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2009-regular-45",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2009\\questions\\45\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2010-regular-1",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\1\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-10",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\10\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-100",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\100\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-101",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\101\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-102",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\102\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-103",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\103\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-104",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\104\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-105",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\105\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-106",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\106\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-107",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\107\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-108",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\108\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-109",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\109\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-11",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\11\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-110",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\110\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-111",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\111\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-112",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\112\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-113",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\113\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-114",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\114\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-115",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\115\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-116",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\116\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-117",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\117\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-118",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\118\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-119",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\119\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-12",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\12\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-120",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\120\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-121",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\121\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-122",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\122\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-123",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\123\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-124",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\124\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-125",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\125\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-126",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\126\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-127",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\127\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-128",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\128\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-129",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\129\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-13",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\13\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-130",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\130\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-131",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\131\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-132",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\132\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-133",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\133\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-134",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\134\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-135",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\135\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-136",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\136\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-137",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\137\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-138",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\138\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-139",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\139\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-14",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\14\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-140",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\140\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-141",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\141\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-142",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\142\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-143",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\143\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-144",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\144\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-145",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\145\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-146",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\146\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-147",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\147\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-148",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\148\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-149",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\149\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-15",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\15\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-150",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\150\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-151",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\151\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-152",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\152\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-153",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\153\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-154",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\154\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-155",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\155\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-156",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\156\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-157",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\157\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-158",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\158\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-159",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\159\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-16",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\16\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-160",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\160\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-161",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\161\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-162",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\162\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-163",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\163\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-164",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\164\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-165",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\165\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-166",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\166\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-167",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\167\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-168",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\168\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-169",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\169\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-17",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\17\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-170",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\170\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-171",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\171\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-172",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\172\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-173",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\173\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-174",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\174\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-175",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\175\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-176",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\176\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-177",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\177\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-178",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\178\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-179",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\179\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-18",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\18\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-180",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\180\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-19",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\19\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-2",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\2\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-20",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\20\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-21",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\21\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-22",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\22\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-23",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\23\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-24",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\24\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-25",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\25\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-26",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\26\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-27",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\27\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-28",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\28\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-29",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\29\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-3",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\3\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-30",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\30\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-31",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\31\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-32",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\32\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-33",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\33\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-34",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\34\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-35",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\35\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-36",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\36\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-37",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\37\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-38",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\38\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-39",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\39\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-4",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\4\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-40",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\40\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-41",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\41\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-42",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\42\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-43",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\43\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-44",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\44\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-45",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\45\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-46",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\46\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-47",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\47\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-48",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\48\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-49",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\49\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-5",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\5\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-50",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\50\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-51",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\51\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-52",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\52\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-53",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\53\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-54",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\54\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-55",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\55\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-56",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\56\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-57",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\57\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-58",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\58\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-59",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\59\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-6",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\6\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-60",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\60\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-61",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\61\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-62",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\62\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-63",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\63\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-64",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\64\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-65",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\65\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-66",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\66\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-67",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\67\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-68",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\68\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-69",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\69\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-7",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\7\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-70",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\70\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-71",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\71\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-72",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\72\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-73",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\73\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-74",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\74\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-75",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\75\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-76",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\76\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-77",
+      "reasons": [
+        "context_requires_review",
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\77\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-78",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\78\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-79",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\79\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-8",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\8\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-80",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\80\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-81",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\81\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-82",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\82\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-83",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\83\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-84",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\84\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-85",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\85\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-86",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\86\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-87",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\87\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-88",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\88\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-89",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\89\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-9",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\9\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-90",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\90\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-91-espanhol",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\91-espanhol\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-91-ingles",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\91-ingles\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-92-espanhol",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\92-espanhol\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-92-ingles",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\92-ingles\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-93-espanhol",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\93-espanhol\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-93-ingles",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\93-ingles\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-94-espanhol",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\94-espanhol\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-94-ingles",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\94-ingles\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-95-espanhol",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\95-espanhol\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-95-ingles",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\95-ingles\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-96",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\96\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-97",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\97\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-98",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\98\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2010-regular-99",
+      "reasons": [
+        "official_answer_unverified"
+      ],
+      "file": "2010\\questions\\99\\details.json",
+      "officialAnswer": null
+    },
+    {
+      "id": "enem-2011-regular-138",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\138\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2011-regular-140",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\140\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2011-regular-142",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\142\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2011-regular-147",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\147\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2011-regular-151",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\151\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2011-regular-154",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\154\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2011-regular-157",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\157\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2011-regular-163",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\163\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2011-regular-165",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\165\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2011-regular-170",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\170\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2011-regular-171",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\171\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2011-regular-172",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\172\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2011-regular-175",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\175\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2011-regular-176",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\176\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2011-regular-177",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\177\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2011-regular-178",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\178\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2011-regular-180",
+      "reasons": [
+        "invalid_alternatives"
+      ],
+      "file": "2011\\questions\\180\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2011-regular-46",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\46\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2011-regular-50",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\50\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2011-regular-63",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\63\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2011-regular-64",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\64\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2011-regular-70",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\70\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2011-regular-72",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\72\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2011-regular-73",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\73\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2011-regular-75",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\75\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2011-regular-77",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\77\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2011-regular-78",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\78\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2011-regular-81",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2011\\questions\\81\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2011-regular-84",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\84\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2011-regular-86",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2011\\questions\\86\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2011-regular-91",
+      "reasons": [
+        "language_not_identified"
+      ],
+      "file": "2011\\questions\\91\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2011-regular-92",
+      "reasons": [
+        "language_not_identified"
+      ],
+      "file": "2011\\questions\\92\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2011-regular-93",
+      "reasons": [
+        "language_not_identified"
+      ],
+      "file": "2011\\questions\\93\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2011-regular-94",
+      "reasons": [
+        "language_not_identified"
+      ],
+      "file": "2011\\questions\\94\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2011-regular-95",
+      "reasons": [
+        "answer_mismatch",
+        "language_not_identified"
+      ],
+      "file": "2011\\questions\\95\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2012-regular-141",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\141\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2012-regular-143",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\143\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2012-regular-145",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\145\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2012-regular-147",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\147\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2012-regular-148",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\148\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2012-regular-149",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\149\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2012-regular-151",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\151\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2012-regular-154",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\154\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2012-regular-155",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\155\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2012-regular-156",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\156\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2012-regular-158",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\158\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2012-regular-159",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\159\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2012-regular-165",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2012\\questions\\165\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2012-regular-169",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\169\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2012-regular-172",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\172\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2012-regular-179",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\179\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2012-regular-60",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\60\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2012-regular-67",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\67\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2012-regular-69",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\69\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2012-regular-73",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\73\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2012-regular-74",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\74\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2012-regular-80",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2012\\questions\\80\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2012-regular-94",
+      "reasons": [
+        "language_not_identified"
+      ],
+      "file": "2012\\questions\\94\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2013-regular-136",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\136\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2013-regular-137",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\137\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2013-regular-138",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\138\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2013-regular-139",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\139\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2013-regular-140",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\140\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2013-regular-141",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\141\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2013-regular-142",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\142\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2013-regular-143",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\143\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2013-regular-144",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\144\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2013-regular-145",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\145\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2013-regular-147",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\147\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2013-regular-149",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\149\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2013-regular-151",
+      "reasons": [
+        "formula_requires_review: expoentes x² e y² foram transcritos como x2 e y2 no acervo"
+      ],
+      "file": "2013\\questions\\151\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2013-regular-157",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\157\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2013-regular-160",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\160\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2013-regular-161",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\161\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2013-regular-162",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\162\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2013-regular-164",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\164\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2013-regular-165",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\165\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2013-regular-166",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\166\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2013-regular-168",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\168\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2013-regular-171",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\171\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2013-regular-175",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\175\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2013-regular-176",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\176\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2013-regular-177",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\177\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2013-regular-179",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\179\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2013-regular-180",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\180\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2013-regular-48",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\48\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2013-regular-54",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\54\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2013-regular-57",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\57\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2013-regular-64",
+      "reasons": [
+        "invalid_alternatives"
+      ],
+      "file": "2013\\questions\\64\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2013-regular-66",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\66\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2013-regular-68",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\68\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2013-regular-71",
+      "reasons": [
+        "incomplete_text"
+      ],
+      "file": "2013\\questions\\71\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2013-regular-72",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\72\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2013-regular-82",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\82\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2013-regular-83",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\83\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2013-regular-85",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\85\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2013-regular-86",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\86\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2013-regular-90",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2013\\questions\\90\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-139",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\139\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2014-regular-140",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\140\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2014-regular-141",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\141\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2014-regular-144",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\144\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2014-regular-145",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\145\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-146",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\146\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2014-regular-147",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\147\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-149",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\149\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-150",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\150\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2014-regular-152",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\152\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-153",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\153\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-154",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\154\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2014-regular-155",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\155\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-156",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\156\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2014-regular-159",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\159\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2014-regular-160",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\160\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2014-regular-161",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\161\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-163",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\163\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-164",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\164\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-166",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\166\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2014-regular-167",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\167\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2014-regular-171",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\171\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2014-regular-172",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\172\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2014-regular-173",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\173\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2014-regular-175",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\175\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-176",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\176\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-177",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\177\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-178",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\178\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-179",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\179\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-180",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\180\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2014-regular-48",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\48\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-54",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\54\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-57",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\57\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2014-regular-59",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\59\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2014-regular-62",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\62\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2014-regular-64",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\64\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2014-regular-65",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\65\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-67",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\67\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-70",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\70\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2014-regular-72",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\72\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-75",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\75\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-77",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\77\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-80",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\80\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2014-regular-82",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\82\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2014-regular-83",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\83\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2014-regular-85",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2014\\questions\\85\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2015-regular-136",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\136\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2015-regular-137",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\137\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2015-regular-138",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\138\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2015-regular-139",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\139\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2015-regular-141",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\141\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-142",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\142\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-143",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\143\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2015-regular-146",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\146\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-147",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\147\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-149",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\149\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-152",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\152\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2015-regular-153",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\153\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-156",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\156\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2015-regular-160",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\160\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2015-regular-162",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\162\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2015-regular-164",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\164\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2015-regular-166",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\166\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2015-regular-167",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\167\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2015-regular-168",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\168\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2015-regular-169",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\169\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-170",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\170\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2015-regular-171",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\171\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2015-regular-173",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\173\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-174",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\174\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2015-regular-175",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\175\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2015-regular-176",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\176\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2015-regular-177",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\177\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2015-regular-178",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\178\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2015-regular-179",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\179\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2015-regular-47",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\47\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-52",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\52\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2015-regular-53",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\53\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2015-regular-55",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\55\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2015-regular-59",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\59\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2015-regular-60",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\60\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2015-regular-71",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\71\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2015-regular-77",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\77\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-81",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\81\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2015-regular-82",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\82\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2015-regular-84",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\84\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2015-regular-85",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\85\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2015-regular-90",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2015\\questions\\90\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2015-regular-95",
+      "reasons": [
+        "language_not_identified"
+      ],
+      "file": "2015\\questions\\95\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-136",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\136\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-137",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\137\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-139",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\139\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-140",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\140\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-143",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\143\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2016-regular-146",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\146\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-147",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\147\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-148",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\148\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-150",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\150\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2016-regular-155",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\155\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-156",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\156\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2016-regular-157",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\157\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2016-regular-158",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\158\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-159",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\159\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2016-regular-160",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\160\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-162",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\162\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-163",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\163\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-165",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\165\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-167",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\167\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-170",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\170\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-171",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\171\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-172",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\172\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2016-regular-174",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\174\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-175",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\175\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2016-regular-176",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\176\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2016-regular-178",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\178\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2016-regular-179",
+      "reasons": [
+        "context_requires_review",
+        "incomplete_text"
+      ],
+      "file": "2016\\questions\\179\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2016-regular-47",
+      "reasons": [
+        "invalid_alternatives"
+      ],
+      "file": "2016\\questions\\47\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-49",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\49\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-50",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\50\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2016-regular-53",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\53\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-54",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\54\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-55",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\55\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-57",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\57\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-60",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\60\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-61",
+      "reasons": [
+        "context_requires_review",
+        "incomplete_text"
+      ],
+      "file": "2016\\questions\\61\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-62",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\62\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-63",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\63\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-66",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\66\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2016-regular-74",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\74\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-76",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\76\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-77",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\77\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-78",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\78\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-81",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\81\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2016-regular-82",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\82\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2016-regular-84",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\84\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-85",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\85\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2016-regular-86",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\86\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2016-regular-87",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\87\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2016-regular-88",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2016\\questions\\88\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2016-regular-90",
+      "reasons": [
+        "context_requires_review",
+        "incomplete_text"
+      ],
+      "file": "2016\\questions\\90\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2016-regular-93",
+      "reasons": [
+        "language_not_identified"
+      ],
+      "file": "2016\\questions\\93\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2017-regular-166",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2017\\questions\\166\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2017-regular-167",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2017\\questions\\167\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2017-regular-168",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2017\\questions\\168\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2017-regular-169",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2017\\questions\\169\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2017-regular-172",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2017\\questions\\172\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2017-regular-175",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2017\\questions\\175\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2017-regular-178",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2017\\questions\\178\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2017-regular-179",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2017\\questions\\179\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2017-regular-180",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2017\\questions\\180\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2018-regular-136",
+      "reasons": [
+        "invalid_image",
+        "unresolved_media"
+      ],
+      "file": "2018\\questions\\136\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2018-regular-15",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2018\\questions\\15\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2018-regular-163",
+      "reasons": [
+        "annulled"
+      ],
+      "file": "2018\\questions\\163\\details.json",
+      "officialAnswer": "Anulado"
+    },
+    {
+      "id": "enem-2020-regular-135",
+      "reasons": [
+        "annulled"
+      ],
+      "file": "2020\\questions\\135\\details.json",
+      "officialAnswer": "Anulada"
+    },
+    {
+      "id": "enem-2020-regular-157",
+      "reasons": [
+        "annulled"
+      ],
+      "file": "2020\\questions\\157\\details.json",
+      "officialAnswer": "Anulada"
+    },
+    {
+      "id": "enem-2020-regular-5",
+      "reasons": [
+        "answer_mismatch",
+        "language_not_identified"
+      ],
+      "file": "2020\\questions\\5\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2020-regular-91",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2020\\questions\\91\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2021-regular-105",
+      "reasons": [
+        "invalid_alternatives"
+      ],
+      "file": "2021\\questions\\105\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2021-regular-138",
+      "reasons": [
+        "annulled"
+      ],
+      "file": "2021\\questions\\138\\details.json",
+      "officialAnswer": "anulada"
+    },
+    {
+      "id": "enem-2021-regular-139",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2021\\questions\\139\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2021-regular-145",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2021\\questions\\145\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2021-regular-15",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2021\\questions\\15\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2021-regular-152",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2021\\questions\\152\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2021-regular-175",
+      "reasons": [
+        "invalid_alternatives"
+      ],
+      "file": "2021\\questions\\175\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2021-regular-25",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2021\\questions\\25\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2021-regular-38",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2021\\questions\\38\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2021-regular-53",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2021\\questions\\53\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2022-regular-143",
+      "reasons": [
+        "answer_mismatch"
+      ],
+      "file": "2022\\questions\\143\\details.json",
+      "officialAnswer": "D"
+    },
+    {
+      "id": "enem-2022-regular-144",
+      "reasons": [
+        "invalid_alternatives"
+      ],
+      "file": "2022\\questions\\144\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2022-regular-157",
+      "reasons": [
+        "annulled"
+      ],
+      "file": "2022\\questions\\157\\details.json",
+      "officialAnswer": "Anulado"
+    },
+    {
+      "id": "enem-2022-regular-166",
+      "reasons": [
+        "invalid_alternatives"
+      ],
+      "file": "2022\\questions\\166\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2023-regular-1-espanhol",
+      "reasons": [
+        "missing_image",
+        "unresolved_media"
+      ],
+      "file": "2023\\questions\\1-espanhol\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2023-regular-129",
+      "reasons": [
+        "missing_image",
+        "unresolved_media"
+      ],
+      "file": "2023\\questions\\129\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2023-regular-132",
+      "reasons": [
+        "empty_alternative"
+      ],
+      "file": "2023\\questions\\132\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2023-regular-141",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2023\\questions\\141\\details.json",
+      "officialAnswer": "E"
+    },
+    {
+      "id": "enem-2023-regular-142",
+      "reasons": [
+        "context_requires_review"
+      ],
+      "file": "2023\\questions\\142\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2023-regular-164",
+      "reasons": [
+        "annulled"
+      ],
+      "file": "2023\\questions\\164\\details.json",
+      "officialAnswer": "Anulado"
+    },
+    {
+      "id": "enem-2023-regular-44",
+      "reasons": [
+        "missing_image",
+        "unresolved_media"
+      ],
+      "file": "2023\\questions\\44\\details.json",
+      "officialAnswer": "A"
+    },
+    {
+      "id": "enem-2023-regular-5-ingles",
+      "reasons": [
+        "missing_image",
+        "unresolved_media"
+      ],
+      "file": "2023\\questions\\5-ingles\\details.json",
+      "officialAnswer": "B"
+    },
+    {
+      "id": "enem-2023-regular-56",
+      "reasons": [
+        "missing_image",
+        "unresolved_media"
+      ],
+      "file": "2023\\questions\\56\\details.json",
+      "officialAnswer": "C"
+    },
+    {
+      "id": "enem-2023-regular-65",
+      "reasons": [
+        "missing_image",
+        "unresolved_media"
+      ],
+      "file": "2023\\questions\\65\\details.json",
+      "officialAnswer": "A"
+    }
+  ],
+  "officialKeys": {
+    "2009-day1": 90,
+    "2009-day2": 90,
+    "2010-day1": 0,
+    "2010-day2": 0,
+    "2011-day1": 90,
+    "2011-day2": 90,
+    "2012-day1": 90,
+    "2012-day2": 90,
+    "2013-day1": 90,
+    "2013-day2": 90,
+    "2014-day1": 90,
+    "2014-day2": 90,
+    "2015-day1": 90,
+    "2015-day2": 90,
+    "2016-day1": 90,
+    "2016-day2": 90,
+    "2017-day1": 90,
+    "2017-day2": 90,
+    "2018-day1": 90,
+    "2018-day2": 90,
+    "2019-day1": 90,
+    "2019-day2": 90,
+    "2020-day1": 90,
+    "2020-day2": 90,
+    "2021-day1": 90,
+    "2021-day2": 90,
+    "2022-day1": 90,
+    "2022-day2": 90,
+    "2023-day1": 90,
+    "2023-day2": 90
+  },
+  "visualSamples": [
+    {
+      "id": "enem-2009-regular-91",
+      "year": 2009,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2009-regular-85",
+      "year": 2009,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2009-regular-21",
+      "year": 2009,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2009-regular-149",
+      "year": 2009,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2011-regular-100",
+      "year": 2011,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2011-regular-11",
+      "year": 2011,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2011-regular-47",
+      "year": 2011,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2011-regular-152",
+      "year": 2011,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2012-regular-103",
+      "year": 2012,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2012-regular-1",
+      "year": 2012,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2012-regular-55",
+      "year": 2012,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2012-regular-152",
+      "year": 2012,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2013-regular-103",
+      "year": 2013,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2013-regular-1",
+      "year": 2013,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2013-regular-55",
+      "year": 2013,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2013-regular-153",
+      "year": 2013,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2014-regular-105",
+      "year": 2014,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2014-regular-16",
+      "year": 2014,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2014-regular-55",
+      "year": 2014,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2014-regular-143",
+      "year": 2014,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2015-regular-108",
+      "year": 2015,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2015-regular-1",
+      "year": 2015,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2015-regular-48",
+      "year": 2015,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2015-regular-154",
+      "year": 2015,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2016-regular-105",
+      "year": 2016,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2016-regular-17",
+      "year": 2016,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2016-regular-48",
+      "year": 2016,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2016-regular-168",
+      "year": 2016,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2017-regular-21",
+      "year": 2017,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2017-regular-51",
+      "year": 2017,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2017-regular-108",
+      "year": 2017,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2017-regular-136",
+      "year": 2017,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2018-regular-11",
+      "year": 2018,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2018-regular-56",
+      "year": 2018,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2018-regular-108",
+      "year": 2018,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2018-regular-139",
+      "year": 2018,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2019-regular-10",
+      "year": 2019,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2019-regular-47",
+      "year": 2019,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2019-regular-113",
+      "year": 2019,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2019-regular-136",
+      "year": 2019,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2020-regular-1-ingles",
+      "year": 2020,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2020-regular-51",
+      "year": 2020,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2020-regular-113",
+      "year": 2020,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2020-regular-137",
+      "year": 2020,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2021-regular-12",
+      "year": 2021,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2021-regular-85",
+      "year": 2021,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2021-regular-102",
+      "year": 2021,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2021-regular-137",
+      "year": 2021,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2022-regular-1-espanhol",
+      "year": 2022,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2022-regular-49",
+      "year": 2022,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2022-regular-103",
+      "year": 2022,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2022-regular-137",
+      "year": 2022,
+      "area": "mathematics"
+    },
+    {
+      "id": "enem-2023-regular-1-ingles",
+      "year": 2023,
+      "area": "languages"
+    },
+    {
+      "id": "enem-2023-regular-46",
+      "year": 2023,
+      "area": "humanities"
+    },
+    {
+      "id": "enem-2023-regular-110",
+      "year": 2023,
+      "area": "nature"
+    },
+    {
+      "id": "enem-2023-regular-145",
+      "year": 2023,
+      "area": "mathematics"
+    }
+  ]
+}

@@ -10,6 +10,6 @@ export function ProfileAvatar({ name, color, url, className = "" }: { name: stri
   return <span className={`profile-avatar ${className}`} style={{ "--profile-color": color } as CSSProperties}>
     {url && url !== failedUrl
       ? <Image src={url} alt={`Foto de ${name}`} width={320} height={320} unoptimized onError={() => setFailedUrl(url)} />
-      : <span aria-label={`Avatar de ${name}`}>{initials(name)}</span>}
+      : <span role="img" aria-label={`Avatar de ${name}`}>{initials(name)}</span>}
   </span>;
 }

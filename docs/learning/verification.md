@@ -1,0 +1,11 @@
+# Verificação — entender, revisar e evoluir
+
+Verificado em 24/10/2026. Migrações 008–011 aplicadas ao projeto Supabase vinculado. Lote de 100 explicações publicado duas vezes sem duplicação, com 25 por área e nove imagens conferidas. Totais, IDs e primeiras respostas preservados. O frontend não foi publicado no Worker.
+
+1. **Código e conteúdo:** 36 testes Node, quatro testes Python do importador, lint, TypeScript e build OpenNext/Cloudflare. O pacote passou na checagem de segredos. O registro editorial é assistido por IA, sem API paga e sem alegação de revisão integral por especialistas humanos.
+2. **Supabase e HTTP:** duas contas isoladas, conteúdo protegido antes da resposta, filtros por assunto/explicação, respostas e eventos concorrentes, XP de missão limitado a 50/dia, contratos antigos, revisão antecipada, intervalos 1/3/7/14/30, consolidação e regressão, relato idempotente e autenticação inválida. Contas temporárias são removidas pelos testes.
+3. **Versões editoriais:** transação revertida no banco real verificou rascunho indisponível, ativação da versão 2, relato ainda vinculado à versão 1, retirada por quarentena e bloqueio por checksum divergente. Nenhuma alteração desse ensaio foi mantida.
+4. **Chrome:** início, estudo, progresso e perfil sem overflow horizontal em 320/390/768/1440 px; axe A/AA sem violações nessas 16 combinações. Também passaram alternativas visuais, ampliação/Escape, fórmulas, passos e cinco justificativas, relato, filtros, escolha preservada após falha de rede e HTTP 401, recarga, movimento reduzido, Calcula Aprender com avanço manual e bônus de missão com atualização da home e celebração. Artefatos locais em `output/playwright/`.
+5. **Multiplayer:** integração real verificou permissões, pistas privadas, rejeição de pulo, idempotência, cooldown e vitória por acertos. O primeiro ensaio excedeu o limite de cinco segundos esperando um evento Realtime; a repetição recebeu o evento e concluiu todos os cenários. A sincronização HTTP existente foi preservada.
+
+Safari, Firefox, leitores de tela e aparelhos físicos não foram exercitados nesta fase. A precisão editorial do conteúdo continua sujeita a relatos e revisões; candidatos duvidosos estão em `scripts/learning/quarantine.json`.

@@ -85,7 +85,7 @@ export function MultiplayerGame({
     const before = previous?.players.find(({ id }) => id === session?.playerId);
     const after = next.players.find(({ id }) => id === session?.playerId);
     if (previous?.equation && before && after && after.score === before.score + 1) {
-      recordActivity({ id: previous.equation.id, module: "calculator", xp: after.xp - before.xp });
+      recordActivity({ id: previous.equation.id, module: "calculator", xp: after.xp - before.xp, mode: "multiplayer", correct: true, occurredAt: new Date().toISOString() });
     }
     if (next.status === "finished" && previous?.status !== "finished") play("complete");
     else if (next.reveal && (!previous?.reveal || next.equation?.id !== previous.equation?.id))

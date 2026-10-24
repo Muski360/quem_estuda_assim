@@ -58,6 +58,7 @@ export function SoloGame({
     duration,
   );
   const [paused, setPaused] = useState(false);
+  const nextButton = useRef<HTMLButtonElement>(null);
   const pauseStarted = useRef(0);
   const answered = useRef(false);
   const input = useRef<HTMLInputElement>(null);
@@ -99,6 +100,7 @@ export function SoloGame({
 
   useEffect(() => {
     if (!feedback) return;
+    if (settings.learn) { nextButton.current?.focus(); return; }
     const timer = window.setTimeout(() => {
       setFeedback(null);
       if (attempts.length < settings.rounds) {
@@ -126,7 +128,7 @@ export function SoloGame({
     const seconds = Math.min(duration, Math.max(0, (now - round.startedAt) / 1000));
     const earnedXp = roundXp(seconds,settings);
     const correct = !timedOut && isCorrectAnswer(value, round.equation.answer);
-    if (!timedOut) recordActivity({ id: round.equation.id, module: "calculator", xp: correct ? earnedXp : 0 });
+    if (!timedOut) recordActivity({ id: round.equation.id, module: "calculator", xp: correct ? earnedXp : 0, mode: "solo", correct, occurredAt: new Date().toISOString() });
     play(correct ? (momentum.streak >= 2 ? "combo" : "correct") : "incorrect");
     setAttempts((previous) => [
       ...previous,
@@ -360,11 +362,10 @@ export function SoloGame({
               feedback?.message ||
               "Digite o resultado e pressione Enter."}
           </div>
-          {feedback && (
-            <p className="solution-explanation">
-              {round?.equation.explanation}
-            </p>
-          )}
+          {feedback && (settings.learn ? <div className="solution-explanation"><h3>Entenda a resolução</h3><ol className="learn-solo-steps">{(round.equation.steps ?? [round.equation.hint, round.equation.explanation]).map((step, index) => <li key={index}>{step}</li>)}</ol><button ref={nextButton} className="button button-primary learn-solo-next" onClick={() => {
+            setFeedback(null);
+            if (attempts.length < settings.rounds) { answered.current = false; setAnswer(""); setError(""); setRemaining(duration); setRound(previous => createRound(settings, attempts.length, previous.recent)); }
+          }}>{attempts.length >= settings.rounds ? "Ver meu resultado" : "Próxima questão"}<ArrowRight size={17} aria-hidden="true" /></button></div> : <p className="solution-explanation">{round.equation.explanation}</p>)}
         </div>
       )}
       <div className="arena-bottom">
