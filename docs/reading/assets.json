@@ -1,0 +1,28 @@
+[
+  {
+    "path": "/reading/marc-weasels.jpg",
+    "title": "Weasels at Play",
+    "author": "Franz Marc",
+    "date": "1911",
+    "source": "https://www.nga.gov/artworks/121096-weasels-play",
+    "download": "https://api.nga.gov/iiif/726ce5a3-7af2-455e-a82b-21ab9cfddd31/full/!800,800/0/default.jpg",
+    "rights": "Public domain; NGA Open Access",
+    "institution": "National Gallery of Art, Washington",
+    "verified": "2026-10-25",
+    "sha256": "4c8fac7237694145470f99b8aa27396fad2548af1131843f14110ae20286cf94",
+    "bytes": 140874
+  },
+  {
+    "path": "/reading/gris-checkerboard.jpg",
+    "title": "Glass and Checkerboard",
+    "author": "Juan Gris",
+    "date": "c. 1917",
+    "source": "https://www.nga.gov/artworks/166491-glass-and-checkerboard",
+    "download": "https://api.nga.gov/iiif/d4ca2b12-bdf1-4360-a3de-4fb2b1927481/full/!800,800/0/default.jpg",
+    "rights": "Public domain; NGA Open Access",
+    "institution": "National Gallery of Art, Washington",
+    "verified": "2026-10-25",
+    "sha256": "a56a6ae87108b2cffc7f43545991fe771e7500effd18eb7e928292d1271b0f98",
+    "bytes": 110836
+  }
+]

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LogOut, UserRound } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "./auth-provider";
@@ -8,10 +9,11 @@ import { profileDetails } from "@/lib/profile/profile";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
 
 export function AccountButton() {
+  const pathname = usePathname();
   const { user, client, loading } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  if (!user) return <Link href="/entrar" className="account-link" aria-busy={loading}><UserRound size={16} aria-hidden="true" />Entrar</Link>;
+  if (!user) return <Link href={pathname === "/le" ? "/entrar?next=%2Fle" : "/entrar"} className="account-link" aria-busy={loading}><UserRound size={16} aria-hidden="true" />Entrar</Link>;
   const profile = profileDetails(user);
   return (
     <div className="account-menu">

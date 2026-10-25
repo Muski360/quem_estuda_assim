@@ -18,6 +18,28 @@ npm start
 
 Os testes usam o suporte nativo a TypeScript do Node.js 22.18+ (desenvolvido com Node 24). Não há framework adicional de testes. `next/font` baixa as fontes durante o build e as serve localmente na aplicação.
 
+## Quem Lê Assim? · `/le`
+
+Jogo público de memória e interpretação, com **30 conceitos e 180 atividades** em Funções da linguagem, Literatura e Vanguardas. O piloto de seis conceitos/36 atividades foi conferido antes da ampliação. A edição traz exemplos autorais identificados, excertos em domínio público de Gonçalves Dias e Machado de Assis e duas obras da National Gallery of Art servidas pelo próprio projeto. Não há API paga nem geração de conteúdo durante as partidas.
+
+Uma partida de treino combina dois tabuleiros de três pares e quatro aplicações: escolher o conceito e a evidência que sustenta a leitura. Há avanço manual, pulo de aplicação, pausa, encerramento, guia, fontes e ampliação de figuras. O embaralhamento fica estável na partida e muda na próxima; os dois tabuleiros usam exemplos diferentes. O quarto desafio retoma uma dificuldade observada. Conteúdo, controles e feedback respeitam teclado, movimento reduzido e leitura entre 320 e 1440 px.
+
+Visitantes guardam partida, escolhas e histórico neste navegador. Pessoas logadas sincronizam esses dados; a importação opcional do estudo de visitante preserva histórico e revisões, sem XP retroativo nem substituição do progresso já existente na conta. O jogo permanece acessível se o login estiver indisponível. Falhas de armazenamento permitem continuar em memória com aviso; falhas de rede mantêm os eventos vinculados à conta original para tentar novamente.
+
+O progresso distingue **Visto**, **Aplicado** (dois exemplos distintos completos sem ajuda) e **Retido** (também uma revisão correta após sete dias sem exposição registrada). A revisão programada começa pela aplicação, antes das cartas ou do guia. Primeiro erro agenda amanhã; primeiro acerto completo, três dias depois. Acertos em revisões devidas seguem 3/7/14/30/30 dias; erro retorna a um dia. Revisões antecipadas não avançam o calendário. Abrir cartas, consultar guia ou ver a correção após pular conta como exposição. O dia usa `America/Sao_Paulo`; o tempo ativo exclui pausa, aba oculta e inatividade acima de 60 segundos.
+
+Cada aplicação concede **10 XP** somente se a primeira resposta for completamente correta, sem ajuda, fora de revisão e com a conta conectada. Pares, combo, importações e repetições não acrescentam XP. O servidor confere respostas e confirma histórico, estado e totais em uma transação, com controle de concorrência e deduplicação. O perfil ganhou `reading_answers` e soma o XP dos três jogos. Os critérios das missões, metas e contadores do Scroll e Calcula permanecem os mesmos.
+
+```sh
+npm run db:push
+npm run reading:validate
+npm run test:reading
+```
+
+`test:reading` exige a aplicação em execução e as variáveis existentes do Supabase; cria duas contas temporárias e as remove ao terminar. Verifica acesso público, isolamento, commit restrito ao servidor, reenvio, concorrência, recompensas, calendário, ajuda, importação e totais. A rota `/api/le` oferece catálogo público (`view=catalog`, com `version` opcional), progresso e histórico autenticados; gravação e importação exigem token válido. As novas tabelas são privadas, e a RPC de commit só aceita o papel de serviço usado pelo servidor.
+
+Fontes, conferência e limites editoriais estão em [docs/reading/review.md](docs/reading/review.md). O conteúdo foi preparado e conferido com assistência de IA, **sem alegar revisão de especialista humano**. O manifesto fixa cada edição por hash; o validador recusa alterar uma edição registrada. Para uma nova edição, preserve a anterior em `READING_VERSIONS`, conserve os IDs e prepare o novo manifesto com `node --experimental-strip-types scripts/reading/validate.mjs --prepare`. Não edite a edição publicada nem renove XP por mudança editorial. Histórico usa a versão da tentativa.
+
 ## Supabase + Cloudflare Workers
 
 Publicação: https://quem-estuda-assim.muski.workers.dev
@@ -263,7 +285,7 @@ Os novos recursos estendem `/api/scroll`: `GET ?view=learning`, `GET ?view=expla
 - **Interação:** estados de seleção, feedback imediato e transições discretas em CSS. Scroll nativo e alternativa por botões; sem efeitos que dependem de hover.
 - **Orçamento técnico:** App Router existente, CSS, SVG e Lucide; Markdown/KaTeX para preservar os enunciados oficiais. Layouts de 320 px a desktop; fontes com fallback de sistema, foco visível e movimento reduzido.
 
-O link externo “Quem Pensa Assim?” abre com `target="_blank"` e `rel="noopener noreferrer"`. O solo funciona sem credenciais. Scroll e multiplayer exigem as variáveis do Supabase configuradas; o Scroll também exige conta.
+O link externo “Quem Pensa Assim?” abre com `target="_blank"` e `rel="noopener noreferrer"`. O solo de cálculo e o Quem Lê Assim funcionam sem credenciais. Scroll e multiplayer exigem as variáveis do Supabase configuradas; o Scroll também exige conta.
 
 ## Verificação realizada
 

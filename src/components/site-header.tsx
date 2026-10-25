@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, Calculator, GalleryVerticalEnd } from "lucide-react";
+import { ArrowUpRight, BookOpen, Calculator, GalleryVerticalEnd } from "lucide-react";
 import { AccountButton } from "@/components/auth/account-button";
 
 function Brand() {
@@ -37,7 +37,7 @@ export function SiteHeader() {
             aria-current={pathname === "/" ? "page" : undefined}
           >
             <Calculator size={17} aria-hidden="true" />
-            <span>Quem calcula assim?</span>
+            <span className="nav-full">Quem calcula assim?</span><span className="nav-short">Calcula</span>
           </Link>
           <Link
             href="/scrolla"
@@ -45,7 +45,10 @@ export function SiteHeader() {
             aria-current={scrolling ? "page" : undefined}
           >
             <GalleryVerticalEnd size={17} aria-hidden="true" />
-            <span>Quem scrolla assim?</span>
+            <span className="nav-full">Quem scrolla assim?</span><span className="nav-short">Scrolla</span>
+          </Link>
+          <Link href="/le" className={pathname === "/le" ? "nav-link active" : "nav-link"} aria-current={pathname === "/le" ? "page" : undefined} aria-label="Quem lê assim?">
+            <BookOpen size={17} aria-hidden="true" /><span className="nav-full">Quem lê assim?</span><span className="nav-short">Lê</span>
           </Link>
         </nav>
         <div className="header-actions"><a

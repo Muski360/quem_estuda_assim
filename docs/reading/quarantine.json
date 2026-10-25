@@ -1,0 +1,8 @@
+{
+  "activities": [],
+  "withheldMedia": [
+    { "source": "https://www.metmuseum.org/art/collection/search/500421", "reason": "A API da instituição não forneceu imagem com isPublicDomain=true. Não incorporada." },
+    { "source": "https://www.metmuseum.org/art/collection/search/490060", "reason": "A API da instituição não forneceu imagem com isPublicDomain=true. Não incorporada." },
+    { "source": "https://www.clevelandart.org/art/1980.8", "reason": "Página da instituição indicou restrição de direitos. Não incorporada." }
+  ]
+}

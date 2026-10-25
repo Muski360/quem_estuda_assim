@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, CSSProperties } from "react";
 import type { SupabaseClient, User } from "@supabase/supabase-js";
-import { ArrowLeft, ArrowRight, Calculator, Camera, Check, CheckCheck, GalleryVerticalEnd, LoaderCircle, RotateCcw, Save, ShieldCheck, Trash2, Zap } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, Calculator, Camera, Check, CheckCheck, GalleryVerticalEnd, LoaderCircle, RotateCcw, Save, ShieldCheck, Trash2, Zap } from "lucide-react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { AVATAR_BUCKET, normalizeDisplayName, PROFILE_COLORS, profileDetails } from "@/lib/profile/profile";
 import { prepareAvatar } from "@/lib/profile/avatar";
@@ -112,7 +112,8 @@ function ProfileEditor({ user, client }: { user: User; client: SupabaseClient })
       <dl className="profile-stats" aria-busy={statsLoading}>
         <div><dt><GalleryVerticalEnd size={18} aria-hidden="true" />Questões respondidas</dt><dd>{stats ? format.format(stats.scroll_questions) : "—"}</dd><dd className="profile-stat-note">Quem scrolla assim?</dd></div>
         <div><dt><Calculator size={18} aria-hidden="true" />Rodadas concluídas</dt><dd>{stats ? format.format(stats.calculator_rounds) : "—"}</dd><dd className="profile-stat-note">Quem calcula assim?</dd></div>
-        <div className="profile-xp"><dt><Zap size={18} aria-hidden="true" />XP total</dt><dd>{stats ? format.format(stats.total_xp) : "—"}<small>XP</small></dd><dd className="profile-stat-note">Somando os dois modos</dd></div>
+        <div><dt><BookOpen size={18} aria-hidden="true" />Aplicações de leitura</dt><dd>{stats ? format.format(stats.reading_answers ?? 0) : "—"}</dd><dd className="profile-stat-note"><Link href="/le?view=progress">Quem lê assim? · ver repertório</Link></dd></div>
+        <div className="profile-xp"><dt><Zap size={18} aria-hidden="true" />XP total</dt><dd>{stats ? format.format(stats.total_xp) : "—"}<small>XP</small></dd><dd className="profile-stat-note">Somando seu estudo nos três jogos</dd></div>
       </dl>
       {statsError ? <div className="profile-sync" role="status"><p>{statsError}</p><button type="button" onClick={() => void refresh()}><RotateCcw size={14} aria-hidden="true" />Tentar novamente</button></div>
         : <p className="profile-counting-note" role="status">{statsLoading ? "Carregando suas estatísticas…" : pending ? "Salvando suas últimas respostas…" : "Seu progresso é salvo enquanto você estuda com a conta conectada. Pulos não entram na contagem."}</p>}

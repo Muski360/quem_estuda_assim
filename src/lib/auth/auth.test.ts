@@ -2,6 +2,13 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { GET } from "../../app/api/auth/config/route.ts";
 import { authErrorMessage } from "./errors.ts";
+import { safeReturnTo } from "./return-to.ts";
+
+test("login do Lê volta ao jogo e continua rejeitando redirecionamento externo", () => {
+  assert.equal(safeReturnTo("/le"), "/le");
+  assert.equal(safeReturnTo("//example.com"), "/");
+  assert.equal(safeReturnTo("https://example.com/le"), "/");
+});
 
 test("configuração de auth expõe apenas URL e chave pública, sem exigir segredo administrativo", async () => {
   const original = { url: process.env.SUPABASE_URL, key: process.env.SUPABASE_PUBLISHABLE_KEY, secret: process.env.SUPABASE_SECRET_KEY };

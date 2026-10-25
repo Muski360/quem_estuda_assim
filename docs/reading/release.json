@@ -1,0 +1,10 @@
+{
+  "1": {
+    "version": 1,
+    "sha256": "93fbd9f4bbe28ae0389106ddc33a89f650c609fe8a3617565bf6c0d9462e75cb",
+    "concepts": 30,
+    "activities": 180,
+    "editorial": "AI-assisted platform review; no human specialist review claimed",
+    "reviewed": "2026-10-25"
+  }
+}

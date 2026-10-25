@@ -68,7 +68,7 @@ function AccountProgress({ children, userId, client }: { children: ReactNode; us
     await flush();
     try {
       const { data, error } = await client.from("qe_study_stats")
-        .select("scroll_questions,calculator_rounds,total_xp").eq("user_id", userId).maybeSingle();
+        .select("scroll_questions,calculator_rounds,reading_answers,total_xp").eq("user_id", userId).maybeSingle();
       if (error) throw error;
       setStats((current) => newerStats(current, data ?? EMPTY_STATS));
       if (queue.current.length === 0) setError("");

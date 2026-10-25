@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --import ./scripts/local-env.mjs node_modules/next/dist/bin/next dev",
+    "prebuild": "node --experimental-strip-types scripts/reading/validate.mjs",
     "build": "next build",
     "start": "node --import ./scripts/local-env.mjs node_modules/next/dist/bin/next start",
     "login:supabase": "supabase login",
@@ -12,6 +13,7 @@
     "build:cloudflare": "opennextjs-cloudflare build",
     "preview:cloudflare": "opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && node scripts/deploy-worker.mjs",
+    "predeploy": "node --experimental-strip-types scripts/reading/validate.mjs",
     "db:push": "node scripts/apply-migrations.mjs",
     "test:deployment": "node scripts/test-deployment.mjs",
     "check:secrets": "node scripts/check-worker-secrets.mjs",
@@ -22,11 +24,13 @@
     "enem:test": "python -m unittest discover -s scripts/enem",
     "test:scroll": "node --import ./scripts/local-env.mjs scripts/test-scroll.mjs",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test src/lib/math/generator.test.ts src/lib/math/geometry.test.ts src/lib/multiplayer/store.test.ts src/lib/momentum.test.ts src/lib/auth/auth.test.ts src/lib/profile/profile.test.ts src/lib/scroll/scroll.test.ts scripts/learning/content.test.mjs",
+    "test": "node --experimental-strip-types --test src/lib/math/generator.test.ts src/lib/math/geometry.test.ts src/lib/multiplayer/store.test.ts src/lib/momentum.test.ts src/lib/auth/auth.test.ts src/lib/profile/profile.test.ts src/lib/scroll/scroll.test.ts src/lib/reading/content.test.ts src/lib/reading/engine.test.ts scripts/learning/content.test.mjs",
     "learning:validate": "node scripts/learning/import.mjs",
     "learning:import": "node --import ./scripts/local-env.mjs scripts/learning/import.mjs",
     "learning:reports": "node --import ./scripts/local-env.mjs scripts/learning/reports.mjs",
-    "test:learning": "node --import ./scripts/local-env.mjs scripts/test-learning.mjs"
+    "test:learning": "node --import ./scripts/local-env.mjs scripts/test-learning.mjs",
+    "test:reading": "node --experimental-strip-types --import ./scripts/local-env.mjs scripts/test-reading.mjs",
+    "reading:validate": "node --experimental-strip-types --test src/lib/reading/content.test.ts src/lib/reading/engine.test.ts && node --experimental-strip-types scripts/reading/validate.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
