@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { READING_CATALOG, READING_VERSIONS } from "../../../lib/reading/catalog.ts";
+import { READING_CATALOG, READING_VERSIONS, TRACKS } from "../../../lib/reading/catalog.ts";
 import { applyEvent, emptySnapshot, isReadingEvent, isReadingSession } from "../../../lib/reading/engine.ts";
 import type { ReadingAttempt, ReadingEvent, ReadingSession, ReadingSnapshot } from "../../../lib/reading/types.ts";
 
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     if (Number(request.headers.get("content-length")) > 120000) return json({ error: "Envie o estudo em lotes menores." }, 413);
     const text = await request.text(); if (text.length > 120000) return json({ error: "Envie o estudo em lotes menores." }, 413);
     const input = JSON.parse(text);
-    if (!input || typeof input !== "object" || !["sync", "import"].includes(input.action) || !Array.isArray(input.events) || input.events.length > 100 || !input.events.every(isReadingEvent) || new Set(input.events.map((e: ReadingEvent) => e.id)).size !== input.events.length || !Number.isInteger(input.revision) || input.revision < 0 || input.session !== undefined && input.session !== null && !isReadingSession(input.session) || input.preferences !== undefined && (!input.preferences || !["functions", "literature", "avant-garde", "mixed"].includes(input.preferences.track) || typeof input.preferences.tutorial !== "boolean")) return json({ error: "Confira o estudo enviado e tente novamente." }, 400);
+    if (!input || typeof input !== "object" || !["sync", "import"].includes(input.action) || !Array.isArray(input.events) || input.events.length > 100 || !input.events.every(isReadingEvent) || new Set(input.events.map((e: ReadingEvent) => e.id)).size !== input.events.length || !Number.isInteger(input.revision) || input.revision < 0 || input.session !== undefined && input.session !== null && !isReadingSession(input.session) || input.preferences !== undefined && (!input.preferences || !Object.keys(TRACKS).includes(input.preferences.track) || typeof input.preferences.tutorial !== "boolean")) return json({ error: "Confira o estudo enviado e tente novamente." }, 400);
     const { id, db } = await account(request);
     const imported = input.action === "import";
     for (let retry = 0; retry < 5; retry++) {

@@ -6,5 +6,13 @@
     "activities": 180,
     "editorial": "AI-assisted platform review; no human specialist review claimed",
     "reviewed": "2026-10-25"
+  },
+  "2": {
+    "version": 2,
+    "sha256": "10ec05c56a4f9d60633f6dd4b8250821fac19e3732dd1c612306237523c54a08",
+    "concepts": 44,
+    "activities": 264,
+    "editorial": "AI-assisted platform review; no human specialist review claimed",
+    "reviewed": "2026-10-25"
   }
 }

@@ -9,3 +9,15 @@ Original prompt: Implementar o plano Quem Lê Assim? — jogo público de memór
 5. Conferência e limites em `docs/reading/verification.md`. Sem revisão de professor ou medição de aprendizagem com estudantes. Não publicado em produção nem commitado.
 
 Próxima ação de publicação: `npm run deploy`.
+
+## Concluído — figuras de linguagem
+
+Pedido: levantar requisitos e implementar as principais figuras úteis ao ENEM, sem cobrir todas. Requisitos e fontes em `docs/reading/figures.md`: 14 conceitos, 84 atividades autorais; nova trilha e catálogo v2 com 44 conceitos/264 atividades. Edição 1 preservada para partidas, respostas pendentes e histórico; IDs e regras de recompensa mantidos. Sem nova migração ou dependência.
+
+Conteúdo preparado: metáfora, comparação, metonímia, personificação, sinestesia, hipérbole, eufemismo, ironia, antítese, paradoxo, anáfora, pleonasmo, aliteração e assonância. Recortes explícitos nos itens com recursos coexistentes; evidências relacionam procedimento e efeito. Sem ranking próprio de incidência, geração em tempo de jogo ou revisão humana alegada.
+
+Verificações concluídas: 53 testes nativos, 16 testes do Lê, hashes das duas edições, lint, TypeScript, Next e OpenNext/Cloudflare. Integração real do Lê confirma nova trilha, preferência, concorrência, XP único entre edições e perfil. Chrome 320–1440 px, 12 auditorias axe A/AA, partidas completas, importação, rede/autenticação, guia, teclado e movimento reduzido aprovados. Sessão v1 retomada preserva escolha, tempo ativo e versão do evento. Capturas do loop develop-web-game e jogo foram inspecionadas; contas temporárias removidas.
+
+Limites: sem revisão de professor, estudantes ou aparelhos físicos. Nenhuma publicação ou commit nesta atualização. Detalhes em `docs/reading/verification.md`, seção edição 2.
+
+Próxima ação de publicação: `npm run deploy`.

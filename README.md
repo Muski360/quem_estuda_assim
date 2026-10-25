@@ -20,7 +20,9 @@ Os testes usam o suporte nativo a TypeScript do Node.js 22.18+ (desenvolvido com
 
 ## Quem Lê Assim? · `/le`
 
-Jogo público de memória e interpretação, com **30 conceitos e 180 atividades** em Funções da linguagem, Literatura e Vanguardas. O piloto de seis conceitos/36 atividades foi conferido antes da ampliação. A edição traz exemplos autorais identificados, excertos em domínio público de Gonçalves Dias e Machado de Assis e duas obras da National Gallery of Art servidas pelo próprio projeto. Não há API paga nem geração de conteúdo durante as partidas.
+Jogo público de memória e interpretação, com **44 conceitos e 264 atividades** em Funções da linguagem, Figuras de linguagem, Literatura e Vanguardas. O piloto de seis conceitos/36 atividades foi conferido antes da ampliação. A edição traz exemplos autorais identificados, excertos em domínio público de Gonçalves Dias e Machado de Assis e duas obras da National Gallery of Art servidas pelo próprio projeto. Não há API paga nem geração de conteúdo durante as partidas.
+
+A trilha **Figuras de linguagem** reúne 14 conceitos/84 atividades: metáfora, comparação, metonímia, personificação, sinestesia, hipérbole, eufemismo, ironia, antítese, paradoxo, anáfora, pleonasmo, aliteração e assonância. O foco é reconhecer a construção e explicar seu efeito no contexto, com aplicações diferentes das cartas. [Recorte, requisitos e fontes](docs/reading/figures.md). A edição 2 preserva integralmente a edição 1 para histórico, respostas pendentes e partidas em andamento; mudar de edição não renova o XP de um item já respondido.
 
 Uma partida de treino combina dois tabuleiros de três pares e quatro aplicações: escolher o conceito e a evidência que sustenta a leitura. Há avanço manual, pulo de aplicação, pausa, encerramento, guia, fontes e ampliação de figuras. O embaralhamento fica estável na partida e muda na próxima; os dois tabuleiros usam exemplos diferentes. O quarto desafio retoma uma dificuldade observada. Conteúdo, controles e feedback respeitam teclado, movimento reduzido e leitura entre 320 e 1440 px.
 

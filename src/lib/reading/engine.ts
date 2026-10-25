@@ -1,4 +1,4 @@
-import { READING_CATALOG, READING_VERSIONS, applicationById, conceptById, itemId } from "./catalog.ts";
+import { READING_CATALOG, READING_VERSIONS, TRACKS, applicationById, conceptById, itemId } from "./catalog.ts";
 import type { ConceptProgress, ReadingConcept, ReadingEvent, ReadingLocal, ReadingSession, ReadingSnapshot, ReadingTrack } from "./types.ts";
 import { studyDay } from "../scroll/validation.ts";
 
@@ -94,12 +94,13 @@ export function createSession(snapshot: ReadingSnapshot, track: ReadingTrack | "
 }
 export const stageKind = (session: ReadingSession): "memory" | "application" | "done" => session.finishedAt || session.stage >= (session.mode === "review" ? 4 : 6) ? "done" : session.mode === "practice" && [0, 3].includes(session.stage) ? "memory" : "application";
 export const applicationPosition = (session: ReadingSession) => session.mode === "review" ? session.stage : session.stage < 3 ? session.stage - 1 : session.stage - 2;
-export const currentApplication = (session: ReadingSession) => applicationById(session.applications[applicationPosition(session)]);
+export const currentApplication = (session: ReadingSession) => applicationById(session.applications[applicationPosition(session)], session.catalogVersion);
 export function applicationChoices(session: ReadingSession, concept: ReadingConcept): string[] {
-  return [...new Set([concept.id, ...session.conceptIds, ...concept.contrasts])].filter(id => conceptById(id)?.track === concept.track).slice(0, 3);
+  return [...new Set([concept.id, ...session.conceptIds, ...concept.contrasts])].filter(id => conceptById(id, session.catalogVersion)?.track === concept.track).slice(0, 3);
 }
 export function applicationPrompt(concept: ReadingConcept): string {
   if (concept.track === "functions") return concept.id === "poetica" ? "Que função se destaca no trabalho com a forma da mensagem?" : "Que função da linguagem explica o foco desta mensagem?";
+  if (concept.track === "figures") return "Que figura de linguagem explica o recurso em foco neste trecho?";
   return concept.track === "literature" ? "Que movimento ou tendência literária se relaciona ao procedimento descrito?" : "Que vanguarda ajuda a compreender esse procedimento artístico?";
 }
 export function flipCard(session: ReadingSession, group: 0 | 1, id: string): ReadingSession {
@@ -123,32 +124,33 @@ const uuid = (v: unknown) => typeof v === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-
 export function isReadingEvent(input: unknown): input is ReadingEvent {
   if (!input || typeof input !== "object" || Array.isArray(input)) return false;
   const e = input as ReadingEvent;
+  if (!Number.isInteger(e.version)) return false;
   const c = READING_VERSIONS[e.version]?.concepts.find(c => c.id === e.conceptId);
-  if (!uuid(e.id) || !c || !Number.isInteger(e.version) || !["answer", "skip", "exposure"].includes(e.kind) || typeof e.occurredAt !== "string" || !Number.isFinite(Date.parse(e.occurredAt)) || typeof e.assisted !== "boolean" || typeof e.review !== "boolean" || !Number.isInteger(e.activeMs) || e.activeMs < 0 || e.activeMs > 7200000) return false;
+  if (!uuid(e.id) || !c || !["answer", "skip", "exposure"].includes(e.kind) || typeof e.occurredAt !== "string" || !Number.isFinite(Date.parse(e.occurredAt)) || typeof e.assisted !== "boolean" || typeof e.review !== "boolean" || !Number.isInteger(e.activeMs) || e.activeMs < 0 || e.activeMs > 7200000) return false;
   if (e.kind === "exposure") return e.itemId === `guide:${c.id}` || c.examples.some((_, n) => itemId(c.id, "p", n) === e.itemId);
   if (applicationById(e.itemId, e.version)?.concept.id !== c.id) return false;
-  return e.kind === "skip" || !!conceptById(String(e.choice)) && Number.isInteger(e.evidence) && Number(e.evidence) >= 0 && Number(e.evidence) < 3;
+  return e.kind === "skip" || !!conceptById(String(e.choice), e.version) && Number.isInteger(e.evidence) && Number(e.evidence) >= 0 && Number(e.evidence) < 3;
 }
 export function isReadingSession(input: unknown): input is ReadingSession {
   if (!input || typeof input !== "object" || Array.isArray(input)) return false;
   const s = input as ReadingSession;
-  return uuid(s.id) && ["practice", "review"].includes(s.mode) && s.catalogVersion === READING_CATALOG.version &&
-    Array.isArray(s.conceptIds) && s.conceptIds.length === 3 && new Set(s.conceptIds).size === 3 && s.conceptIds.every(id => !!conceptById(id)) &&
-    Array.isArray(s.applications) && s.applications.length === 4 && new Set(s.applications).size === 4 && s.applications.every(id => s.conceptIds.includes(applicationById(id)?.concept.id ?? "")) &&
+  return uuid(s.id) && ["practice", "review"].includes(s.mode) && Number.isInteger(s.catalogVersion) && !!READING_VERSIONS[s.catalogVersion] &&
+    Array.isArray(s.conceptIds) && s.conceptIds.length === 3 && new Set(s.conceptIds).size === 3 && s.conceptIds.every(id => !!conceptById(id, s.catalogVersion)) &&
+    Array.isArray(s.applications) && s.applications.length === 4 && new Set(s.applications).size === 4 && s.applications.every(id => s.conceptIds.includes(applicationById(id, s.catalogVersion)?.concept.id ?? "")) &&
     Array.isArray(s.exampleIndexes) && s.exampleIndexes.length === 2 && s.exampleIndexes.every(row => Array.isArray(row) && row.length === 3 && row.every(n => Number.isInteger(n) && n >= 0 && n < 3)) &&
     Number.isInteger(s.stage) && s.stage >= 0 && s.stage <= 6 && Array.isArray(s.matched) && s.matched.length <= 3 && s.matched.every(id => s.conceptIds.includes(id)) &&
     Array.isArray(s.flipped) && s.flipped.length === 2 && s.flipped.every(id => id === null || s.conceptIds.includes(id)) && [null, "match", "miss"].includes(s.result) &&
     [s.combo, s.bestCombo, s.pairs].every(n => Number.isInteger(n) && n >= 0 && n <= 1000) &&
-    Array.isArray(s.assisted) && s.assisted.length <= 30 && s.assisted.every(id => !!conceptById(id)) &&
+    Array.isArray(s.assisted) && s.assisted.length <= READING_CATALOG.concepts.length && s.assisted.every(id => !!conceptById(id)) &&
     Array.isArray(s.answers) && s.answers.length <= 4 && s.answers.every(a => a && uuid(a.eventId) && s.applications.includes(a.itemId) && [a.correct, a.conceptCorrect, a.evidenceCorrect, a.skipped].every(b => typeof b === "boolean") && [0, 10].includes(a.xp)) &&
-    !!s.draft && (s.draft.choice === null || !!conceptById(s.draft.choice)) && (s.draft.evidence === null || Number.isInteger(s.draft.evidence) && s.draft.evidence >= 0 && s.draft.evidence < 3) &&
+    !!s.draft && (s.draft.choice === null || !!conceptById(s.draft.choice, s.catalogVersion)) && (s.draft.evidence === null || Number.isInteger(s.draft.evidence) && s.draft.evidence >= 0 && s.draft.evidence < 3) &&
     (s.pendingActiveMs === undefined || Number.isInteger(s.pendingActiveMs) && s.pendingActiveMs >= 0 && s.pendingActiveMs <= 7200000) &&
     typeof s.startedAt === "string" && Number.isFinite(Date.parse(s.startedAt)) && (s.finishedAt === null || typeof s.finishedAt === "string" && Number.isFinite(Date.parse(s.finishedAt)));
 }
 export function readLocal(text: string | null): ReadingLocal {
   try {
     const value = JSON.parse(text ?? "null") as ReadingLocal | null;
-    if (value?.version !== 1 || !Array.isArray(value.events) || !value.events.every(isReadingEvent) || !["functions", "literature", "avant-garde", "mixed"].includes(value.track) || typeof value.tutorial !== "boolean") return emptyLocal();
+    if (value?.version !== 1 || !Array.isArray(value.events) || !value.events.every(isReadingEvent) || !Object.keys(TRACKS).includes(value.track) || typeof value.tutorial !== "boolean") return emptyLocal();
     return { ...value, session: isReadingSession(value.session) ? value.session : null };
   } catch { return emptyLocal(); }
 }

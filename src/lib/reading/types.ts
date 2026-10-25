@@ -1,4 +1,4 @@
-export type ReadingTrack = "functions" | "literature" | "avant-garde";
+export type ReadingTrack = "functions" | "figures" | "literature" | "avant-garde";
 export type ReadingSource = { title: string; author: string; url: string; rights: string; note?: string };
 export type ReadingExample = { text: string; reason: string; source?: string; image?: string; alt?: string };
 export type ReadingApplication = ReadingExample & { evidence: string; distractors: { text: string; why: string }[] };

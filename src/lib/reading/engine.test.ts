@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applyEvent, createSession, emptySnapshot, flipCard, isReadingEvent, isReadingSession, readLocal, stableShuffle, dueConcepts, nextInterval, applicationChoices, applicationPrompt, projectLocal } from "./engine.ts";
+import { applyEvent, createSession, currentApplication, emptyLocal, emptySnapshot, flipCard, isReadingEvent, isReadingSession, nextStage, readLocal, stableShuffle, dueConcepts, nextInterval, applicationChoices, applicationPrompt, projectLocal } from "./engine.ts";
 import { READING_CATALOG, conceptById } from "./catalog.ts";
 import type { ReadingEvent } from "./types.ts";
 
@@ -81,4 +81,52 @@ test("histórico extenso mantém projeção, imutabilidade e deduplicação", ()
   const sequential = events.reduce((s, e) => applyEvent(s, e), initial);
   assert.deepEqual(initial, emptySnapshot());
   assert.deepEqual(projectLocal({ events: [...events, events[0]] }), sequential);
+});
+
+test("figuras: preferência salva, foco com contrastes e pergunta específica", () => {
+  for (const concept of READING_CATALOG.concepts.filter(c => c.track === "figures")) {
+    const session = createSession(emptySnapshot(), "figures", concept.id);
+    assert.ok(isReadingSession(session));
+    assert.deepEqual(session.conceptIds, [concept.id, ...concept.contrasts.slice(0, 2)]);
+    assert.ok(session.conceptIds.every(id => conceptById(id)?.track === "figures"));
+    session.stage = 1;
+    const current = currentApplication(session)!;
+    assert.match(applicationPrompt(current.concept), /figura de linguagem/);
+    assert.ok(applicationChoices(session, current.concept).every(id => conceptById(id)?.track === "figures"));
+  }
+  const session = createSession(emptySnapshot(), "mixed", "metafora");
+  assert.ok(session.conceptIds.includes("metafora"));
+  const local = { ...emptyLocal(), track: "figures", session };
+  assert.deepEqual(readLocal(JSON.stringify(local)), local);
+  assert.equal(readLocal(JSON.stringify({ ...local, track: "unknown" })).track, "functions");
+});
+
+test("sessão da edição 1 retoma escolhas e tempo sem aceitar itens futuros", () => {
+  const session = createSession(emptySnapshot(), "functions", "poetica");
+  session.catalogVersion = 1; session.stage = 1;
+  session.draft = { choice: "poetica", evidence: 2 }; session.pendingActiveMs = 5321;
+  const local = { ...emptyLocal(), session, events: [event()] };
+  assert.ok(isReadingSession(session));
+  assert.deepEqual(readLocal(JSON.stringify(local)), local);
+  const next = nextStage(session);
+  assert.equal(next.catalogVersion, 1); assert.ok(currentApplication(next));
+  assert.equal(isReadingSession({ ...session, draft: { choice: "metafora", evidence: 0 } }), false);
+  assert.equal(isReadingSession({ ...session, catalogVersion: 999 }), false);
+  const future = createSession(emptySnapshot(), "figures", "metafora");
+  assert.equal(isReadingSession({ ...future, catalogVersion: 1 }), false);
+});
+
+test("edições compartilham primeira resposta e XP, figuras exigem edição 2", () => {
+  let snapshot = applyEvent(emptySnapshot(), event(), { account: true });
+  snapshot = applyEvent(snapshot, event({ version: 2 }), { account: true });
+  assert.equal(snapshot.xp, 10); assert.equal(snapshot.answered, 1);
+  const figure = event({ conceptId: "metafora", itemId: "le-metafora-a1", choice: "metafora", version: 2 });
+  assert.ok(isReadingEvent(figure));
+  assert.equal(isReadingEvent({ ...figure, version: 1 }), false);
+  for (const version of ["toString", "__proto__", "2", null, 2.5]) assert.equal(isReadingEvent({ ...figure, version }), false);
+  assert.equal(isReadingEvent(event({ choice: "metafora" })), false);
+  snapshot = applyEvent(snapshot, figure, { account: true });
+  snapshot = applyEvent(snapshot, { ...figure, id: crypto.randomUUID() }, { account: true });
+  assert.equal(snapshot.xp, 20); assert.equal(snapshot.answered, 2);
+  assert.equal(snapshot.concepts.metafora.due, "2026-10-28");
 });

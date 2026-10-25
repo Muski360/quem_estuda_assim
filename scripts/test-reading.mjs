@@ -28,10 +28,10 @@ async function alterConcept(user, patch) {
   const saved = await admin.from("qe_reading_accounts").update({ state: row.data.state }).eq("user_id", user.id); assert.equal(saved.error, null);
 }
 try {
-  const catalog = await request(null, "view=catalog"); assert.equal(catalog.concepts.length, 30);
-  assert.equal((await request(null, "view=catalog&version=1")).version, 1);
+  const catalog = await request(null, "view=catalog"); assert.equal(catalog.version, 2); assert.equal(catalog.concepts.length, 44);
+  const legacy = await request(null, "view=catalog&version=1"); assert.equal(legacy.version, 1); assert.equal(legacy.concepts.length, 30);
   await request(null, "view=catalog&version=999", 404);
-  assert.equal(catalog.concepts.reduce((n, c) => n + c.examples.length + c.applications.length, 0), 180);
+  assert.equal(catalog.concepts.reduce((n, c) => n + c.examples.length + c.applications.length, 0), 264);
   await request(null, "view=progress", 401); await request({ token: "invalid" }, "view=progress", 401);
   const a = await account(), b = await account();
   for (const table of ["qe_reading_accounts", "qe_reading_events"]) assert.ok((await a.client.from(table).select("*")).error, table);
@@ -83,10 +83,26 @@ try {
   const history = await request(a, "view=history"); assert.ok(history.items.some(e => e.imported)); assert.ok(history.items.every(e => e.kind === "answer"));
   const known = history.items.find(e => e.itemId === "le-poetica-a2" && e.correct && !e.assisted);
   const resumed = createSession(emptySnapshot(), "functions", "poetica");
+  resumed.catalogVersion = 1;
   resumed.applications = ["le-poetica-a2", "le-emotiva-a1", "le-metalinguistica-a1", "le-poetica-a3"];
   resumed.answers = [{ eventId: known.id, itemId: known.itemId, correct: true, conceptCorrect: true, evidenceCorrect: true, xp: 10, skipped: false }];
   const corrected = await request(a, sync([], { revision: progress.revision, session: resumed }));
   assert.equal(corrected.session.answers[0].xp, 0, "Saving an advanced session keeps authoritative rewards from older event batches");
+  assert.equal(corrected.session.catalogVersion, 1, "Existing sessions keep their published edition");
+  const repeated = await request(a, sync([event({ version: 2 })]));
+  assert.equal(repeated.snapshot.xp, 10, "A new catalog version does not reset first-answer XP");
+  const figure = event({ conceptId: "metafora", itemId: "le-metafora-a1", choice: "metafora", version: 2 });
+  await request(a, sync([{ ...figure, version: 1 }]), 400);
+  const figureSession = createSession(emptySnapshot(), "figures", "metafora");
+  figureSession.stage = 1; figureSession.draft = { choice: "metafora", evidence: 0 };
+  await request(a, sync([], { revision: repeated.revision, session: figureSession, preferences: { track: "figures", tutorial: false } }));
+  await Promise.all([request(a, sync([figure])), request(a, sync([figure]))]);
+  const figures = await request(a);
+  assert.equal(figures.snapshot.xp, 20); assert.equal(figures.snapshot.answered, repeated.snapshot.answered + 1);
+  assert.equal(figures.preferences.track, "figures"); assert.deepEqual(figures.session.draft, figureSession.draft);
+  const profile = await admin.from("qe_study_stats").select("total_xp,reading_answers").eq("user_id", a.id).single();
+  assert.equal(profile.error, null); assert.equal(profile.data.total_xp, 27); assert.equal(profile.data.reading_answers, figures.snapshot.answered);
+  assert.equal((await request(b)).snapshot.answered, 0, "New-track progress stays private");
   await request(a, sync([], { session: null, revision: 0 }), 409);
   await request({ token: "expired.invalid" }, sync([event()]), 401);
   console.log("PASS Lê: catálogo público, RLS, isolamento, concorrência, reenvio, XP, calendário, retenção, ajuda, importação, histórico e totais Calcula/Scroll.");

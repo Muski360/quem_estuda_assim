@@ -2,7 +2,7 @@
 
 Data: 25/10/2026. Conferência na aplicação compilada em produção local, com Supabase real e Chrome automatizado. O Worker não foi publicado.
 
-## Resultado
+## Edição 1 — resultado
 
 | Verificação | Resultado |
 | --- | --- |
@@ -14,7 +14,7 @@ Data: 25/10/2026. Conferência na aplicação compilada em produção local, com
 
 Uma execução inicial do teste de multiplayer excedeu a espera de cinco segundos pelo evento Realtime. A repetição recebeu o evento e concluiu concorrência, cooldown, vitória e saída do host. Os arquivos do multiplayer não tiveram alteração funcional nesta entrega.
 
-## Navegador
+## Edição 1 — navegador
 
 - Home em 320, 390, 768 e 1440 px; leitura, feedback, guia, resultado e perfil sem overflow horizontal. Dez auditorias axe WCAG A/AA passaram após aguardar as animações finitas do perfil.
 - Partida completa, pareamento incorreto/correto, seleção alterável, quatro aplicações, pulo, ajuda direta e consulta ao guia de outro conceito, pausa, encerramento e recarga. Apenas o tabuleiro ou aplicação atual permanece montado. O retorno dos pares mantém a próxima ação visível no celular.
@@ -29,3 +29,19 @@ O loop da skill develop-web-game também foi executado com captura de imagem e `
 Não houve sessão com estudantes para medir aprendizagem, revisão de professor, teste em aparelho físico ou operação manual de leitor de tela. Safari e Firefox não foram exercitados nesta entrega. Auditoria automática de acessibilidade não equivale a certificação. O OpenNext emitiu seu aviso habitual de suporte parcial ao Windows, e o build terminou com sucesso; a execução do Worker em produção depende da publicação.
 
 Regras editoriais e procedência: [review.md](review.md). A migração `20261025001200_reading.sql` foi aplicada sem reescrever os totais existentes. Para publicar o frontend e o Worker: `npm run deploy`.
+
+## Edição 2 — figuras de linguagem
+
+Em 25/10/2026, a nova trilha acrescentou 14 conceitos e 84 atividades autorais. Os requisitos e as referências estão em [figures.md](figures.md). O catálogo anterior conserva seu hash; os 30 conceitos/180 atividades da edição 1 continuam disponíveis para histórico, partidas e respostas pendentes.
+
+| Verificação | Resultado desta atualização |
+| --- | --- |
+| Testes e conteúdo | 53 testes nativos aprovados; 16 testes do Lê e validação dos dois manifestos aprovados. Conteúdo total: 44 conceitos/264 atividades; IDs, exemplos distintos, evidências e contrastes conferidos |
+| Integração real (`test:reading`) | Catálogo v1/v2, preferência da nova trilha, rejeição de item futuro na edição antiga, sessão v1, concorrência e recompensa única, isolamento e totais do perfil aprovados; Calcula preserva os totais do Lê |
+| Navegador Chrome | Partida completa de figuras, seleção da trilha com 14 opções, preferência após recarga, guia, ajuda, pares certos/errados, interpretação, resultado, histórico, importação, XP, rede indisponível, resposta 401 e troca de contexto aprovados |
+| Compatibilidade e acessibilidade | Retomada visual da edição 1 mantém escolha, 4,2 s de tempo ativo e versão da nova tentativa. Home em 320/390/768/1440 px; figuras e cartas abertas em 320/1440 px; 12 auditorias axe A/AA sem violações; teclado e movimento reduzido aprovados |
+| Código e empacotamento | Lint, TypeScript, Next e OpenNext/Cloudflare concluídos; nenhum pacote ou migração adicional |
+
+Foram inspecionadas capturas da seleção, cartas abertas, aplicação e guia. O loop da skill develop-web-game foi executado com estado textual e screenshot. Artefatos ignorados em `output/playwright/le-figures-qa/` e `output/playwright/le-figures-game-loop/`. Contas temporárias removidas. Scroll e Calcula passaram pelas regressões nativas; suas suítes remotas completas da edição 1 não foram repetidas, pois esta atualização não altera suas operações.
+
+Continuam os limites de revisão editorial assistida por IA, sem professor ou avaliação com estudantes, aparelhos físicos e outros navegadores. Não houve deploy nesta atualização.

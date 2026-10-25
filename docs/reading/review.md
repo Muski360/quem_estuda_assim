@@ -26,3 +26,13 @@ Foram retiradas indicações explícitas do nome da estética de enunciados de a
 Duas imagens próprias são reproduções de obras que a National Gallery of Art identifica como mídia em domínio público. A inspeção visual confirmou integridade e concordância das descrições: *Glass and Checkerboard*, Juan Gris; *Weasels at Play*, Franz Marc. A segunda também mostra que o Expressionismo não se reduz a medo ou angústia. Créditos, permissões, URLs e hashes estão em `assets.json`; outras imagens sem liberação clara foram excluídas e registradas em `quarantine.json`.
 
 `release.json` fixa o conteúdo da edição. O validador recusa mudar uma edição já registrada. Uma correção editorial exige preservar o catálogo anterior no mapa `READING_VERSIONS`, acrescentar outra edição e preparar seu manifesto. IDs de atividades permanecem estáveis; primeira resposta e XP não são reiniciados por edição. Histórico resolve a explicação usando a versão registrada na tentativa.
+
+## Figuras de linguagem · edição 2 · 25/10/2026
+
+Lote de 14 conceitos e 84 atividades autorais, somado ao catálogo anterior: 44 conceitos e 264 atividades. [Requisitos, referências e recorte](figures.md). A seleção prioriza recursos úteis para a interpretação no ENEM, sem pretender cobrir todas as figuras ou publicar uma ordem estatística de incidência.
+
+Conferência editorial assistida por IA: definição, três associações e três aplicações distintas por conceito; correspondência da evidência correta com o procedimento e seu efeito; análise dos dois distratores; confusões entre conceitos próximos. Cada texto é identificado pela interface como exemplo didático autoral. Nenhum excerto novo ou imagem de terceiros foi reproduzido. Não houve revisão de professor.
+
+Casos tratados explicitamente: personificação e sinestesia podem construir metáforas; o recorte pede o mecanismo específico. Na hipérbole com imagem metafórica, pergunta-se pela ampliação da quantidade. Antítese contrasta situações e paradoxo exige reconstruir uma incompatibilidade aparente. Ironia precisa do contexto que desautoriza a avaliação literal. Pleonasmo expressivo é contextualizado e não apresentado como erro obrigatório. Nas figuras sonoras, o fonema em foco é indicado para não confundir vogais e consoantes coexistentes; não se atribui um sentimento universal a um som. Anáfora retórica é distinguida de retomada referencial por pronome.
+
+A edição 1 permanece com o hash e os 180 itens originais. Novas partidas usam a edição 2; as antigas mantêm edição, alternativas, rascunho e tempo ativo. Os IDs da edição anterior não mudaram. Todo o lote novo utiliza as mesmas regras de ajuda, revisão, retenção e XP; não há migração do banco nem recompensas adicionais.
