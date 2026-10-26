@@ -15,6 +15,7 @@
 /.playwright-cli/
 /output/playwright/
 /output/learning/
+/output/writing/
 /output/enem/
 /output/enem-source/
 __pycache__/

@@ -42,7 +42,7 @@ function solve(expression) {
 }
 
 try {
-  for (const path of ["/", "/le", "/scrolla", "/entrar", "/cadastro", "/recuperar-senha", "/perfil"]) {
+  for (const path of ["/", "/le", "/escreve", "/scrolla", "/entrar", "/cadastro", "/recuperar-senha", "/perfil"]) {
     const response = await fetch(`${base}${path}`, {
       signal: AbortSignal.timeout(20000),
     });

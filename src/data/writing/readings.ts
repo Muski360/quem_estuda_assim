@@ -1,0 +1,27 @@
+import type { WritingReading } from "../../lib/writing/types.ts";
+
+export const WRITING_READINGS: WritingReading[] = [
+  { id: "leitura-bruno-2023", author: "Bruno Henrique Alves dos Santos", year: 2023, theme: "Trabalho de cuidado realizado pela mulher no Brasil", score: 1000,
+    source: "https://guiadoestudante.abril.com.br/wp-content/uploads/sites/4/2024/10/cartilha-de-redacao-enem-2024.pdf#page=61", page: 59,
+    proof: "INEP, Cartilha 2024: seção de textos nota 1.000, item 9; páginas impressas 59–61.", rights: "Cartilha, expediente: reprodução permitida com fonte. Aqui: link ao original; comentários próprios, sem transcrição.",
+    focus: "Do cinema ao problema social", question: "Abra o original: como a referência inicial contribui para a tese? Registre sua leitura antes de abrir a análise.",
+    analysis: { C1: "Um desvio de vírgula é apontado.", C2: "Cinema contextualiza cuidado.", C3: "Gênero e opressões combinadas.", C4: "Retomadas articulam relações.", C5: "Participação política; direitos trabalhistas." },
+    transfer: "Sobre outro tema, acesso à cultura, explique uma relação entre uma obra que você conhece e um obstáculo concreto. Não copie a introdução.",
+  },
+  { id: "leitura-amanda-2023", author: "Amanda Teixeira Zampiris", year: 2023, theme: "Trabalho de cuidado realizado pela mulher no Brasil", score: 1000,
+    source: "https://guiadoestudante.abril.com.br/wp-content/uploads/sites/4/2024/10/cartilha-de-redacao-enem-2024.pdf#page=37", page: 35,
+    proof: "INEP, Cartilha 2024: seção de textos nota 1.000, item 1; página impressa 35 e comentários seguintes.", rights: "Referência ao documento do INEP; sem transcrição. O expediente permite reprodução com fonte. Comentários da plataforma.", focus: "Uma referência retomada no fechamento", question: "Abra o original e observe: como o final conversa com a introdução?",
+    analysis: { C1: "Observe as intercalações.", C2: "Livro contextualiza a tese.", C3: "Omissão estatal; permanência histórica.", C4: "Referência inicial retomada.", C5: "Remuneração e valorização." }, transfer: "Em outro tema, escreva uma introdução e um fechamento que retomem uma ideia sem repetir literalmente as mesmas frases." },
+  { id: "leitura-lucas-2023", author: "Lucas Malta de Carvalho", year: 2023, theme: "Trabalho de cuidado realizado pela mulher no Brasil", score: 1000,
+    source: "https://guiadoestudante.abril.com.br/wp-content/uploads/sites/4/2024/10/cartilha-de-redacao-enem-2024.pdf#page=40", page: 38,
+    proof: "INEP, Cartilha 2024: seção de textos nota 1.000, item 2; página impressa 38 e comentários seguintes.", rights: "Referência ao documento do INEP; sem transcrição. O expediente permite reprodução com fonte. Comentários da plataforma.", focus: "Direito e realidade em contraste", question: "Antes de ler os comentários, identifique qual contraste ajuda a apresentar o problema.",
+    analysis: { C1: "Observe as orações explicativas.", C2: "Constituição contextualiza direitos.", C3: "Machismo e descaso estatal.", C4: "Contrastes e consequências.", C5: "Campanhas e fiscalização." }, transfer: "Sobre acesso à cultura, formule um argumento que explique uma distância entre um objetivo social e as condições de participação, sem inventar normas ou números." },
+  { id: "leitura-ana-2023", author: "Ana Luiza Teodoro Coutinho Loureiro", year: 2023, theme: "Trabalho de cuidado realizado pela mulher no Brasil", score: 1000,
+    source: "https://guiadoestudante.abril.com.br/wp-content/uploads/sites/4/2024/10/cartilha-de-redacao-enem-2024.pdf#page=46", page: 44,
+    proof: "INEP, Cartilha 2024: seção de textos nota 1.000, item 4; página impressa 44 e comentários seguintes.", rights: "Referência ao documento do INEP; sem transcrição. O expediente permite reprodução com fonte. Comentários da plataforma.", focus: "Literatura que participa do argumento", question: "Como a personagem inicial ajuda a interpretar o problema? Observe também sua retomada no final.",
+    analysis: { C1: "Observe a construção dos períodos.", C2: "Lispector contextualiza cuidado.", C3: "Imposição social; valor mercadológico.", C4: "Personagem retomada no final.", C5: "Educação e remuneração." }, transfer: "Escolha uma narrativa que conhece e explique, em outro tema, qual aspecto dela ajuda seu argumento. Não force a referência se não houver uma relação pertinente." },
+  { id: "leitura-mariane-2023", author: "Mariane Clementino Barbosa", year: 2023, theme: "Trabalho de cuidado realizado pela mulher no Brasil", score: 1000,
+    source: "https://guiadoestudante.abril.com.br/wp-content/uploads/sites/4/2024/10/cartilha-de-redacao-enem-2024.pdf#page=55", page: 53,
+    proof: "INEP, Cartilha 2024: seção de textos nota 1.000, item 7; página impressa 53 e comentários seguintes.", rights: "Referência ao documento do INEP; sem transcrição. O expediente permite reprodução com fonte. Comentários da plataforma.", focus: "Uma ação com público e execução", question: "Abra o original: quais detalhes tornam a proposta final compreensível?",
+    analysis: { C1: "Observe as articulações entre orações.", C2: "Série aproxima ficção e debate.", C3: "Desconhecimento; inércia governamental.", C4: "Repertório retomado no desenvolvimento.", C5: "Oficinas educativas; público delimitado." }, transfer: "Proponha uma ação de educação midiática. Especifique público, execução e finalidade de modo que o leitor entenda como ela enfrentaria o problema discutido." },
+];

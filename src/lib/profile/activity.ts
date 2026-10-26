@@ -1,5 +1,5 @@
 export type StudyActivity = { id: string; module: "scroll" | "calculator"; xp: number; mode?: "solo" | "multiplayer"; correct?: boolean; occurredAt?: string };
-export type StudyStats = { scroll_questions: number; calculator_rounds: number; reading_answers?: number; total_xp: number };
+export type StudyStats = { scroll_questions: number; calculator_rounds: number; reading_answers?: number; writing_answers?: number; total_xp: number };
 export const EMPTY_STATS: StudyStats = { scroll_questions: 0, calculator_rounds: 0, total_xp: 0 };
 
 export function isStudyActivity(value: unknown): value is StudyActivity {
@@ -21,5 +21,5 @@ export function parsePendingActivities(value: string | null): StudyActivity[] {
 }
 
 export function newerStats(current: StudyStats | null, incoming: StudyStats): StudyStats {
-  return current && (current.total_xp > incoming.total_xp || current.scroll_questions + current.calculator_rounds + (current.reading_answers ?? 0) > incoming.scroll_questions + incoming.calculator_rounds + (incoming.reading_answers ?? 0)) ? current : incoming;
+  return current && (current.total_xp > incoming.total_xp || current.scroll_questions + current.calculator_rounds + (current.reading_answers ?? 0) + (current.writing_answers ?? 0) > incoming.scroll_questions + incoming.calculator_rounds + (incoming.reading_answers ?? 0) + (incoming.writing_answers ?? 0)) ? current : incoming;
 }

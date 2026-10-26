@@ -13,7 +13,7 @@ export function AccountButton() {
   const { user, client, loading } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  if (!user) return <Link href={pathname === "/le" ? "/entrar?next=%2Fle" : "/entrar"} className="account-link" aria-busy={loading}><UserRound size={16} aria-hidden="true" />Entrar</Link>;
+  if (!user) return <Link href={pathname === "/le" || pathname === "/escreve" ? `/entrar?next=${encodeURIComponent(pathname)}` : "/entrar"} className="account-link" aria-busy={loading}><UserRound size={16} aria-hidden="true" />Entrar</Link>;
   const profile = profileDetails(user);
   return (
     <div className="account-menu">

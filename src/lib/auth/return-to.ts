@@ -1,5 +1,5 @@
 export function safeReturnTo(value: string | null): string {
-  return value === "/scrolla" || value === "/scrolla/progresso" || value === "/perfil" || value === "/le" ? value : "/";
+  return value === "/scrolla" || value === "/scrolla/progresso" || value === "/perfil" || value === "/le" || value === "/escreve" ? value : "/";
 }
 export function authReturnTo(): string {
   const requested = new URLSearchParams(window.location.search).get("next");

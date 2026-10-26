@@ -18,6 +18,29 @@ npm start
 
 Os testes usam o suporte nativo a TypeScript do Node.js 22.18+ (desenvolvido com Node 24). Não há framework adicional de testes. `next/font` baixa as fontes durante o build e as serve localmente na aplicação.
 
+## Quem Escreve Assim? · `/escreve`
+
+Treino público e digitado de redação ENEM: **100 desafios (20 por competência), dez oficinas, cinco propostas autorais e cinco leituras guiadas de redações nota 1000 documentadas pelo INEP**. O piloto de 25 desafios, cinco oficinas, uma proposta e uma leitura foi preparado antes da implementação. Conteúdo estático, sem API paga, geração durante o estudo ou correção automática das produções livres.
+
+O diagnóstico opcional tem dois desafios por competência. Sessões de cinco combinam solução com justificativa e ordenação de blocos; as escolhas podem mudar antes da confirmação. Correção comentada, ajuda, pulo, pausa e avanço manual acompanham o treino. As oficinas passam do exemplo comentado para uma produção curta, autoavaliação e aplicação em outro contexto.
+
+O caderno oferece planejamento opcional, contagem de palavras/parágrafos, retomada e exportação `.txt`. Cada rascunho admite até 20 mil caracteres; concluir preserva uma versão imutável. A revisão permite registrar trecho, dificuldade, mudança e “não sei avaliar”; a comparação mostra versões antes/depois. Avaliações recebidas fora do site ficam ligadas à versão corrigida, identificadas como **informadas pelo aluno**. Notas parciais são aceitas; o total é calculado apenas com as cinco competências. Um total isolado não inventa sua distribuição. Linhas digitais não equivalem às 30 linhas manuscritas; não se exige um número fixo de parágrafos.
+
+Visitantes guardam o estudo neste navegador. Pessoas logadas sincronizam após um segundo sem alterações; falhas mantêm a cópia local e permitem tentar novamente. Edições simultâneas preservam cópias para comparação. O armazenamento local indisponível gera aviso e permite continuar na memória e exportar. Textos e versões são privados; a exclusão limpa o conteúdo remoto e deixa somente identificadores para impedir que um envio antigo o recrie. Outros dispositivos recebem a exclusão ao sincronizar; um dispositivo offline pode manter sua cópia até reconectar. Edições pendentes conflitantes são preservadas em separado.
+
+A importação do visitante é opcional, idempotente, preserva o que já existe na conta e não dá XP retroativo. Cada desafio concede **10 XP somente na primeira resposta totalmente correta, sem ajuda e com conta conectada**. Revisões, produções livres e notas declaradas não dão pontos. O perfil inclui `writing_answers`; XP e tentativa são confirmados em uma transação. Primeira precisão, desempenho em revisões, versões e notas externas aparecem separadamente. As missões e metas dos demais módulos mantêm seus critérios.
+
+```sh
+npm run db:push
+npm run writing:pilot
+npm run writing:validate
+npm run test:writing
+```
+
+`test:writing` exige o servidor local e o ambiente Supabase existente; cria contas temporárias e as remove ao terminar. `/api/escreve?view=catalog` é público. Progresso, histórico, documentos e gravações exigem token; tabelas e funções de commit só são acessadas pelo servidor. A migração é `20261026001300_writing.sql`.
+
+Curadoria, procedência e limites estão em [docs/writing/review.md](docs/writing/review.md). As leituras apontam para o original, sem reproduzir os textos integralmente. O manifesto `docs/writing/release.json` fixa a edição por hash; não altere itens publicados em silêncio. Relatos podem ser consultados por `npm run writing:reports` e resolvidos com `npm run writing:reports -- --resolve=UUID`. Não há painel editorial ou avaliação de professor dentro da plataforma.
+
 ## Quem Lê Assim? · `/le`
 
 Jogo público de memória e interpretação, com **44 conceitos e 264 atividades** em Funções da linguagem, Figuras de linguagem, Literatura e Vanguardas. O piloto de seis conceitos/36 atividades foi conferido antes da ampliação. A edição traz exemplos autorais identificados, excertos em domínio público de Gonçalves Dias e Machado de Assis e duas obras da National Gallery of Art servidas pelo próprio projeto. Não há API paga nem geração de conteúdo durante as partidas.
@@ -76,7 +99,7 @@ A publicação atual é feita com `npm run deploy`. Commits locais não publicam
 
 ## Autenticação com Supabase Auth
 
-`/entrar` e `/cadastro` oferecem e-mail/senha e Google. Há confirmação de e-mail, recuperação em `/recuperar-senha`, nova senha em `/redefinir-senha` e retorno em `/auth/callback`. A sessão persiste no navegador, renova automaticamente e sincroniza o cabeçalho entre abas; “Sair” encerra o acesso neste navegador. Nenhuma ferramenta exige conta, inclusive o multiplayer, que conserva seus tokens de sala independentes.
+`/entrar` e `/cadastro` oferecem e-mail/senha e Google. Há confirmação de e-mail, recuperação em `/recuperar-senha`, nova senha em `/redefinir-senha` e retorno em `/auth/callback`. A sessão persiste no navegador, renova automaticamente e sincroniza o cabeçalho entre abas; “Sair” encerra o acesso neste navegador. Calcula, Lê e Escreve funcionam sem conta; o Scroll exige autenticação. O multiplayer conserva seus tokens de sala independentes.
 
 O Auth reutiliza `@supabase/supabase-js` e as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY`. `/api/auth/config` entrega apenas esses valores públicos em tempo de execução, sem cache. `SUPABASE_SECRET_KEY` fica no servidor e nos scripts administrativos de importação/teste. O Quem Calcula funciona sem conta; o Quem Scrolla exige autenticação para guardar o histórico e excluir questões já respondidas. Login, cadastro e Google preservam o retorno ao Scroll, sem alterar a URL de callback já configurada. Somente caminhos internos conhecidos são aceitos como destino.
 
@@ -101,7 +124,7 @@ https://quem-estuda-assim.muski.workers.dev/auth/callback?recovery=1
 
 O avatar no cabeçalho abre `/perfil`. A página permite editar nome de 2–60 caracteres, escolher entre seis cores, enviar uma foto JPG/PNG/WebP de até 5 MB e remover a foto. A prévia mostra as alterações antes de salvar; nome, cor e foto são persistidos em Supabase Auth. O nome e avatar do Google são usados inicialmente. A foto enviada é recortada ao centro, reduzida para 512×512 e convertida em WebP no navegador. O bucket público `qe-avatars` limita cada arquivo a 2 MB e permite enviar/remover apenas arquivos da pasta do próprio usuário. Cada substituição usa uma URL nova para evitar cache antigo.
 
-Os três indicadores são acumulados por conta: questões respondidas no Quem Scrolla Assim?, rodadas concluídas no Quem Calcula Assim? e XP total dos dois módulos. No solo, respostas enviadas a tempo contam mesmo quando incorretas; no multiplayer, contam os acertos que avançam a pista. No Scroll oficial, cada questão entra na contagem uma vez; as revisões têm indicadores separados. Pulos e expirações sem resposta não contam. O Calcula mantém multiplicador e combo; o Scroll dá 10 XP por acerto e 15 a partir do terceiro acerto seguido, sem multiplicador de tempo e sem repetir XP em revisão. A revanche reinicia o placar da sala, mas preserva o acumulado do perfil.
+O perfil acumula questões do Scroll, rodadas do Calcula, aplicações do Lê, desafios do Escreve e XP total dos quatro módulos. No solo, respostas enviadas a tempo contam mesmo quando incorretas; no multiplayer, contam os acertos que avançam a pista. No Scroll oficial, cada questão entra na contagem uma vez; as revisões têm indicadores separados. Pulos e expirações sem resposta não contam. O Calcula mantém multiplicador e combo; o Scroll dá 10 XP por acerto e 15 a partir do terceiro acerto seguido, sem multiplicador de tempo e sem repetir XP em revisão. A revanche reinicia o placar da sala, mas preserva o acumulado do perfil.
 
 `qe_study_stats` guarda os totais e só permite ler os dados da própria conta. `qe_study_events` registra o ID único de cada atividade; `qe_record_study_activity` valida o usuário e os limites de XP, confirma evento e totais na mesma transação e ignora reenvios. Não há permissão direta para editar contadores. Atividades pendentes são guardadas separadamente por conta e evento no navegador, para sobreviver a recargas e falhas de rede, e são reenviadas ao reconectar. O progresso do visitante não é atribuído a uma conta posteriormente.
 

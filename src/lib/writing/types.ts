@@ -1,0 +1,22 @@
+export type Competency = "C1" | "C2" | "C3" | "C4" | "C5";
+export type WritingActivity = {
+  id: string; competency: Competency; skill: string; kind: "choice" | "order";
+  prompt: string; options: string[]; evidence: string[]; explanation: string;
+};
+export type WritingWorkshop = { id: string; competency: Competency; title: string; model: string; comment: string; task: string; transfer: string; checks: string[] };
+export type WritingTopic = { id: string; title: string; texts: { title: string; text: string; source?: string }[] };
+export type WritingReading = { id: string; author: string; year: number; theme: string; score: 1000; source: string; page: number; proof: string; rights: string; focus: string; question: string; analysis: Record<Competency, string>; transfer: string };
+export type WritingAnswer = { choice: number | null; evidence: number | null; order: number[] };
+export type WritingEvent = { id: string; activityId: string; edition: number; kind: "answer" | "skip"; answer: WritingAnswer; assisted: boolean; review: boolean; occurredAt: string; activeMs: number };
+export type WritingAttempt = WritingEvent & { correct: boolean; xp: number; imported: boolean; competency: Competency };
+export type WritingProgress = { first: Record<string, { correct: boolean; imported: boolean; assisted: boolean }>; reviews: Record<string, { due: string; interval: number; at: string; correct: boolean }>; reviewStats: Record<Competency, { answered: number; correct: number }>; answered: number; correct: number; xp: number };
+export type WritingQuiz = { id: string; mode: "diagnostic" | "practice" | "review"; edition: number; items: string[]; position: number; answers: { eventId: string; activityId: string; correct: boolean; xp: number; skipped: boolean }[]; draft: WritingAnswer; assisted: boolean; pendingActiveMs: number };
+export type WritingWorkspace = { competency: Competency | "mixed"; quiz: WritingQuiz | null; activeDocument: string | null; diagnosticDone: boolean };
+export type WritingReview = { status: "unknown" | "improve" | "partial" | "met"; excerpt: string; problem: string; action: string };
+export type WritingVersion = { id: string; text: string; createdAt: string; basedOn: string | null; review: Record<Competency, WritingReview>; reflection: string; reviewedAt?: string | null };
+export type WritingAssessment = { id: string; versionId: string; source: string; receivedAt: string; recordedAt: string; scores: Partial<Record<Competency, number>>; total: number | null; comment: string };
+export type WritingDocument = { id: string; edition: number; kind: "essay" | "workshop" | "transfer"; contentId: string; parentId: string | null; title: string; text: string; plan: string; draftBasedOn: string | null; versions: WritingVersion[]; assessments: WritingAssessment[]; updatedAt: string };
+export type WritingDocumentRecord = { id: string; revision: number; deleted: boolean; value: WritingDocument | null };
+export type LocalWritingDocument = WritingDocumentRecord & { requestId: string; baseRequestId?: string | null; pending: boolean; imported?: boolean; conflictOf?: string };
+export type WritingSummary = Pick<WritingDocument, "id" | "title" | "kind" | "contentId" | "updatedAt" | "assessments"> & { versions: { id: string; createdAt: string; basedOn: string | null; reviewed: boolean }[]; hasDraft: boolean };
+export type WritingLocal = { schema: 1; events: WritingEvent[]; workspace: WritingWorkspace; workspacePending: boolean; serverRevision: number };

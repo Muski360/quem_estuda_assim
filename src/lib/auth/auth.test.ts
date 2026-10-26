@@ -6,6 +6,7 @@ import { safeReturnTo } from "./return-to.ts";
 
 test("login do Lê volta ao jogo e continua rejeitando redirecionamento externo", () => {
   assert.equal(safeReturnTo("/le"), "/le");
+  assert.equal(safeReturnTo("/escreve"), "/escreve");
   assert.equal(safeReturnTo("//example.com"), "/");
   assert.equal(safeReturnTo("https://example.com/le"), "/");
 });
