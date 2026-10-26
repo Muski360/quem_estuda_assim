@@ -1,5 +1,19 @@
 Original prompt: Implementar o plano Quem Lê Assim? — jogo público de memória e aplicação, 30 conceitos/180 atividades, progresso local e por conta, revisões e XP, com validação prévia de um piloto de 36 atividades.
 
+## Concluído — engajamento do Scrolla
+
+Pedido: tornar o Scrolla, jogo principal, mais recompensador e estimular respostas e acertos. Skills awwwards, game-ui-and-hud e develop-web-game aplicadas. Plataformas e entradas já definidas pelo projeto: web, celular/desktop 320–1440 px, toque/mouse/teclado. Questão e ações são informação principal; combo, bloco de cinco e recompensa são sinais secundários compactos. Papel, azul escuro, terracota e verde de acerto preservados.
+
+Escopo: HUD de combo com regra de XP explícita, blocos de cinco respostas (pulos não contam), feedback de acerto/erro, missões existentes visíveis, início e encerramento com próxima ação direta. Reutilizar áudio e celebrações; sem novas regras de XP, tabelas, dependências ou mudança das missões. Conferir acessibilidade, falhas, revisão, restauração e ausência de acúmulo de questões.
+
+Entregue: HUD próprio com três cargas de combo, próximo acerto valendo 15 XP quando aplicável, cinco segmentos de respostas e reconhecimento de bloco concluído. Missões no desktop e início móvel; entrada curta de cinco questões e continuação direta com filtros preservados. Rodapé de acerto e explicação/avanço móveis refinados; erro diferencia gabarito e revisão. Celebração breve com áudio existente; aviso de pulo não atravessa outra ação/sessão. Regras de recompensa e backend preservados. Estado textual de teste não inclui gabarito pendente.
+
+Verificado: 64 testes nativos, lint, TypeScript, Next e OpenNext/Cloudflare. Integrações reais Scroll e missões/explicações passaram. 17 auditorias axe A/AA em Chrome, 320–1440 px: combo, erro, blocos, pulo, pausa, explicação, rede/reenvio, recarga, continuação, revisão sem XP repetido, filtros, esgotamento, teclado e movimento reduzido. Loop develop-web-game com fixture autenticada (mesmo driver, acrescido apenas da preparação de rede/autenticação de teste), captura e estado inspecionados. Artefatos em `output/playwright/scroll-engagement`.
+
+Conferência final: as mesmas 17 auditorias e todos os fluxos passaram também na versão compilada. Tela de 320×568 mantém leitura rolável, uma única questão e botões Entender/Próxima dentro do viewport. Loop e capturas finais de produção inspecionados; varredura do pacote Cloudflare sem segredos de servidor.
+
+Limites: engajamento ainda não medido com estudantes ou aparelhos físicos. Nenhuma migração, dependência, commit ou publicação. Próxima ação de uso: `npm run dev`, abrir `/scrolla` com a conta.
+
 ## Concluído
 
 1. Piloto de seis conceitos/36 atividades conferido antes da ampliação; catálogo completo de 30 conceitos/180 atividades, fontes, duas imagens próprias e manifesto imutável da edição 1.

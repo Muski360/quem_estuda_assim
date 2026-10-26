@@ -7,9 +7,11 @@ import { AREAS } from "@/lib/questions";
 import type { ScrollItem } from "@/lib/scroll/types";
 import { ImageZoom, QuestionMarkdown, StudyImage } from "./question-content";
 import { ExplanationPanel } from "./explanation-panel";
+import { answerFeedback } from "@/lib/scroll/engagement";
 
-export function QuestionCard({ item, busy, activeTimeRef, onAnswer, onNext, onSkip, onFavorite }: {
+export function QuestionCard({ item, busy, streak, activeTimeRef, onAnswer, onNext, onSkip, onFavorite }: {
   item: ScrollItem; busy: boolean; activeTimeRef: RefObject<number>;
+  streak: number;
   onAnswer: (choice: number) => void; onNext: () => void; onSkip: () => void; onFavorite: () => void;
 }) {
   const { question } = item;
@@ -55,6 +57,7 @@ export function QuestionCard({ item, busy, activeTimeRef, onAnswer, onNext, onSk
   }, [selected, locked, storageKey, timeKey]);
   useEffect(() => { if (locked) result.current?.focus({ preventScroll: true }); }, [locked]);
   const choice = locked ? item.selected : selected;
+  const feedback = answerFeedback(item, streak);
 
   return <section className="sc-question-stage" aria-labelledby="sc-question-title">
     <div className="sc-question-meta"><span>{AREAS[question.area].label}</span><button className={`sc-bookmark${item.favorite ? " saved" : ""}`} onClick={onFavorite} disabled={busy} aria-pressed={item.favorite} aria-label={item.favorite ? "Remover dos favoritos" : "Salvar nos favoritos"}><Bookmark size={18} fill={item.favorite ? "currentColor" : "none"} aria-hidden="true" /><span>{item.favorite ? "Salva" : "Salvar"}</span></button></div>
@@ -83,8 +86,8 @@ export function QuestionCard({ item, busy, activeTimeRef, onAnswer, onNext, onSk
       <a className="sc-source" href={question.source.page} target="_blank" rel="noopener noreferrer">Questão oficial · INEP<ExternalLink size={12} aria-hidden="true" /><span className="sr-only"> (abre em nova aba)</span></a>
       {item.status === "answered" && <div ref={explanation}><ExplanationPanel question={question} selected={item.selected} correctIndex={item.correctIndex} /></div>}
     </div>
-    <div className={`sc-answerbar${locked ? " has-result" : ""}`}>
-      {locked ? <><div className="sc-answer-result" ref={result} tabIndex={-1} role="status"><strong>{item.status === "answered" ? item.correct ? "Acertou!" : `Resposta correta: ${String.fromCharCode(65 + item.correctIndex!)}` : item.status === "expired" ? "O tempo terminou." : "Questão pulada."}</strong><span>{item.xp ? `+${item.xp} XP · mais um passo` : item.status === "answered" ? "Resposta salva no seu histórico." : "Ela pode voltar em outra sessão."}</span></div>{item.status === "answered" && question.hasExplanation && <button className="sc-text-button sc-understand" onClick={() => { const panel = explanation.current?.querySelector("details"); if (panel) { panel.open = true; panel.scrollIntoView({ block: "start" }); panel.querySelector("summary")?.focus({ preventScroll: true }); } }}>Entender</button>}<button className="sc-primary" onClick={onNext} disabled={busy}>Próxima<ArrowRight size={18} aria-hidden="true" /></button></>
+    <div className={`sc-answerbar${locked ? " has-result" : ""}${item.correct === true ? " is-correct" : item.correct === false ? " is-incorrect" : ""}`}>
+      {locked ? <><div className="sc-answer-result" ref={result} tabIndex={-1} role="status"><strong>{feedback.title}</strong><span>{feedback.detail}</span></div>{item.status === "answered" && question.hasExplanation && <button className="sc-text-button sc-understand" onClick={() => { const panel = explanation.current?.querySelector("details"); if (panel) { panel.open = true; panel.scrollIntoView({ block: "start" }); panel.querySelector("summary")?.focus({ preventScroll: true }); } }}>Entender</button>}<button className="sc-primary" onClick={onNext} disabled={busy}>Próxima<ArrowRight size={18} aria-hidden="true" /></button></>
         : <><button className="sc-text-button sc-skip" onClick={onSkip} disabled={busy || paused}>Pular</button><span className="sc-selection-note">{selected === null ? "Escolha uma alternativa" : `Alternativa ${String.fromCharCode(65 + selected)} selecionada`}</span><button className="sc-primary" onClick={() => selected !== null && onAnswer(selected)} disabled={selected === null || busy || paused}>{busy ? "Salvando…" : "Responder"}<ArrowRight size={18} aria-hidden="true" /></button></>}
     </div>
     <ImageZoom src={zoom} onClose={() => setZoom(null)} />
