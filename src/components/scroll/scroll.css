@@ -144,6 +144,13 @@ body:has(.sc-workspace) { overflow: hidden; }
 .sc-option-zoom { position: absolute; right: 8px; bottom: 7px; width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--sc-border); border-radius: 4px; background: white; }
 .sc-option-row:has(.sc-option-zoom) .sc-option { padding-bottom: 45px; }
 .sc-source { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; color: var(--sc-muted); text-decoration: none; min-height: 36px; }
+.sc-external-resolution { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; border: 1px solid #d9d8cc; border-left: 3px solid #a5442b; border-radius: 5px; padding: 18px 20px; margin: 22px 0; background: #f0eee5; }
+.sc-external-resolution .sc-eyebrow { color: #695b4e; font-size: 9px; }
+.sc-external-resolution strong { font-size: 16px; font-weight: 600; }
+.sc-external-resolution p { font-size: 13px; line-height: 1.8; color: #53584d; margin: 0; }
+.sc-external-link { text-align: left; }
+.sc-external-resolution .sc-external-link { color: #92391f; font-weight: 550; text-decoration: underline; text-underline-offset: 4px; font-size: 13px; }
+.sc-external-link svg { flex-shrink: 0; }
 .sc-answerbar { display: flex; align-items: center; gap: 16px; min-height: 86px; border-top: 1px solid var(--sc-border); padding: 16px max(28px,calc((100% - 850px) / 2)); background: var(--surface); box-shadow: 0 -10px 24px #1a211405; }
 .sc-answerbar > .sc-primary { margin-left: auto; min-width: 160px; }
 .sc-selection-note { font-size: 11px; color: var(--sc-muted); }

@@ -6,7 +6,7 @@ import { ArrowRight, Bookmark, Check, ExternalLink, Maximize2, X } from "lucide-
 import { AREAS } from "@/lib/questions";
 import type { ScrollItem } from "@/lib/scroll/types";
 import { ImageZoom, QuestionMarkdown, StudyImage } from "./question-content";
-import { ExplanationPanel } from "./explanation-panel";
+import { ExplanationPanel, ExternalResolutionLink, useExternalResolution } from "./explanation-panel";
 import { answerFeedback } from "@/lib/scroll/engagement";
 
 export function QuestionCard({ item, busy, streak, activeTimeRef, onAnswer, onNext, onSkip, onFavorite }: {
@@ -15,6 +15,7 @@ export function QuestionCard({ item, busy, streak, activeTimeRef, onAnswer, onNe
   onAnswer: (choice: number) => void; onNext: () => void; onSkip: () => void; onFavorite: () => void;
 }) {
   const { question } = item;
+  const external = useExternalResolution(question, item.status === "answered");
   const storageKey = `qe:scroll-draft:${item.id}`;
   const timeKey = `qe:scroll-time:${item.id}`;
   const [selected, setSelected] = useState<number | null>(() => {
@@ -87,7 +88,7 @@ export function QuestionCard({ item, busy, streak, activeTimeRef, onAnswer, onNe
       {item.status === "answered" && <div ref={explanation}><ExplanationPanel question={question} selected={item.selected} correctIndex={item.correctIndex} /></div>}
     </div>
     <div className={`sc-answerbar${locked ? " has-result" : ""}${item.correct === true ? " is-correct" : item.correct === false ? " is-incorrect" : ""}`}>
-      {locked ? <><div className="sc-answer-result" ref={result} tabIndex={-1} role="status"><strong>{feedback.title}</strong><span>{feedback.detail}</span></div>{item.status === "answered" && question.hasExplanation && <button className="sc-text-button sc-understand" onClick={() => { const panel = explanation.current?.querySelector("details"); if (panel) { panel.open = true; panel.scrollIntoView({ block: "start" }); panel.querySelector("summary")?.focus({ preventScroll: true }); } }}>Entender</button>}<button className="sc-primary" onClick={onNext} disabled={busy}>Próxima<ArrowRight size={18} aria-hidden="true" /></button></>
+      {locked ? <><div className="sc-answer-result" ref={result} tabIndex={-1} role="status"><strong>{feedback.title}</strong><span>{feedback.detail}</span></div>{item.status === "answered" && question.hasExplanation && external === null && <button className="sc-text-button sc-understand" onClick={() => { const panel = explanation.current?.querySelector("details"); if (panel) { panel.open = true; panel.scrollIntoView({ block: "start" }); panel.querySelector("summary")?.focus({ preventScroll: true }); } }}>Entender</button>}{item.status === "answered" && external && <ExternalResolutionLink href={external} compact />}<button className="sc-primary" onClick={onNext} disabled={busy}>Próxima<ArrowRight size={18} aria-hidden="true" /></button></>
         : <><button className="sc-text-button sc-skip" onClick={onSkip} disabled={busy || paused}>Pular</button><span className="sc-selection-note">{selected === null ? "Escolha uma alternativa" : `Alternativa ${String.fromCharCode(65 + selected)} selecionada`}</span><button className="sc-primary" onClick={() => selected !== null && onAnswer(selected)} disabled={selected === null || busy || paused}>{busy ? "Salvando…" : "Responder"}<ArrowRight size={18} aria-hidden="true" /></button></>}
     </div>
     <ImageZoom src={zoom} onClose={() => setZoom(null)} />

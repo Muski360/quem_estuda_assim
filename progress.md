@@ -1,5 +1,15 @@
 Original prompt: Implementar o plano Quem Lê Assim? — jogo público de memória e aplicação, 30 conceitos/180 atividades, progresso local e por conta, revisões e XP, com validação prévia de um piloto de 36 atividades.
 
+## Concluído — links de resoluções externas
+
+Pedido aprovado: vincular às resoluções originais da Plataforma Assaad, sem copiar/republicar explicações. Indexador de metadados pela API pública WordPress, com identificação estrita de aplicação regular, caderno azul, ano, número e idioma; conferir enunciado/alternativas contra o acervo local. HTML de resolução não será armazenado nem publicado. Guardar somente URLs, identificadores e evidências numéricas/hash de correspondência; separar casos inconclusivos.
+
+Integração: carregar o catálogo de URLs apenas após resposta; oferecer link identificado para nova aba no estudo e no histórico. Preservar as 100 explicações próprias, gabaritos, filtros e regras de XP. Sem migração ou dependência nova. Testar correspondência, PPL/idiomas, fronteira após resposta, segurança do destino, teclado, celular e build.
+
+Entregue: 2.002 links de 2.287 questões, gerados pela API pública e conferidos por metadados + texto anterior à resolução. 156 candidatos insuficientes e 129 sem candidato identificável permaneceram sem link. Catálogo público sob demanda, com cache compartilhado e fallback para explicação própria; iframe, conteúdo de resolução e arquivos externos não são copiados. Relatório/método em `docs/learning/external-resolutions.md` e evidências JSON. `npm run learning:links` retoma; `--refresh` renova a coleta. Robots, limite de requisições, retomada e destino restrito implementados.
+
+Verificado: 69 testes, lint, TypeScript, Next, OpenNext/Cloudflare, integrações reais Scroll e explicações/missões. 16 URLs diretas amostradas por ano/idioma responderam HTTP 200. Sete auditorias axe e fluxos Chrome 320–1440 px passaram em desenvolvimento e produção: link apenas após resposta, idiomas, PPL, histórico, favorito não respondido, nova aba por teclado, ausência de opener/referrer, partida preservada, falha do catálogo e explicação própria. Worker local entregou os 2.002 registros; pacote sem segredos. Capturas finais inspecionadas. Sem publicação ou commit; destinos e qualidade externos podem mudar. Próxima ação: `npm run dev`, responder no `/scrolla` e abrir a resolução original.
+
 ## Concluído — engajamento do Scrolla
 
 Pedido: tornar o Scrolla, jogo principal, mais recompensador e estimular respostas e acertos. Skills awwwards, game-ui-and-hud e develop-web-game aplicadas. Plataformas e entradas já definidas pelo projeto: web, celular/desktop 320–1440 px, toque/mouse/teclado. Questão e ações são informação principal; combo, bloco de cinco e recompensa são sinais secundários compactos. Papel, azul escuro, terracota e verde de acerto preservados.

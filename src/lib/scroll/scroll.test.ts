@@ -6,6 +6,17 @@ import { safeReturnTo } from "../auth/return-to.ts";
 import { GET, POST } from "../../app/api/scroll/route.ts";
 import { answerFeedback, scrollChallenge } from "./engagement.ts";
 import type { ScrollItem } from "./types.ts";
+import { externalResolution } from "./external-resolution.ts";
+import type { Question } from "../questions.ts";
+
+test("resolução externa só associa ID, aplicação, caderno, ano, número e idioma compatíveis", () => {
+  const q = { id: "enem-2023-regular-1-ingles", year: 2023, number: 1, language: "ingles", source: { application: "Regular", booklet: "1 · Azul" } } as Question;
+  const paths = { [q.id]: "/questao-01-caderno-azul-do-enem-2023/" };
+  assert.equal(externalResolution(q, paths), "https://plataformaassaad.com.br/questao-01-caderno-azul-do-enem-2023/");
+  for (const changed of [{ ...q, language: "espanhol" as const }, { ...q, year: 2022 }, { ...q, number: 2 }, { ...q, source: { ...q.source, application: "PPL" } }, { ...q, source: { ...q.source, booklet: "2 · Amarelo" } }]) assert.equal(externalResolution(changed, paths), null);
+  assert.equal(externalResolution(q, {}), null);
+  for (const path of ["javascript:alert(1)", "https://outro.test/", "//outro.test/", "/questao-06-enem-2021-ppl/", "/questao-teste/?redirect=outro"]) assert.equal(externalResolution(q, { [q.id]: path }), null);
+});
 
 test("engajamento: cinco respostas fecham o bloco; pular não fecha e próxima abre outro", () => {
   const pending = { status: "pending" } as ScrollItem, answered = { status: "answered" } as ScrollItem;
