@@ -1,5 +1,7 @@
 import { CODES, WRITING_CATALOG, activityById } from "./catalog.ts";
 import { emptyLocal } from "./engine.ts";
+import { SPRINT_ID } from "../../data/sprint/context.ts";
+import { isSprintState } from "../sprint/validation.ts";
 import type { WritingAnswer, WritingDocument, WritingEvent, WritingLocal, WritingQuiz, WritingWorkspace } from "./types.ts";
 
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
@@ -21,8 +23,9 @@ export function isWorkspace(v: unknown): v is WritingWorkspace {
   return object(v) && [...CODES, "mixed"].includes(String(v.competency)) && (v.quiz === null || isQuiz(v.quiz)) && (v.activeDocument === null || uuid(v.activeDocument)) && typeof v.diagnosticDone === "boolean";
 }
 export function isDocument(v: unknown): v is WritingDocument {
-  if (!object(v) || !uuid(v.id) || v.edition !== 1 || !["essay", "workshop", "transfer"].includes(String(v.kind)) || !text(v.contentId, 100) || !text(v.title, 160) || !text(v.text, 20000) || !text(v.plan, 6000) || !date(v.updatedAt) || !(v.parentId === null || uuid(v.parentId)) || !(v.draftBasedOn === null || uuid(v.draftBasedOn))) return false;
-  const known = v.kind === "essay" ? WRITING_CATALOG.topics.some(t => t.id === v.contentId) : WRITING_CATALOG.workshops.some(w => w.id === v.contentId) || v.kind === "transfer" && WRITING_CATALOG.readings.some(r => r.id === v.contentId);
+  if (!object(v) || !uuid(v.id) || v.edition !== 1 || !["essay", "workshop", "transfer", "sprint"].includes(String(v.kind)) || !text(v.contentId, 100) || !text(v.title, 160) || !text(v.text, 20000) || !text(v.plan, 6000) || !date(v.updatedAt) || !(v.parentId === null || uuid(v.parentId)) || !(v.draftBasedOn === null || uuid(v.draftBasedOn))) return false;
+  if (v.kind === "sprint" ? !isSprintState(v.sprint) : v.sprint !== undefined) return false;
+  const known = v.kind === "sprint" ? v.contentId === SPRINT_ID : v.kind === "essay" ? WRITING_CATALOG.topics.some(t => t.id === v.contentId) : WRITING_CATALOG.workshops.some(w => w.id === v.contentId) || v.kind === "transfer" && WRITING_CATALOG.readings.some(r => r.id === v.contentId);
   if (!known || !Array.isArray(v.versions) || !Array.isArray(v.assessments) || new Set(v.versions.map(x => x?.id)).size !== v.versions.length || new Set(v.assessments.map(x => x?.id)).size !== v.assessments.length) return false;
   const ids = new Set<string>();
   for (const version of v.versions) {

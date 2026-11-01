@@ -2,6 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import { WRITING_CATALOG, activityById } from "../../../lib/writing/catalog.ts";
 import { applyAttempt, documentSummary, emptyProgress, emptyWorkspace } from "../../../lib/writing/engine.ts";
 import { isDocument, isWorkspace, isWritingEvent, preservesVersions, uuid } from "../../../lib/writing/validation.ts";
+import { SPRINT_ID } from "../../../data/sprint/context.ts";
+import { SPRINT_ESSAYS, SPRINT_QUESTIONS, SPRINT_PRODUCTIONS } from "../../../lib/sprint/catalog.ts";
 import type { WritingAttempt, WritingDocument, WritingEvent, WritingProgress, WritingWorkspace } from "../../../lib/writing/types.ts";
 
 const json = (value: unknown, status = 200) => Response.json(value, { status, headers: { "Cache-Control": "private, no-store" } });
@@ -74,7 +76,7 @@ export async function POST(request: Request) {
       return json(saved.data);
     }
     if (input.action === "report") {
-      const validContent = activityById(input.contentId) || WRITING_CATALOG.workshops.some(w => w.id === input.contentId) || WRITING_CATALOG.topics.some(t => t.id === input.contentId) || WRITING_CATALOG.readings.some(r => r.id === input.contentId);
+      const validContent = activityById(input.contentId) || WRITING_CATALOG.workshops.some(w => w.id === input.contentId) || WRITING_CATALOG.topics.some(t => t.id === input.contentId) || WRITING_CATALOG.readings.some(r => r.id === input.contentId) || input.contentId === SPRINT_ID || [...SPRINT_ESSAYS, ...SPRINT_QUESTIONS, ...SPRINT_PRODUCTIONS].some(item => item.id === input.contentId);
       if (!uuid(input.id) || input.edition !== 1 || !validContent || typeof input.message !== "string" || input.message.trim().length < 5 || input.message.length > 1500) return json({ error: "Descreva o problema em 5–1500 caracteres." }, 400);
       const { id, db } = await account(request);
       const { error } = await db.from("qe_writing_reports").upsert({ user_id: id, id: input.id, content_id: input.contentId, edition: 1, message: input.message.trim() }, { onConflict: "user_id,id", ignoreDuplicates: true }); if (error) throw error;

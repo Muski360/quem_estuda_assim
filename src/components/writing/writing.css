@@ -1,4 +1,5 @@
-.wr-shell { max-width: 1360px; padding: 22px 48px 70px; margin: auto; --wr-navy: #1c2036; --wr-green: #49613a; --accent: #a74328; }
+.wr-shell { max-width: 1360px; padding: 22px 48px 70px; margin: auto; --accent: #a74328; }
+.wr-shell, .wr-editor { --wr-navy: #1c2036; --wr-green: #49613a; }
 .wr-shell textarea, .wr-shell input, .wr-shell select { font: inherit; color: var(--ink); }
 .wr-shell button, .wr-shell a, .wr-shell summary, .wr-shell select { touch-action: manipulation; }
 .wr-shell .button { min-height: 48px; gap: 10px; font-size: 14px; }

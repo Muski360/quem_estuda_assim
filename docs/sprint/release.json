@@ -1,0 +1,10 @@
+{
+  "edition": 1,
+  "files": {
+    "analyses.ts": "51338efd906c5e4acab5f38c901523a934383f9578ab14f52dbbc291363998df",
+    "context.ts": "ad4e8d05772a03fb040ceee21a9f6188474ae2b2080058f121a299b26350bfd2",
+    "days.ts": "c59d930913f75891319bc58ba446cce7a64d85a9743c67e5bcd0838ced3bd9fc",
+    "essays.ts": "89731685fd94e66fac2c950b996f42e20061cdbb60504109ac1db1600fc1d8fa",
+    "questions.ts": "81a69e300ad0b2ffa59c5aec299dc379005656d562f81eaeed27bb737cb71803"
+  }
+}

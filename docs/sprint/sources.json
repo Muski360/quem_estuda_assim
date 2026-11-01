@@ -1,0 +1,116 @@
+{
+  "edition": 1,
+  "checkedAt": "2026-11-01",
+  "sources": [
+    {
+      "id": "inep2023",
+      "sha256": "cfae33a040ac24139f5c4adc63c1275b0066aa6800f8060aef873491ba372a37",
+      "rightsPdfPage": 4,
+      "proofPdfPage": 27
+    },
+    {
+      "id": "inep2024",
+      "sha256": "6d43d380bbdb6edf6a669f8a044c33dd89e7474b9660c599a44ef6b26d796b82",
+      "rightsPdfPage": 4,
+      "proofPdfPage": 36
+    }
+  ],
+  "essays": [
+    {
+      "id": "amanda",
+      "author": "Amanda Teixeira Zampiris",
+      "source": "inep2024",
+      "item": 1,
+      "pdfPage": 37,
+      "sha256": "d79099908fe94d4117166f9747019d59e84c79f9ff995d1d293d4d9163c5db2a"
+    },
+    {
+      "id": "nicole",
+      "author": "Nicole Carvalho Almeida",
+      "source": "inep2023",
+      "item": 1,
+      "pdfPage": 28,
+      "sha256": "bdd3fdf86d744d0e9dd0ac5c681a3a3d20c3e1be06317d865415daedb548b501"
+    },
+    {
+      "id": "bruno",
+      "author": "Bruno Henrique Alves dos Santos",
+      "source": "inep2024",
+      "item": 9,
+      "pdfPage": 61,
+      "sha256": "363c6e71c7bef2f08ab366a09ab674e7a720d181d66bbafaa3ace23955590554"
+    },
+    {
+      "id": "rodrigo",
+      "author": "Rodrigo Junqueira Santiago Simões",
+      "source": "inep2023",
+      "item": 5,
+      "pdfPage": 38,
+      "sha256": "cdf250c1751dabcacb913f6edb0db6c186321e31a09f1f1955f6d31c514e827b"
+    },
+    {
+      "id": "ana-luiza",
+      "author": "Ana Luiza Teodoro Coutinho Loureiro",
+      "source": "inep2024",
+      "item": 4,
+      "pdfPage": 46,
+      "sha256": "d46575064b2a5db072b524a5548ba7ff6208a67d64342dee5d402d2c8b95ae41"
+    },
+    {
+      "id": "luis-felipe",
+      "author": "Luís Felipe Alves Paiva de Brito",
+      "source": "inep2023",
+      "item": 4,
+      "pdfPage": 35,
+      "sha256": "6c50ebfe6569ac14f189e47d56edc9a319be36ec54fd2cf0d50cd86375e7b14b"
+    },
+    {
+      "id": "lucas",
+      "author": "Lucas Malta de Carvalho",
+      "source": "inep2024",
+      "item": 2,
+      "pdfPage": 40,
+      "sha256": "1e111396fd7f64a100c25e6f1fd211fe2bbb37ee8b8e1ce32791938cd68fed4b"
+    },
+    {
+      "id": "luiz-andre",
+      "author": "Luiz André Lomeu de Almeida",
+      "source": "inep2023",
+      "item": 3,
+      "pdfPage": 33,
+      "sha256": "0cd2141b55c63c7e2b2974714aeb0bb468f61867463a4a4f8ef4a364c8930172"
+    },
+    {
+      "id": "mariane",
+      "author": "Mariane Clementino Barbosa",
+      "source": "inep2024",
+      "item": 7,
+      "pdfPage": 55,
+      "sha256": "b1261b3f5c3e6adf9fbeb565d79462b9237a5f96214e0dd8799a995af9911b9c"
+    },
+    {
+      "id": "ana-carolina",
+      "author": "Ana Carolina Angelim Damasceno",
+      "source": "inep2023",
+      "item": 2,
+      "pdfPage": 30,
+      "sha256": "052329891c0333feb3229275a336865f4d950e3f1c666d6d898e6887c9714d98"
+    },
+    {
+      "id": "gabriela",
+      "author": "Gabriela Larissa de Souza Gurgel",
+      "source": "inep2024",
+      "item": 3,
+      "pdfPage": 43,
+      "sha256": "4d42d670b24976eb321ca82825817e2b0f2410166a7d400a5f45a0b920617a3a"
+    },
+    {
+      "id": "luiz-henrique",
+      "author": "Luiz Henrique Nogueira dos Santos",
+      "source": "inep2023",
+      "item": 6,
+      "pdfPage": 40,
+      "sha256": "47c54488d18ac177227cb62b256cd773000fc5af0c0bff206647377c53edbb7a"
+    }
+  ]
+}

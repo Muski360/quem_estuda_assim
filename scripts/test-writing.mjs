@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { createClient } from "@supabase/supabase-js";
 import { completeVersion, createQuiz, emptyProgress, emptyWorkspace, makeDocument } from "../src/lib/writing/engine.ts";
+import { emptySprint } from "../src/lib/sprint/engine.ts";
+import { SPRINT_ID, SPRINT_QUESTIONS } from "../src/lib/sprint/catalog.ts";
 
 const base = process.env.WRITING_TEST_BASE_URL ?? "http://localhost:3000";
 const db = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
@@ -69,5 +71,30 @@ try {
   const tombstone = await db.from("qe_writing_documents").select("value,summary").eq("user_id", a.id).eq("id", doc.id).single(); assert.equal(tombstone.data.value, null); assert.equal(tombstone.data.summary, null);
   await request(a, save(doc, cloud.revision), 409); assert.equal((await request(a, { ...save(doc), action: "import-document" })).deleted, true, "Import cannot resurrect a deleted document");
   await request({ token: "expired.invalid" }, sync([event()]), 401);
+  const sprint = { ...makeDocument("sprint", SPRINT_ID), sprint: emptySprint(), title: "Sprint privado de teste" };
+  const match = SPRINT_QUESTIONS.find(q => q.kind === "match");
+  sprint.sprint.responses[match.id] = { selection: [2, -1, -1, -1, -1], reasoning: "Associação ainda incompleta.", attempts: [], correction: "" };
+  await request(null, save(sprint), 401);
+  const sprintSave = save(sprint), sprintSaved = await request(a, sprintSave);
+  assert.equal(sprintSaved.revision, 1); assert.equal((await request(a, sprintSave)).revision, 1);
+  assert.deepEqual((await request(a, `view=document&id=${sprint.id}`)).value.sprint, sprint.sprint);
+  await request(b, `view=document&id=${sprint.id}`, 404);
+  await request(a, save({ ...sprint, sprint: { ...sprint.sprint, day: 7 } }, 1), 400);
+  const sprintWrites = await Promise.all([request(a, save({ ...sprint, plan: "Plano da aba A" }, 1), null), request(a, save({ ...sprint, plan: "Plano da aba B" }, 1), null)]);
+  assert.deepEqual(sprintWrites.map(r => r.status).sort(), [200, 409]);
+  const sprintCloud = await request(a, `view=document&id=${sprint.id}`);
+  const finalVersion = completeVersion({ ...sprintCloud.value, text: "Uma produção de teste.\n\nOutra parte do texto.\n\nUma proposta a revisar." });
+  const finalSaved = await request(a, save(finalVersion, sprintCloud.revision));
+  assert.equal(finalSaved.value.versions.length, 1); assert.equal(finalSaved.value.assessments.length, 0);
+  assert.deepEqual(finalSaved.value.sprint, sprint.sprint, "Revisão do simulado preserva respostas e progresso");
+  await request(a, save({ ...finalVersion, versions: [] }, finalSaved.revision), 400);
+  const fromGuest = { ...makeDocument("sprint", SPRINT_ID), sprint: emptySprint() };
+  fromGuest.sprint.readings.amanda = { prediction: "Uma leitura parcial do visitante.", opened: [], reflection: "" };
+  await request(a, { ...save(fromGuest), action: "import-document" });
+  assert.deepEqual((await request(a, `view=document&id=${fromGuest.id}`)).value.sprint, fromGuest.sprint);
+  await request(a, { ...report, id: crypto.randomUUID(), contentId: SPRINT_QUESTIONS[0].id });
+  const afterSprint = await db.from("qe_study_stats").select("writing_answers,total_xp").eq("user_id", a.id).single();
+  assert.equal(afterSprint.data.writing_answers, 4); assert.equal(afterSprint.data.total_xp, 17);
+  console.log("PASS Sprint: respostas parciais, retomada, isolamento, concorrência, importação, simulado versionado, relatos e ausência de notas ou XP automáticos.");
   console.log("PASS Escreve: catálogo completo, RLS, isolamento, concorrência, XP único, importação, versões, avaliações, exclusão, histórico, relatos e totais Calc/Scroll/Lê.");
 } finally { for (const id of accounts) { const result = await db.auth.admin.deleteUser(id); assert.equal(result.error, null); } console.log("Contas temporárias removidas."); }

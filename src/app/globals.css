@@ -3492,3 +3492,4 @@ svg {
 
 .nav-short { display: none; }
 @media (max-width: 1400px) { .nav-full { display: none; } .nav-short { display: inline; } }
+@media (max-width: 480px) { .nav-link { flex-direction: column; gap: 5px; padding: 9px 5px; font-size: 10px; } }

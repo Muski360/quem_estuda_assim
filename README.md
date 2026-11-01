@@ -18,6 +18,14 @@ npm start
 
 Os testes usam o suporte nativo a TypeScript do Node.js 22.18+ (desenvolvido com Node 24). Não há framework adicional de testes. `next/font` baixa as fontes durante o build e as serve localmente na aplicação.
 
+## Quem Sprinta Assim? · `/sprinta`
+
+Sprint de redação de **2 a 7 de novembro de 2026**: 12 redações reais nota 1000 das cartilhas do INEP, análises por parágrafo e competência, seis comparações, 30 desafios objetivos com justificativas, 11 produções curtas, 24 expressões com recuperação ativa e um simulado final. A leitura pede hipótese antes da análise; erros são retomados sem reescrever a primeira resposta. Produções livres usam rubricas de autoavaliação, sem nota automática.
+
+O caderno reutiliza autenticação, persistência privada, importação de visitante e proteção de versões do Escreve. O módulo funciona sem login e não concede XP. O simulado utiliza o mesmo editor, com planejamento, versões e exportação. Fontes, permissões, critérios e limites estão em [docs/sprint/review.md](docs/sprint/review.md).
+
+`npm run sprint:validate` confere o conteúdo e a lógica. A verificação integra `npm test`, `prebuild` e `predeploy`. `npm run test:writing`, com o servidor local e o Supabase configurados, também verifica a persistência e o isolamento dos cadernos do Sprint. Não há nova migração ou dependência.
+
 ## Quem Escreve Assim? · `/escreve`
 
 Treino público e digitado de redação ENEM: **100 desafios (20 por competência), dez oficinas, cinco propostas autorais e cinco leituras guiadas de redações nota 1000 documentadas pelo INEP**. O piloto de 25 desafios, cinco oficinas, uma proposta e uma leitura foi preparado antes da implementação. Conteúdo estático, sem API paga, geração durante o estudo ou correção automática das produções livres.

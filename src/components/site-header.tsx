@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, BookOpen, Calculator, GalleryVerticalEnd, PenLine } from "lucide-react";
+import { ArrowUpRight, BookOpen, Calculator, GalleryVerticalEnd, PenLine, Timer } from "lucide-react";
 import { AccountButton } from "@/components/auth/account-button";
 
 function Brand() {
@@ -52,6 +52,9 @@ export function SiteHeader() {
           </Link>
           <Link href="/escreve" className={pathname === "/escreve" ? "nav-link active" : "nav-link"} aria-current={pathname === "/escreve" ? "page" : undefined} aria-label="Quem escreve assim?">
             <PenLine size={17} aria-hidden="true" /><span className="nav-full">Quem escreve assim?</span><span className="nav-short">Escreve</span>
+          </Link>
+          <Link href="/sprinta" className={pathname === "/sprinta" ? "nav-link active" : "nav-link"} aria-current={pathname === "/sprinta" ? "page" : undefined} aria-label="Quem sprinta assim?">
+            <Timer size={17} aria-hidden="true" /><span className="nav-full">Quem sprinta assim?</span><span className="nav-short">Sprinta</span>
           </Link>
         </nav>
         <div className="header-actions"><a

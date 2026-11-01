@@ -1,3 +1,5 @@
+import type { SprintState } from "../sprint/types.ts";
+
 export type Competency = "C1" | "C2" | "C3" | "C4" | "C5";
 export type WritingActivity = {
   id: string; competency: Competency; skill: string; kind: "choice" | "order";
@@ -15,7 +17,7 @@ export type WritingWorkspace = { competency: Competency | "mixed"; quiz: Writing
 export type WritingReview = { status: "unknown" | "improve" | "partial" | "met"; excerpt: string; problem: string; action: string };
 export type WritingVersion = { id: string; text: string; createdAt: string; basedOn: string | null; review: Record<Competency, WritingReview>; reflection: string; reviewedAt?: string | null };
 export type WritingAssessment = { id: string; versionId: string; source: string; receivedAt: string; recordedAt: string; scores: Partial<Record<Competency, number>>; total: number | null; comment: string };
-export type WritingDocument = { id: string; edition: number; kind: "essay" | "workshop" | "transfer"; contentId: string; parentId: string | null; title: string; text: string; plan: string; draftBasedOn: string | null; versions: WritingVersion[]; assessments: WritingAssessment[]; updatedAt: string };
+export type WritingDocument = { id: string; edition: number; kind: "essay" | "workshop" | "transfer" | "sprint"; contentId: string; parentId: string | null; title: string; text: string; plan: string; draftBasedOn: string | null; versions: WritingVersion[]; assessments: WritingAssessment[]; updatedAt: string; sprint?: SprintState };
 export type WritingDocumentRecord = { id: string; revision: number; deleted: boolean; value: WritingDocument | null };
 export type LocalWritingDocument = WritingDocumentRecord & { requestId: string; baseRequestId?: string | null; pending: boolean; imported?: boolean; conflictOf?: string };
 export type WritingSummary = Pick<WritingDocument, "id" | "title" | "kind" | "contentId" | "updatedAt" | "assessments"> & { versions: { id: string; createdAt: string; basedOn: string | null; reviewed: boolean }[]; hasDraft: boolean };
